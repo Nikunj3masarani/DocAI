@@ -8,7 +8,7 @@ from app import constants
 
 class Inference:
     def __init__(self, chroma_db_store, query_embeddings_function):
-        self.document_retriever = ChromaEmbeddingRetriever(chroma_db_store, top_k=3)
+        self.document_retriever = ChromaEmbeddingRetriever(chroma_db_store, top_k=10)
         self.prompt_builder = PromptBuilder(template=constants.RAG_PROMPT)
         self.query_embeddings_function = query_embeddings_function
 

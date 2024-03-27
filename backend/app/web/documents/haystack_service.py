@@ -7,7 +7,7 @@ class Documents:
     def __init__(self, chroma_document_store, embeddings_function):
         self.document_converter = PyPDFToDocument()
         self.document_cleaner = DocumentCleaner()
-        self.document_spliter = DocumentSplitter(split_by="word", split_length=512, split_overlap=0)
+        self.document_spliter = DocumentSplitter(split_by="word", split_length=200, split_overlap=0)
         self.chroma_document_store = chroma_document_store
         self.document_embeddings = embeddings_function
 
