@@ -53,13 +53,15 @@ services:
       interval: 10s
       timeout: 10s
       retries: 3
+    volumes:
+      - ./postgresql_data:/var/lib/postgresql/data
 
   chromadb:
     image: chromadb/chroma:latest
     ports:
       - "8000:8000"
     volumes:
-      - ./chroma_db_data:/chromadb/data
+      - ./chroma_db_data/:/chroma/chroma/
     healthcheck:
       test: [ "CMD", "curl", "-f", "-s", "http://chromadb:8000/api/v1/heatbeat" ]
       interval: 10s
@@ -77,3 +79,9 @@ services:
     environment:
       POSTGRES_HOST: database
       POSTGRES_PORT: 5432
+
+volumes:
+  chroma_db_data:
+    driver: local
+  postgresql_data:
+    driver: local
