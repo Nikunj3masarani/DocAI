@@ -32,8 +32,7 @@ services:
     ports:
       - "8502:8502"
     depends_on:
-      backend:
-        condition: service_started
+      - backend
     environment:
       BACKEND_URL: "http://backend:8081"
 
@@ -66,8 +65,8 @@ services:
     build:
       context: ./migration
     depends_on:
-      database:
-        condition: service_healthy
+      - database
+
     env_file:
       - .env
     environment:
