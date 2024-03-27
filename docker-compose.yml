@@ -15,8 +15,8 @@ services:
       POSTGRES_PORT: 5432
       CHROMA_DB_HOST: chromadb
       CHROMA_DB_PORT: 8000
+      HAYSTACK_TELEMETRY_ENABLED: False
       ANONYMIZED_TELEMETRY: False
-
     env_file:
       - .env
     ports:
@@ -60,6 +60,8 @@ services:
     image: chromadb/chroma:latest
     ports:
       - "8000:8000"
+
+
     volumes:
       - ./chroma_db_data/:/chroma/chroma/
     healthcheck:
@@ -67,6 +69,7 @@ services:
       interval: 10s
       timeout: 10s
       retries: 3
+
 
   migration:
     build:
