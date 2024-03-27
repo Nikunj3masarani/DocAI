@@ -1,45 +1,41 @@
-version: '3.8'
+version: '3.3'
 
 services:
   backend:
     build:
       context: ./backend
     depends_on:
-      database:
-        condition: service_healthy
-      chromadb:
-        condition: service_started
+      - database
+      - chromadb
 
     environment:
       POSTGRES_HOST: database
       POSTGRES_PORT: 5432
       CHROMA_DB_HOST: chromadb
-      CHROMA_DB_PORT: 8000
-      ANONYMIZED_TELEMETRY: False
+      CHROMA_DB_PORT: 8090
+      ANONYMIZED_TELEMETRY: "false"
 
     env_file:
       - .env
     ports:
-      - "8080:8080"
+      - "8081:8081"
 
     healthcheck:
-      test: [ "CMD", "curl", "-f", "-s", "http://backend:8080/health" ]
+      test: [ "CMD", "curl", "-f", "-s", "http://backend:8081/health" ]
       interval: 10s
       timeout: 10s
       retries: 3
 
-    volumes:
-      - /home/nikunj/models/:/models
 
   frontend:
     build: ./frontend
     ports:
-      - "8501:8501"
+      - "8502:8502"
     depends_on:
       backend:
         condition: service_started
     environment:
-      BACKEND_URL: "http://backend:8080"
+      BACKEND_URL: "http://backend:8081"
 
   database:
     image: postgres:latest
@@ -57,7 +53,7 @@ services:
   chromadb:
     image: chromadb/chroma:latest
     ports:
-      - "8000:8000"
+      - "8090:8000"
     volumes:
       - ./chroma_db_data:/chromadb/data
     healthcheck:
