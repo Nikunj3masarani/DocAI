@@ -26,8 +26,8 @@ def get_app() -> FastAPI:
     :return: application.
     """
     app = FastAPI(
-        title="boilerplate app",
-        description="this is fastapi boilerplate demo project",
+        title="DocAI Backend app",
+        description="DocAI Backend Application",
         version="1.0",
         docs_url=None,
         redoc_url=None,
