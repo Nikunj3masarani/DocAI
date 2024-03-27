@@ -29,12 +29,12 @@ services:
       retries: 3
 
     volumes:
-      - /home/nikunj/models/:/models
+      - /home/nikunj/models/:/models/
 
   frontend:
     build: ./frontend
     ports:
-      - "8501:8501"
+      - "8053:8053"
     depends_on:
       backend:
         condition: service_started
