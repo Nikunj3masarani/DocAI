@@ -15,9 +15,18 @@
     "prepare": "husky install"
   },
   "dependencies": {
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.5",
+    "@mui/material": "^5.15.14",
+    "@mui/styled-engine-sc": "6.0.0-alpha.18",
+    "axios": "^1.6.8",
+    "final-form": "^4.20.10",
     "init": "^0.1.2",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-final-form": "^6.5.9",
+    "react-router-dom": "^6.22.3",
+    "styled-components": "^6.1.8"
   },
   "devDependencies": {
     "@chromatic-com/storybook": "^1.2.25",

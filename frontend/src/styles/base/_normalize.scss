@@ -1,0 +1,93 @@
+// Add styles for overriding the html tags
+
+html {
+    line-height: 1.15;
+    -webkit-text-size-adjust: 100%;
+    font-size: 10px;
+
+    @include respond($miniLaptop) {
+        font-size: 9px;
+    }
+
+    @include respond($tablet) {
+        font-size: 9px;
+    }
+
+    @include respond($mobile) {
+        font-size: 8px;
+    }
+}
+
+body {
+    font: {
+        family: $fontFamily;
+        size: 1.4rem;
+        weight: 400;
+    }
+
+    margin: 0;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+::-webkit-scrollbar {
+    width: 0.7rem;
+    height: 0.7rem;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #223039;
+    width: 0.5rem;
+    border-radius: 100px;
+}
+
+h1 {
+    display: block;
+    font-weight: bold;
+    font-size: 2em;
+    margin: 0.67em 0 0.67em 0;
+}
+
+h2 {
+    display: block;
+    font-weight: bold;
+    font-size: 1.5em;
+    margin: 0.83em 0 0.83em 0;
+}
+
+h3 {
+    display: block;
+    font-weight: bold;
+    font-size: 1.17em;
+    margin: 1em 0 1em 0;
+}
+
+h4 {
+    display: block;
+    font-weight: bold;
+    margin: 1.33em 0 1.33em 0;
+}
+
+h5 {
+    display: block;
+    font-weight: bold;
+    font-size: 0.83em;
+    margin: 1.67em 0 1.67em 0;
+}
+
+h6 {
+    display: block;
+    font-weight: bold;
+    font-size: 0.67em;
+    margin: 2.33em 0 2.33em 0;
+}
+
+.hidden {
+    display: none;
+}
