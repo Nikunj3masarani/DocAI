@@ -1,0 +1,14 @@
+@import '@docAi-app/styles/abstracts/_abstracts';
+
+.container {
+    display: flex;
+
+    &__body {
+        width: calc(100vw - 28rem);
+    }
+
+    &__children {
+        overflow: auto;
+        height: 100vh;
+    }
+}

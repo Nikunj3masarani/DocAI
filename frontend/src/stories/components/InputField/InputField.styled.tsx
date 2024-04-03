@@ -8,12 +8,16 @@ const StyledTextFieldComp = styled(TextField)<StyleTextFieldProps>`
     &.MuiFormControl-root {
         min-height: ${({ minheight }) => (minheight ? minheight : `7.8rem`)};
 
+        .MuiInputBase-root {
+            border-radius: 10px;
+        }
+
         .MuiFormLabel-root {
             color: ${({ theme }) => theme.colors.davyGrey};
             font-size: 1.4rem;
             font-weight: 400;
             line-height: normal;
-            top: -3px;
+            top: 2px;
         }
 
         .MuiInputBase-input {

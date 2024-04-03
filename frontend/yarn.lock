@@ -1397,7 +1397,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.10.0, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.13.10, @babel/runtime@npm:^7.15.4, @babel/runtime@npm:^7.17.8, @babel/runtime@npm:^7.18.3, @babel/runtime@npm:^7.23.9, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.8.7, @babel/runtime@npm:^7.9.2":
+"@babel/runtime@npm:^7.10.0, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.13.10, @babel/runtime@npm:^7.15.4, @babel/runtime@npm:^7.17.8, @babel/runtime@npm:^7.18.3, @babel/runtime@npm:^7.23.9, @babel/runtime@npm:^7.24.0, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.8.7, @babel/runtime@npm:^7.9.2":
   version: 7.24.1
   resolution: "@babel/runtime@npm:7.24.1"
   dependencies:
@@ -2039,6 +2039,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@mui/icons-material@npm:^5.15.14":
+  version: 5.15.14
+  resolution: "@mui/icons-material@npm:5.15.14"
+  dependencies:
+    "@babel/runtime": "npm:^7.23.9"
+  peerDependencies:
+    "@mui/material": ^5.0.0
+    "@types/react": ^17.0.0 || ^18.0.0
+    react: ^17.0.0 || ^18.0.0
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+  checksum: 10c0/d0da0ea908c07bd38095d07565e6acfe97ac2ededb8826253675df9ed6c23db65cb4239dbcf55f6a22d43228cb32914e107c2c546308e3f8b908e05e0ee8e3b4
+  languageName: node
+  linkType: hard
+
 "@mui/material@npm:^5.15.14":
   version: 5.15.14
   resolution: "@mui/material@npm:5.15.14"
@@ -2179,6 +2195,24 @@ __metadata:
     "@types/react":
       optional: true
   checksum: 10c0/36265988477637a011361456b40929de928e215466b72e6c48673a2088610d83e09960a3e0608100448910683079fc80a5e11dbf49b9ce7109dd8e49403ae3b3
+  languageName: node
+  linkType: hard
+
+"@mui/x-data-grid@npm:^7.1.0":
+  version: 7.1.0
+  resolution: "@mui/x-data-grid@npm:7.1.0"
+  dependencies:
+    "@babel/runtime": "npm:^7.24.0"
+    "@mui/system": "npm:^5.15.14"
+    "@mui/utils": "npm:^5.15.14"
+    clsx: "npm:^2.1.0"
+    prop-types: "npm:^15.8.1"
+    reselect: "npm:^4.1.8"
+  peerDependencies:
+    "@mui/material": ^5.15.14
+    react: ^17.0.0 || ^18.0.0
+    react-dom: ^17.0.0 || ^18.0.0
+  checksum: 10c0/cac7f8c6548b57070d6efc95b1d04bb1543e2abe2cabbba36a0ddfd6c668224fe19cb71ecd3e944f6c81889776f9f0ec07a2bae67fe6e67b7f5b17f446402fa2
   languageName: node
   linkType: hard
 
@@ -2652,7 +2686,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/builder-vite@npm:8.0.5":
+"@storybook/builder-vite@npm:8.0.5, @storybook/builder-vite@npm:^8.0.5":
   version: 8.0.5
   resolution: "@storybook/builder-vite@npm:8.0.5"
   dependencies:
@@ -3593,7 +3627,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/lodash@npm:^4.14.167":
+"@types/lodash@npm:^4, @types/lodash@npm:^4.14.167":
   version: 4.17.0
   resolution: "@types/lodash@npm:4.17.0"
   checksum: 10c0/4c5b41c9a6c41e2c05d08499e96f7940bcf194dcfa84356235b630da920c2a5e05f193618cea76006719bec61c76617dff02defa9d29934f9f6a76a49291bd8f
@@ -6092,16 +6126,20 @@ __metadata:
     "@chromatic-com/storybook": "npm:^1.2.25"
     "@emotion/react": "npm:^11.11.4"
     "@emotion/styled": "npm:^11.11.5"
+    "@mui/icons-material": "npm:^5.15.14"
     "@mui/material": "npm:^5.15.14"
     "@mui/styled-engine-sc": "npm:6.0.0-alpha.18"
+    "@mui/x-data-grid": "npm:^7.1.0"
     "@storybook/addon-essentials": "npm:^8.0.5"
     "@storybook/addon-interactions": "npm:^8.0.5"
     "@storybook/addon-links": "npm:^8.0.5"
     "@storybook/addon-onboarding": "npm:^8.0.5"
     "@storybook/blocks": "npm:^8.0.5"
+    "@storybook/builder-vite": "npm:^8.0.5"
     "@storybook/react": "npm:^8.0.5"
     "@storybook/react-vite": "npm:^8.0.5"
     "@storybook/test": "npm:^8.0.5"
+    "@types/lodash": "npm:^4"
     "@types/react": "npm:^18.2.66"
     "@types/react-dom": "npm:^18.2.22"
     "@typescript-eslint/eslint-plugin": "npm:^7.2.0"
@@ -6115,6 +6153,7 @@ __metadata:
     final-form: "npm:^4.20.10"
     husky: "npm:^9.0.11"
     init: "npm:^0.1.2"
+    lodash: "npm:^4.17.21"
     prettier: "npm:^3.2.5"
     react: "npm:^18.2.0"
     react-dom: "npm:^18.2.0"
@@ -8865,6 +8904,13 @@ __metadata:
   version: 1.2.0
   resolution: "requireindex@npm:1.2.0"
   checksum: 10c0/7fb42aed73bf8de9acc4d6716cf07acc7fbe180e58729433bafcf702e76e7bb10e54f8266c06bfec62d752e0ac14d50e8758833de539e6f4e2cd642077866153
+  languageName: node
+  linkType: hard
+
+"reselect@npm:^4.1.8":
+  version: 4.1.8
+  resolution: "reselect@npm:4.1.8"
+  checksum: 10c0/06a305a504affcbb67dd0561ddc8306b35796199c7e15b38934c80606938a021eadcf68cfd58e7bb5e17786601c37602a3362a4665c7bf0a96c1041ceee9d0b7
   languageName: node
   linkType: hard
 

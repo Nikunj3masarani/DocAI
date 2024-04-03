@@ -1,5 +1,7 @@
 //Import Third Party lib
 
+import { DataGridComp } from "@docAi-app/components";
+
 //Import Storybook
 
 //Import Component
@@ -15,7 +17,6 @@
 //Import Util, Helper , Constant
 
 //Import Icon
-import Logo from '@docAi-app/../public/assets/images/logo.svg';
 
 //Import Api
 
@@ -23,7 +24,7 @@ import Logo from '@docAi-app/../public/assets/images/logo.svg';
 
 //Import Style
 
-const Login = () => {
+const Models = () => {
     // useRef
     // useState
     // Variables Dependent upon State
@@ -39,11 +40,8 @@ const Login = () => {
     // Your component logic here
 
     return (
-        <>
-            <img src={Logo} alt="basf logo" />
-            Login page
-        </>
+       <DataGridComp/>
     );
 };
 
-export { Login };
+export { Models };

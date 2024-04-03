@@ -17,12 +17,14 @@ import { Outlet } from 'react-router-dom';
 //Import Util, Helper , Constant
 
 //Import Icon
+import Logo from '@docAi-app/../public/assets/images/logo.svg';
 
 //Import Api
 
 //Import Assets
 
 //Import Style
+import Styles from './AuthContainer.module.scss';
 
 const AuthContainer = () => {
     // useRef
@@ -40,9 +42,15 @@ const AuthContainer = () => {
     // Your component logic here
 
     return (
-        <>
-            <Outlet />
-        </>
+        <div className={Styles.container}>
+            <div className={Styles['container__content']}>
+                <div className={Styles['container__logo']}>
+                    <img src={Logo} alt="basf logo" />
+                    <h1>Talk to DocAi</h1>
+                </div>
+                <Outlet />
+            </div>
+        </div>
     );
 };
 

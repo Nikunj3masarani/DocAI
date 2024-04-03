@@ -14,7 +14,7 @@ const initialAuthContextValue = {
 const AuthContext = createContext<AuthContextType>(initialAuthContextValue);
 
 const AuthContextProvider = ({ children }: { children: React.ReactNode }) => {
-    const [isLogin, setIsLogin] = useState(false);
+    const [isLogin, setIsLogin] = useState(true);
     const initialValues = {
         isLogin: isLogin,
         setIsLogin: setIsLogin,

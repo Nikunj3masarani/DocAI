@@ -1,7 +1,9 @@
 import { Navigate, RouteObject, createBrowserRouter } from 'react-router-dom';
 import { ROUTE } from '@docAi-app/utils/constants/Route.constant';
-import { Login, PageNotFound } from '@docAi-app/pages';
-import { AuthContainer, ErrorComponent, MainContainer } from '@docAi-app/components';
+import { ForgotPassword, Login, PageNotFound, ResetPassword } from '@docAi-app/pages';
+import { AuthContainer, AuthRoute, ErrorComponent, MainContainer } from '@docAi-app/components';
+import { Search } from '@docAi-app/pages/Search';
+import { Models } from '@docAi-app/pages/Models';
 
 const errorElement = {
     errorElement: <ErrorComponent />,
@@ -20,23 +22,48 @@ const AUTHCHILDROUTES: RouteObject[] = [
     },
     {
         path: ROUTE.FORGOT_PASSWORD,
-        element: null,
+        element: <ForgotPassword />,
+        ...errorElement,
+    },
+    {
+        path: ROUTE.RESET_PASSWORD,
+        element: <ResetPassword />,
+        ...errorElement,
+    },
+];
+
+const PRIVATE_ROUTES: RouteObject[] = [
+    {
+        path: `${ROUTE.SEARCH}`,
+        element: <Search />,
+        ...errorElement,
+    },
+    {
+        path: `${ROUTE.MODELS}`,
+        element: <Models />,
         ...errorElement,
     },
 ];
 const ROUTES: RouteObject[] = [
     {
         path: ROUTE.ROOT,
-        element: <MainContainer />,
+        element: (
+            <AuthRoute>
+                <MainContainer />
+            </AuthRoute>
+        ),
         ...errorElement,
-        children: [
-            {
-                path: ROUTE.AUTH,
-                element: <AuthContainer />,
-                children: AUTHCHILDROUTES,
-                ...errorElement,
-            },
-        ],
+        children: PRIVATE_ROUTES,
+    },
+    {
+        path: ROUTE.AUTH,
+        element: (
+            <AuthRoute>
+                <AuthContainer />
+            </AuthRoute>
+        ),
+        children: AUTHCHILDROUTES,
+        ...errorElement,
     },
 
     {
