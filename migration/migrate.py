@@ -33,39 +33,34 @@ def run_migration():
                 select_sql_query = f'''SELECT 1 FROM {table_name} WHERE target_name = '{model.get('target_name')}' '''
                 cursor.execute(select_sql_query)
                 result = cursor.fetchone()
+                if not result:
+                    insert_sql_query = f'''INSERT INTO {table_name} (
+                                                              model_uuid,
+                                                              target_name,
+                                                              display_name,
+                                                              max_new_tokens, 
+                                                              max_input_tokens,
+                                                              description,
+                                                              deployment_url,
+                                                              deployment,
+                                                              api_version,
+                                                              api_key
+                                                              ) VALUES (
+                                                              '{uuid.uuid4()}',
+                                                              '{model.get('target_name')}',
+                                                              '{model.get('display_name')}',
+                                                              '{model.get('max_new_tokens')}',
+                                                              '{model.get('max_input_tokens')}',
+                                                              '{model.get('description')}',
+                                                              '{model.get('deployment_url')}',
+                                                              '{model.get('deployment')}',
+                                                              '{model.get('api_version')}',
+                                                              '{model.get('api_key')}');
+                                '''
 
-                if result:
-                    delete_sql_query = f'''DELETE FROM {table_name} WHERE target_name = '{model.get('target_name')}' '''
-                    cursor.execute(delete_sql_query)
+                    cursor.execute(insert_sql_query)
                     conn.commit()
-
-                insert_sql_query = f'''INSERT INTO {table_name} (
-                                                          model_uuid,
-                                                          target_name,
-                                                          display_name,
-                                                          max_new_tokens, 
-                                                          max_input_tokens,
-                                                          description,
-                                                          deployment_url,
-                                                          deployment,
-                                                          api_version,
-                                                          api_key
-                                                          ) VALUES (
-                                                          '{uuid.uuid4()}',
-                                                          '{model.get('target_name')}',
-                                                          '{model.get('display_name')}',
-                                                          '{model.get('max_new_tokens')}',
-                                                          '{model.get('max_input_tokens')}',
-                                                          '{model.get('description')}',
-                                                          '{model.get('deployment_url')}',
-                                                          '{model.get('deployment')}',
-                                                          '{model.get('api_version')}',
-                                                          '{model.get('api_key')}');
-                            '''
-
-                cursor.execute(insert_sql_query)
-                conn.commit()
-                print("Migrate", f"Inserted to models {model.get('target_name')}")
+                    print("Migrate", f"Inserted to models {model.get('target_name')}")
 
     except Exception as e:
         print('Error executing migration script:', e)

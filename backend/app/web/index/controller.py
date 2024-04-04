@@ -3,7 +3,7 @@ from app import constants
 from fastapi_utils.cbv import cbv
 from fastapi_utils.inferring_router import InferringRouter
 from app.web.index.service import Index as IndexService
-from app.web.index.validator import CreateIndex
+from app.web.index.validator import CreateIndex, IndexList
 from app.web.index.response import IndexResponse, IndexListResponse
 from app.services.db.dependency import get_db_session
 from app.services.es.dependency import get_es_client
@@ -60,10 +60,11 @@ class Index:
     @router.post("/list")
     async def get_all_index(
             self,
+            index_list: IndexList,
             db=Depends(get_db_session),
     ):
         index_service = IndexService(db)
-        index_list = await index_service.get_list({})
+        index_list = await index_service.get_list(index_list)
         return IndexListResponse(
             payload=index_list,
             message=constants.INDEX_LIST_FETCHED,
