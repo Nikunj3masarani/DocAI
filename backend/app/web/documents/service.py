@@ -1,18 +1,15 @@
 import uuid
-
+from app import constants
 from app.web.documents.db_service import Documents as DocumentsDBService
-from app.web.documents.chroma_db_service import Documents as DocumentsChromaDBService
-from app.constants.constants import DocumentUploadStatus
+from app.constants import DocumentUploadStatus
 from app.web.index.db_service import Index as IndexDBService
 from app.web.documents.haystack_service import Documents as DocumentHaystackService
-from app.web.documents.chroma_db_service import Documents as DocumentChromaDBService
-from app.web.common.chroma_document_store import ChromaDocumentStore
+from app.exception.custom import CustomException
 
 
 class Documents:
-    def __init__(self, db_client, chroma_client, document_embedding_function):
+    def __init__(self, db_client, document_embedding_function=None):
         self.db_client = db_client
-        self.chroma_client = chroma_client
         self.document_embedding_function = document_embedding_function
 
     async def index_documents(self, documents, **kwargs):
@@ -24,13 +21,13 @@ class Documents:
         index_db_service = IndexDBService(self.db_client)
         index_name = await index_db_service.get_index_name(kwargs.get("index_uuid"))
 
-        chroma_document_store = ChromaDocumentStore(
-            collection_name=index_name,
-            chroma_client=self.chroma_client
-        )
-        document_haystack_service = DocumentHaystackService(chroma_document_store, self.document_embedding_function)
+        document_haystack_service = DocumentHaystackService(index_name, self.document_embedding_function)
 
         for doc in documents:
+            file_ext = doc.filename.split(".")[-1]
+            if file_ext not in constants.ALLOWED_FILE_TYPES:
+                raise CustomException(message=constants.DOCUMENT_TYPE_NOT_ALLOWED)
+
             is_exists = await document_db_service.check_file_exists(kwargs.get("index_uuid"), doc.filename)
             if is_exists:
                 response_messages["failed"].append(f"{doc.filename} already indexed.")
@@ -51,3 +48,13 @@ class Documents:
             response_messages["success"].append(f"{doc.filename} indexed successfully.")
 
         return {"status": response_messages}
+
+    async def get_all_documents(self, index_uuid):
+        document_db_service = DocumentsDBService(self.db_client)
+        return await document_db_service.get_all_data(index_uuid)
+
+    async def delete_documents(self, document_uuid):
+        document_db_service = DocumentsDBService(self.db_client)
+        is_deleted = await document_db_service.delete_data(document_uuid)
+        print(is_deleted)
+        return {}

@@ -16,3 +16,21 @@ INDEX_LIST_FETCHED = "Index list fetch successfully"
 
 # Document Messages
 DOCUMENT_UPLOADED = "Docments indexed successfully"
+DOCUMENT_TYPE_NOT_ALLOWED = "Document file type not allowed"
+DOCUMENTS_FETCHED_SUCCESSFULLY = "Documents fetched successfully"
+DOCUMENT_NOT_FOUND = "Document not found"
+
+# Model Messages
+MODEL_LIST_FETCH = "Models list fetched successfully"
+
+# Chat Messages
+CHAT_NOT_EXISTS = "Chat does not exists"
+
+# Prompt Messages
+PROMPT_ALREADY_EXISTS = "Prompt with the title already exists"
+PROMPT_CREATED = "Prompt created successfully."
+PROMPT_DOES_NOT_EXISTS = "Prompt does not exists"
+PROMPT_FOUND = "Prompt found successfully"
+PROMPT_DELETED = "Prompt deleted successfully"
+PROMPT_LIST_FETCHED = "Prompt list fetched successfully"
+PROMPT_UPDATED = "Prompt updated successfully"

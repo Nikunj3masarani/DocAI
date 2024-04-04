@@ -1,5 +1,7 @@
 from enum import Enum
 
+ALLOWED_FILE_TYPES = ['pdf', 'html', 'txt']
+
 
 class DocumentUploadStatus(Enum):
     UPLOADED = 1

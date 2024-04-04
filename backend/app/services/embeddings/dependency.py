@@ -7,3 +7,7 @@ async def get_documents_embedding_function(request: Request):
 
 async def get_query_embedding_function(request: Request):
     return request.app.state.query_embedding_function
+
+
+async def get_rank_function(request: Request):
+    return request.app.state.rank_function
