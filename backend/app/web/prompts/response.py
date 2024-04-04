@@ -5,3 +5,6 @@ class PromptResponse(BaseResponse):
     pass
 
 
+class PromptListResponse(BaseResponse):
+    payload: list = []
+    pager: dict = {}

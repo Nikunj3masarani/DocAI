@@ -6,6 +6,7 @@ from app import constants
 from app.web.base.db_service import DBService
 from app.web.common.schema import Chat as ChatTable
 from app.web.common.schema import ChatHistory as ChatHistoryTable
+from app.web.inference.helper import group_and_label_data
 from app.exception.custom import CustomException
 
 
@@ -48,7 +49,14 @@ class Inference(DBService):
         pass
 
     async def get_all_data(self, data: Any, *args, **kwargs) -> List[Dict]:
-        select_chat_history_query = select(ChatTable).join(ChatHistoryTable)
-
-
+        select_chat_history_query = select(ChatTable.chat_uuid,
+                                           ChatTable.chat_title,
+                                           ChatTable.prompt_uuid,
+                                           ChatTable.created_at,
+                                           ChatTable.model_uuid,
+                                           ChatTable.created_by,
+                                           ChatTable.index_uuid).join(ChatHistoryTable)
+        chat_history_response = await self.db_client.execute(select_chat_history_query)
+        response = group_and_label_data([dict(d)for d in list(chat_history_response.all())])
+        return response
 

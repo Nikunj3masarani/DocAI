@@ -66,7 +66,8 @@ class Index:
         index_service = IndexService(db)
         index_list = await index_service.get_list(index_list)
         return IndexListResponse(
-            payload=index_list,
+            payload=index_list.get('data'),
+            pager=index_list.get('pager'),
             message=constants.INDEX_LIST_FETCHED,
             status=status.HTTP_200_OK,
         )

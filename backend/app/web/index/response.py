@@ -6,4 +6,5 @@ class IndexResponse(BaseResponse):
 
 
 class IndexListResponse(BaseResponse):
-    payload: dict = {}
+    payload: list = []
+    pager: dict = {}

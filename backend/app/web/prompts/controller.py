@@ -5,7 +5,7 @@ from fastapi_utils.inferring_router import InferringRouter
 from fastapi.responses import StreamingResponse
 from app.services.db.dependency import get_db_session
 from app.web.prompts.service import Prompt as PromptService
-from app.web.prompts.response import PromptResponse
+from app.web.prompts.response import PromptResponse, PromptListResponse
 from app.web.prompts.validator import CreatePrompt, PromptList, UpdatePrompt
 router = InferringRouter()
 
@@ -81,8 +81,9 @@ class Prompts:
     ):
         prompt_service = PromptService(db)
         prompt_response = await prompt_service.get_list(data)
-        return PromptResponse(
-            payload=prompt_response,
+        return PromptListResponse(
+            payload=prompt_response.get("data"),
+            pager=prompt_response.get("pager"),
             message=constants.PROMPT_LIST_FETCHED,
             status=status.HTTP_200_OK,
         )
