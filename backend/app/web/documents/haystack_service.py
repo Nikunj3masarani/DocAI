@@ -12,7 +12,7 @@ class Documents:
         self.document_cleaner = DocumentCleaner()
         self.document_spliter = DocumentSplitter(split_by="word", split_length=200, split_overlap=0)
         self.document_embeddings = embeddings_function
-        self.document_store = ElasticsearchDocumentStore(hosts=settings.es_host_url, index=index_name)
+        self.document_store = ElasticsearchDocumentStore(hosts=settings.es_host_url, index=index_name, timeout=300)
 
     async def index_document(self, doc):
         with tempfile.NamedTemporaryFile() as temp_file:
