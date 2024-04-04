@@ -6,6 +6,20 @@ CREATE TABLE IF NOT EXISTS prompts (
     status VARCHAR(50)
 );
 
+CREATE TABLE IF NOT EXISTS models (
+    model_uuid UUID PRIMARY KEY,
+    display_name VARCHAR(255),
+    target_name VARCHAR(255),
+    deployment VARCHAR(255),
+    max_new_tokens INTEGER,
+    description TEXT,
+    deployment_url VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    max_input_tokens INTEGER,
+    api_version VARCHAR(255),
+    api_key VARCHAR(255)
+);
+
 CREATE TABLE IF NOT EXISTS indexes (
     index_uuid UUID PRIMARY KEY,
     title VARCHAR(255),
@@ -31,19 +45,7 @@ CREATE TABLE IF NOT EXISTS documents (
     created_by VARCHAR(255) DEFAULT 'Admin'
 );
 
-CREATE TABLE IF NOT EXISTS models (
-    model_uuid UUID PRIMARY KEY,
-    display_name VARCHAR(255),
-    target_name VARCHAR(255),
-    deployment VARCHAR(255),
-    max_new_tokens INTEGER,
-    description TEXT,
-    deployment_url VARCHAR(255),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    max_input_tokens INTEGER,
-    api_version VARCHAR(255),
-    api_key VARCHAR(255)
-);
+
 
 CREATE TABLE IF NOT EXISTS chat (
     chat_uuid UUID PRIMARY KEY,
