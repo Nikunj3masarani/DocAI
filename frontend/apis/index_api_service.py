@@ -2,7 +2,7 @@ import os
 import requests
 import logging
 logger = logging.getLogger(__name__)
-backend_url = os.getenv('BACKEND_URL')
+backend_url = os.getenv('BACKEND_URL', 'http://localhost:8080')
 
 
 def get_all_index():

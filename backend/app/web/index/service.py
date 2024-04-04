@@ -2,17 +2,17 @@ from app.web.base.service import BaseService
 from typing import Any, Dict
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.web.index.db_service import Index as IndexDBService
-from app.web.index.chroma_db_service import Index as IndexChromaDBService
+from app.web.index.es_service import Index as IndexESService
 
 
 class Index(BaseService):
     def __init__(
             self,
             db_session: AsyncSession = None,
-            chroma_client=None
+            es_client=None
     ):
         self.db_session = db_session
-        self.chroma_client = chroma_client
+        self.es_client = es_client
 
     async def create(self, data: Any, *args, **kwargs) -> Dict:
         """
@@ -22,8 +22,8 @@ class Index(BaseService):
         :param kwargs:
         :return Dict:
         """
-        index_chroma_db_service = IndexChromaDBService(self.chroma_client)
-        index_chroma_db_service.create_index(data.get("title"))
+        index_es_service = IndexESService(self.es_client)
+        await index_es_service.create_index(data.get("title"))
         index_db_service = IndexDBService(self.db_session)
         response = await index_db_service.insert_data(data)
         return response
@@ -50,8 +50,8 @@ class Index(BaseService):
         """
         index_db_service = IndexDBService(self.db_session)
         index_result = await index_db_service.delete_data(data)
-        index_chroma_db_service = IndexChromaDBService(self.chroma_client)
-        index_chroma_db_service.delete_index(index_result.get("title"))
+        index_es_service = IndexESService(self.es_client)
+        await index_es_service.delete_index(index_result.get("title"))
 
     async def update(self, data: Any, *args, **kwargs):
         """

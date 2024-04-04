@@ -6,7 +6,7 @@ from app.web.monitor.response import HealthResponse
 from app import constants
 from fastapi.requests import Request
 from app.services.db.dependency import get_db_session
-from app.services.chroma.dependency import get_chroma_client
+from app.services.es.dependency import get_es_client
 router = InferringRouter()
 
 
@@ -17,7 +17,7 @@ class Monitor:
         self,
         request: Request,
         db=Depends(get_db_session),
-        chroma_client = Depends(get_chroma_client)
+        es_client=Depends(get_es_client)
     ) -> HealthResponse:
         """
         Checks the health of a project.
@@ -25,7 +25,7 @@ class Monitor:
         It returns 200 if the project is healthy.
         """
         await db.connection()
-        chroma_client.heartbeat()
+        await es_client.ping()
 
         logger.info("This is sample log")
         return HealthResponse(

@@ -5,6 +5,7 @@ from tempfile import gettempdir
 from typing import Optional
 from pydantic import BaseSettings
 from yarl import URL
+
 TEMP_DIR = Path(gettempdir())
 
 
@@ -56,6 +57,9 @@ class Settings(BaseSettings):
     azure_api_version: str
     azure_endpoint: str
     azure_deployment: str
+
+    rank_model_path: str = ""
+    es_host_url: str = ""
 
     @property
     def db_url(self) -> URL:

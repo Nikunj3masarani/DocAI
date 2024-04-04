@@ -1,11 +1,14 @@
+import uuid
 from typing import Any, List, Dict
 from sqlalchemy.future import select
-from sqlalchemy import and_
+from sqlalchemy import and_, delete, cast, String
 from app import constants
 from app.web.base.db_service import DBService
 from app.web.common.schema import Documents as DocumentTable
 from app.web.common.schema import Index as IndexTable
 from app.exception.custom import CustomException
+from uuid import UUID
+
 
 class Documents(DBService):
     def __init__(self, db_client):
@@ -35,7 +38,24 @@ class Documents(DBService):
         pass
 
     async def delete_data(self, data: Any, *args, **kwargs) -> None:
-        pass
+        select_document_query = select(DocumentTable).where(cast(DocumentTable.document_uuid, String) == data)
+        document_result = await self.db_client.execute(select_document_query)
+        document_result = document_result.scalar_one_or_none()
+        if not document_result:
+            raise CustomException(constants.DOCUMENT_NOT_FOUND)
+        delete_document_query = delete(DocumentTable).where(cast(DocumentTable.document_uuid, String) == data)
+        _ = await self.db_client.execute(delete_document_query)
+
+        return
 
     async def get_all_data(self, data: Any, *args, **kwargs) -> List[Dict]:
-        pass
+        document_list_query = select(DocumentTable.document_uuid,
+                                     DocumentTable.file_name,
+                                     DocumentTable.file_ext,
+                                     DocumentTable.url,
+                                     DocumentTable.created_at,
+                                     DocumentTable.created_by).where(DocumentTable.index_uuid == data)
+
+        document_list_result = await self.db_client.execute(document_list_query)
+        document_list_result = list(document_list_result.all())
+        return document_list_result

@@ -3,7 +3,7 @@ import time
 import json
 import requests
 
-backend_url = os.getenv('BACKEND_URL')
+backend_url = os.getenv('BACKEND_URL', 'http://localhost:8080')
 
 
 def search(index_uuid, query):
