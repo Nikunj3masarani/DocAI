@@ -27,6 +27,7 @@ certifi==2022.9.24
 cfgv==3.3.1
 charset-normalizer==2.1.1
 chroma-haystack==0.15.0
+elasticsearch-haystack
 chroma-hnswlib==0.7.3
 chromadb==0.4.19
 click==8.1.3
