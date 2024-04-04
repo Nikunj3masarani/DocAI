@@ -10,7 +10,7 @@ from app.web.inference.db_service import Inference as InferenceDBService
 
 
 class Inference:
-    def __init__(self, db_client, query_embeddings_function, rank_function):
+    def __init__(self, db_client, query_embeddings_function=None, rank_function=None):
         self.db_client = db_client
         self.query_embeddings_function = query_embeddings_function
         self.rank_function = rank_function
@@ -53,3 +53,7 @@ class Inference:
         response_generator = inference_haystack_service.get_answer(chat_request_data.get('query'))
 
         return response_generator
+
+    async def get_chat_history(self):
+        inference_db_service = InferenceDBService(self.db_client)
+        return await inference_db_service.get_all_data({})
