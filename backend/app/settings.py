@@ -53,11 +53,6 @@ class Settings(BaseSettings):
 
     embedding_model_path: str = ""
 
-    azure_api_key: str
-    azure_api_version: str
-    azure_endpoint: str
-    azure_deployment: str
-
     rank_model_path: str = ""
     es_host_url: str = ""
 
