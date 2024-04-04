@@ -10,6 +10,8 @@ from app.middleware import profiler
 from app.helper.response_helper import BaseResponse
 from app.lifetime import register_startup_event, register_shutdown_event
 from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.cors import CORSMiddleware
+
 from pathlib import Path
 import logging.config
 
@@ -47,7 +49,15 @@ def get_app() -> FastAPI:
     register_startup_event(app)
     register_shutdown_event(app)
 
-    # Add middleware
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=['*'],
+        allow_credentials=False,
+        allow_methods=['*'],
+        allow_headers=['*'],
+
+    )
+
     app.add_middleware(middleware_class=profiler.ProfilerMiddleware)
 
     # Main router for the API.
