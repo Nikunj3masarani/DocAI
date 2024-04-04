@@ -7,8 +7,8 @@ from app.exception import CustomException
 from app.web.index.constants import IndexType
 from app import constants
 from sqlalchemy.future import select
-from sqlalchemy import delete
 from datetime import datetime
+from sqlalchemy import delete, subquery, func, or_, String, desc, outerjoin
 
 
 class Index(DBService):
@@ -85,22 +85,43 @@ class Index(DBService):
         result = await self.db_session.execute(delete_index_query)
         return index_result.__dict__
 
-    async def get_all_data(self, data: Any, *args, **kwargs) -> List[Dict]:
-        """
-        get list of user from SQL database.
-        :param data:
-        :param args:
-        :param kwargs:
-        :return:
-        """
+    async def get_all_data(self, data: Any, *args, **kwargs) -> Dict:
+
         select_index_list_query = select(IndexTable.index_uuid,
                                          IndexTable.title,
                                          IndexTable.description,
                                          IndexTable.created_at
                                          )
-        index_list_result = await self.db_session.execute(select_index_list_query)
+        if data.search:
+            search = f"%{data.search.lower()}%"
+            select_index_list_query = select_index_list_query.filter(or_(
+                IndexTable.title.ilike(search),
+                IndexTable.description.ilike(search),
+            ))
+
+        if data.sort_by and data.sort_order:
+            if data.sort_order.lower() == 'asc':
+                select_index_list_query = select_index_list_query.order_by(data.sort_by)
+            elif data.sort_order.lower() == 'desc':
+                select_index_list_query = select_index_list_query.order_by(desc(data.sort_by))
+
+        offset = (data.page_number - 1) * data.records_per_page
+        paginated_query = select_index_list_query.offset(offset).limit(data.records_per_page)
+
+        index_list_result = await self.db_session.execute(paginated_query)
         index_list_result = list(index_list_result.all())
-        return index_list_result
+
+        total_records_result = await self.db_session.execute(select(func.count()).select_from(select_index_list_query))
+        total_records = total_records_result.scalar_one_or_none()
+
+        return {
+            'data': index_list_result,
+            "pager": {
+                'page': data.page_number,
+                'per_page': data.records_per_page,
+                'total_records': total_records
+            }
+        }
 
     async def get_index_name(self, index_uuid):
         select_index_name_query = select(IndexTable.title).where(IndexTable.index_uuid == index_uuid)

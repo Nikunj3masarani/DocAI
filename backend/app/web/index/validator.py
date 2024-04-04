@@ -25,3 +25,11 @@ class CreateIndex(BaseModel):
             raise CustomException('Spaces are not allowed')
         return v
 
+
+class IndexList(BaseModel):
+    search: Optional[str] = None
+    page_number: Optional[int] = None
+    records_per_page: Optional[int] = None
+    sort_order: Optional[str] = None
+    sort_by: Optional[str] = None
+    show_all: bool
