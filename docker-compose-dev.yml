@@ -22,6 +22,8 @@ services:
       - discovery.type=single-node
       - xpack.security.enabled=false
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m -Des.network.tcp.connect_timeout=180s"
+      - "ES_INDEX_NUMBER_OF_SHARDS=1"
+      - "ES_INDEX_NUMBER_OF_REPLICAS=1"
     volumes:
       - elasticsearch_data:/usr/share/elasticsearch/data
     ports:
