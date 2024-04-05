@@ -170,4 +170,4 @@ demo/
 migration/models.json
 chroma_db_data/
 postgresql_data/
-elastic_data/
+elasticsearch_data/

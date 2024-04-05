@@ -3,16 +3,19 @@ from typing import Any, Dict
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.web.index.db_service import Index as IndexDBService
 from app.web.index.es_service import Index as IndexESService
+from app.settings import settings
+from elasticsearch import AsyncElasticsearch
 
 
 class Index(BaseService):
     def __init__(
             self,
             db_session: AsyncSession = None,
-            es_client=None
     ):
         self.db_session = db_session
-        self.es_client = es_client
+        self.es_client = AsyncElasticsearch(
+            hosts=settings.es_host_url
+        )
 
     async def create(self, data: Any, *args, **kwargs) -> Dict:
         """
