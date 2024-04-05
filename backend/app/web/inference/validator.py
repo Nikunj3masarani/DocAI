@@ -12,3 +12,6 @@ class ChatRequest(BaseModel):
     prompt_uuid: Optional[str]
     chat_uuid: str
 
+
+class UpdateChat(BaseModel):
+    title: str

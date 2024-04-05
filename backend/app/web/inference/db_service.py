@@ -1,6 +1,6 @@
 from typing import Any, List, Dict
 from sqlalchemy.future import select
-from sqlalchemy import and_
+from sqlalchemy import and_, delete
 from app import constants
 
 from app.web.base.db_service import DBService
@@ -39,14 +39,47 @@ class Inference(DBService):
         self.db_client.add(chat_history_obj)
         await self.db_client.commit()
 
-    async def get_data_by_id(self, _id: Any, *args, **kwargs) -> Dict:
-        pass
+    async def get_data_by_id(self, _id: Any, *args, **kwargs) -> []:
+        select_query = select(ChatTable).where(ChatTable.chat_uuid == _id)
+        chat_result = await self.db_client.execute(select_query)
+        chat = chat_result.scalar_one_or_none()
+        if not chat:
+            raise CustomException(message=constants.CHAT_NOT_EXISTS)
+
+        select_chat_history_query = select(ChatHistoryTable.chat_uuid,
+                                           ChatHistoryTable.user_message,
+                                           ChatHistoryTable.assistant_message,
+                                           ChatHistoryTable.message_uuid,
+                                           ChatHistoryTable.created_at,
+                                           ChatHistoryTable.feedback,
+                                           ChatHistoryTable.feedback_status).where(ChatHistoryTable.chat_uuid == _id)
+        chat_history_result = await self.db_client.execute(select_chat_history_query)
+        chat_history_result = list(chat_history_result.all())
+        return chat_history_result
 
     async def update_data(self, data: Any, *args, **kwargs) -> Dict:
-        pass
+        select_query = select(ChatTable).where(ChatTable.chat_uuid == data.get("chat_uuid"))
+        chat_result = await self.db_client.execute(select_query)
+        chat = chat_result.scalar_one_or_none()
+        if not chat:
+            raise CustomException(message=constants.CHAT_NOT_EXISTS)
+
+        chat.chat_title = data.get('title')
+        updated_chat = chat.__dict__
+        return updated_chat
 
     async def delete_data(self, data: Any, *args, **kwargs) -> None:
-        pass
+        select_chat_query = select(ChatTable).where(ChatTable.chat_uuid == data)
+        chat_result = await self.db_client.execute(select_chat_query)
+        chat_result = chat_result.first()
+        if not chat_result:
+            raise CustomException(constants.CHAT_NOT_EXISTS)
+        delete_chat_history_query = delete(ChatHistoryTable).where(ChatHistoryTable.chat_uuid == data)
+        delete_prompt_query = delete(ChatTable).where(ChatTable.chat_uuid == data)
+        _ = await self.db_client.execute(delete_chat_history_query)
+        _ = await self.db_client.execute(delete_prompt_query)
+
+        await self.db_client.commit()
 
     async def get_all_data(self, data: Any, *args, **kwargs) -> List[Dict]:
         select_chat_history_query = select(ChatTable.chat_uuid,
@@ -57,6 +90,5 @@ class Inference(DBService):
                                            ChatTable.created_by,
                                            ChatTable.index_uuid).join(ChatHistoryTable)
         chat_history_response = await self.db_client.execute(select_chat_history_query)
-        response = group_and_label_data([dict(d)for d in list(chat_history_response.all())])
-        return response
-
+        result = group_and_label_data(list(chat_history_response.all()))
+        return result

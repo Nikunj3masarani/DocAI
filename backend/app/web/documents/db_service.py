@@ -38,12 +38,12 @@ class Documents(DBService):
         pass
 
     async def delete_data(self, data: Any, *args, **kwargs) -> None:
-        select_document_query = select(DocumentTable).where(cast(DocumentTable.document_uuid, String) == data)
+        select_document_query = select(DocumentTable).where(DocumentTable.document_uuid == data)
         document_result = await self.db_client.execute(select_document_query)
         document_result = document_result.scalar_one_or_none()
         if not document_result:
             raise CustomException(constants.DOCUMENT_NOT_FOUND)
-        delete_document_query = delete(DocumentTable).where(cast(DocumentTable.document_uuid, String) == data)
+        delete_document_query = delete(DocumentTable).where(DocumentTable.document_uuid == data)
         _ = await self.db_client.execute(delete_document_query)
 
         return
