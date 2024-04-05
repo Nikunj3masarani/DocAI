@@ -20,7 +20,7 @@ services:
     image: elasticsearch:8.8.0
     environment:
       - discovery.type=single-node
-      - xpack.security.enabled=true
+      - xpack.security.enabled=false
       - bootstrap.memory_lock=true
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m -Des.network.tcp.connect_timeout=180s"
       - "ES_INDEX_NUMBER_OF_SHARDS=1"
