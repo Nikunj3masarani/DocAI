@@ -62,7 +62,8 @@ services:
       - xpack.security.enabled=false
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m -Des.network.tcp.connect_timeout=180s"
     volumes:
-      - elastic_data:/usr/share/elasticsearch/data
+      - elasticsearch_data:/usr/share/elasticsearch/data
+
     ports:
       - "9200:9200"
       - "9300:9300"
@@ -71,6 +72,8 @@ services:
       interval: 10s
       timeout: 10s
       retries: 3
+
+
 
 
   migration:
@@ -86,7 +89,11 @@ services:
       POSTGRES_PORT: 5432
 
 volumes:
-  elastic_data:
+  elasticsearch_data:
     driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/nikunj/PycharmProjects/DocAI/elasticsearch_data
   postgresql_data:
     driver: local
