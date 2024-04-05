@@ -186,3 +186,5 @@ wrapt==1.16.0
 yarl==1.8.1
 zipp==3.10.0
 accelerate
+websockets
+wsproto
