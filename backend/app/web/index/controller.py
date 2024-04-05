@@ -6,6 +6,7 @@ from app.web.index.service import Index as IndexService
 from app.web.index.validator import CreateIndex, IndexList
 from app.web.index.response import IndexResponse, IndexListResponse
 from app.services.db.dependency import get_db_session
+from app.services.es.dependency import get_es_client
 router = InferringRouter()
 
 
@@ -16,9 +17,10 @@ class Index:
         self,
         index_data: CreateIndex,
         db=Depends(get_db_session),
+        es_client=Depends(get_es_client)
 
     ) -> IndexResponse:
-        index_service = IndexService(db)
+        index_service = IndexService(db, es_client)
         index_data_dict = index_data.__dict__
         response = await index_service.create(index_data_dict)
         return IndexResponse(
@@ -46,9 +48,10 @@ class Index:
             self,
             index_uuid: str,
             db=Depends(get_db_session),
+            es_client=Depends(get_es_client)
 
     ):
-        index_service = IndexService(db)
+        index_service = IndexService(db, es_client)
         _ = await index_service.delete(index_uuid)
         return IndexResponse(
             payload={},

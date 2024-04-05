@@ -11,7 +11,7 @@ def init_es_client(app: FastAPI) -> None:  # pragma: no cover
     """
 
     app.state.es_client = AsyncElasticsearch(
-        hosts=settings.es_host_url
+        hosts=settings.es_host_url, timeout=60
 
     )
 
