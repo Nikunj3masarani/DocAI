@@ -19,12 +19,18 @@ DOCUMENT_UPLOADED = "Docments indexed successfully"
 DOCUMENT_TYPE_NOT_ALLOWED = "Document file type not allowed"
 DOCUMENTS_FETCHED_SUCCESSFULLY = "Documents fetched successfully"
 DOCUMENT_NOT_FOUND = "Document not found"
+DOCUMENT_DELETED_SUCCESSFULLY = "Document deleted successfully"
 
 # Model Messages
 MODEL_LIST_FETCH = "Models list fetched successfully"
 
 # Chat Messages
 CHAT_NOT_EXISTS = "Chat does not exists"
+CHAT_UPDATED = "Chat updated successfully"
+CHAT_FETCHED = "Chat fetched successfully"
+CHAT_DELETED = "Chat deleted successfully"
+CHAT_MESSAGES_FOUND = "Chat messages found successfully"
+
 
 # Prompt Messages
 PROMPT_ALREADY_EXISTS = "Prompt with the title already exists"

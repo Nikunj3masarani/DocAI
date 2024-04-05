@@ -57,3 +57,15 @@ class Inference:
     async def get_chat_history(self):
         inference_db_service = InferenceDBService(self.db_client)
         return await inference_db_service.get_all_data({})
+
+    async def update_chat(self, data):
+        inference_db_service = InferenceDBService(self.db_client)
+        return await inference_db_service.update_data(data)
+
+    async def delete_chat(self, chat_uuid):
+        inference_db_service = InferenceDBService(self.db_client)
+        return await inference_db_service.delete_data(chat_uuid)
+
+    async def get_chat_messages(self, chat_uuid):
+        inference_db_service = InferenceDBService(self.db_client)
+        return await inference_db_service.get_data_by_id(chat_uuid)

@@ -1,25 +1,46 @@
 import pandas as pd
 import numpy as np
+from datetime import datetime, timedelta
 
 
-def custom_label(group):
-    today = pd.Timestamp.today()
-    yesterday = today - pd.Timedelta(days=1)
-    last_week = today - pd.Timedelta(weeks=1)
-    last_month = today - pd.Timedelta(days=30)
+def custom_label(input_date):
+    # Get today's date
+    today = datetime.now().date()
 
-    if group.index[0] >= last_month:
-        return 'Last Month'
-    elif group.index[0] >= last_week:
-        return 'Previous 7 Days'
-    elif group.index[0] >= yesterday:
-        return 'Yesterday'
-    else:
+    # Get the date 1 day ago
+    yesterday = today - timedelta(days=1)
+
+    # Get the date 7 days ago
+    previous_7_days = today - timedelta(days=7)
+
+    # Get the date 30 days ago
+    previous_30_days = today - timedelta(days=30)
+
+    # Get the date 180 days ago
+    previous_180_days = today - timedelta(days=180)
+
+    # Convert input_date to date (ignoring the time component)
+    input_date = input_date.date()
+
+    # Categorize the date
+    if input_date == today:
         return 'Today'
+    elif input_date == yesterday:
+        return 'Yesterday'
+    elif input_date > previous_7_days:
+        return 'Previous 7 Days'
+    elif input_date > previous_30_days:
+        return 'Previous 30 Days'
+    elif input_date > previous_180_days:
+        return 'Previous 180 Days'
+    else:
+        return 'More than 180 Days Ago'
 
 
 def group_and_label_data(dataset):
-    df = pd.DataFrame(dataset)
-    df.created_at = df.index.map(lambda x: np.datetime64(x, 'ns').astype(np.int64))
-    df_grouped = df.groupby(pd.Grouper(key='created_at', freq='D')).apply(custom_label)
-    return df_grouped.to_dict()
+    if dataset:
+        df = pd.DataFrame(dataset)
+        df['label'] = df.created_at.apply(custom_label)
+        grouped = df.groupby('label').apply(lambda x: x.drop('label', axis=1).to_dict(orient='records')).to_dict()
+        return grouped
+    return {}

@@ -49,6 +49,6 @@ class Documents:
         _ = await document_service.delete_documents(document_uuid=document_uuid)
         return DocumentResponse(
             payload={},
-            message=constants.DOCUMENTS_FETCHED_SUCCESSFULLY,
+            message=constants.DOCUMENT_DELETED_SUCCESSFULLY,
             status=status.HTTP_200_OK,
         )
