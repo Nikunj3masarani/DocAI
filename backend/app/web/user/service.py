@@ -122,7 +122,6 @@ class UserService:
         reset_code = str(uuid.uuid4())
 
         # Send reset email
-        # send_email(user_obj.email, "Reset Password", "Reset code - {}".format(reset_code))
-        # import pdb; pdb.set_trace()
+        send_email(user_obj.email, "Reset Password", "Reset code - {}".format(reset_code))
         # Save reset code
         await user_db_service.insert_reset_code(user_obj.user_uuid, reset_code)

@@ -37,7 +37,6 @@ class UserController:
             user_creds: UserCreds,
             db=Depends(get_db_session)
     ) -> LoginResponse:
-        # import pdb; pdb.set_trace();
         user_service = UserService(db)
         user_data_dict = user_creds.__dict__
         token = await user_service.get_access_token(user_data_dict)
