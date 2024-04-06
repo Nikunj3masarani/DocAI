@@ -57,6 +57,14 @@ class Settings(BaseSettings):
     azure_endpoint: str
     azure_deployment: str
 
+    # SendGrid
+    email_api_key: str
+    from_email: str
+
+    # JWT
+    jwt_secret_key: str
+    jwt_algo: str = "HS256"
+
     @property
     def db_url(self) -> URL:
         """

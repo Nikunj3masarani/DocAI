@@ -6,3 +6,10 @@ class DocumentUploadStatus(Enum):
     INDEXING = 2
     SUCCESS = 3
     FAILED = 4
+
+
+class UserStatus(Enum):
+
+    INVITED = "INVITED"
+    INVITE_REJECTED = "INVITE_REJECTED"
+    ONBOARDED = "ONBOARDED"

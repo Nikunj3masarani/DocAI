@@ -1,8 +1,10 @@
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
-from app.services.db.base import Base
-from sqlalchemy import Column, Integer, String, ForeignKey, Text, TIMESTAMP, ARRAY
+from sqlalchemy import Column, Integer, String, ForeignKey, Text, TIMESTAMP, ARRAY, Enum
 from sqlalchemy.sql import func
+
+from app.constants.constants import UserStatus
+from app.services.db.base import Base
 
 
 class Prompt(Base):
@@ -45,5 +47,25 @@ class Documents(Base):
     created_by = Column(String(255), server_default='Admin')
 
 
-Prompt.indexes = relationship("Index", back_populates="prompt")
+class Users(Base):
+    __tablename__ = "users"
 
+    user_uuid = Column(UUID(as_uuid=True), primary_key=True)
+    email = Column(String(255))
+    user_name = Column(String(255))
+    status = Column(Enum(UserStatus))
+    password = Column(String(255))
+    created_at = Column(TIMESTAMP, server_default=func.current_timestamp())
+    updated_at = Column(TIMESTAMP, server_default=func.current_timestamp())
+    invited_at = Column(TIMESTAMP, server_default=func.current_timestamp())
+
+
+class UserPasswordResetCodes(Base):
+    __tablename__ = "user_password_reset_codes"
+
+    code_uuid = Column(UUID(as_uuid=True), primary_key=True)
+    user_uuid = Column(UUID(as_uuid=True), ForeignKey('users.user_uuid'))
+    reset_code = Column(String(255))
+
+
+Prompt.indexes = relationship("Index", back_populates="prompt")

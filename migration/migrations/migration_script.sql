@@ -32,3 +32,23 @@ CREATE TABLE IF NOT EXISTS documents (
     created_by VARCHAR(255) DEFAULT 'Admin'
 );
 
+
+CREATE TABLE IF NOT EXISTS users (
+    user_uuid UUID PRIMARY KEY,
+    email VARCHAR(255),
+    user_name VARCHAR(255),
+    status VARCHAR(100),
+    password VARCHAR(255),
+    invited_by UUID,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    invited_at TIMESTAMP DEFAULT null,
+    foreign key (invited_by) references users(user_uuid)
+);
+
+
+CREATE TABLE IF NOT EXISTS user_password_reset_codes (
+    code_uuid UUID PRIMARY KEY,
+    user_uuid UUID REFERENCES users(user_uuid),
+    reset_code VARCHAR(255)
+);
