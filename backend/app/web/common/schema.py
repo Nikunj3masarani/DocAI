@@ -12,7 +12,7 @@ class Prompt(Base):
     prompt_uuid = Column(UUID(as_uuid=True), primary_key=True)
     title = Column(String(255))
     content = Column(Text)
-    created_at = Column(DateTime)
+    created_at = Column(DateTime, default=datetime.utcnow)
     status = Column(String(50))
 
 
@@ -22,7 +22,7 @@ class Index(Base):
     index_uuid = Column(UUID(as_uuid=True), primary_key=True)
     title = Column(String(255))
     description = Column(Text)
-    created_at = Column(DateTime)
+    created_at = Column(DateTime, default=datetime.utcnow)
     created_by = Column(String(255))
     status = Column(String(50))
     index_type = Column(String(50))
@@ -71,6 +71,7 @@ class Chat(Base):
     index_uuid = Column(UUID(as_uuid=True), ForeignKey('indexes.index_uuid'))
     model_uuid = Column(UUID(as_uuid=True), ForeignKey('models.model_uuid'))
     prompt_uuid = Column(UUID(as_uuid=True), ForeignKey('prompts.prompt_uuid'), nullable=True)
+    chat_history = relationship("ChatHistory", cascade="delete", backref="chat")
 
 
 class ChatHistory(Base):
@@ -83,3 +84,38 @@ class ChatHistory(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
     feedback_status = Column(Integer)
     feedback = Column(String)
+
+
+class Invitation(Base):
+    __tablename__ = 'invitations'
+
+    invite_uuid = Column(UUID(as_uuid=True), primary_key=True)
+    status = Column(Integer)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    token = Column(Text)
+    invite_action = Column(Integer)
+    invited_by = Column(UUID(as_uuid=True))
+    user_uuid = Column(UUID(as_uuid=True), ForeignKey('users.user_uuid'))
+
+
+class User(Base):
+    __tablename__ = 'users'
+
+    user_uuid = Column(UUID(as_uuid=True), primary_key=True)
+    is_active = Column(Integer)
+    full_name = Column(String(255))
+    image_url = Column(Text, default=None)
+    password = Column(String(255))
+    email = Column(String(255))
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow)
+
+
+class IndexUserMapping(Base):
+    __tablename__ = 'index_user_mapping'
+
+    uuid = Column(UUID(as_uuid=True), primary_key=True)
+    user_uuid = Column(UUID(as_uuid=True), nullable=False)
+    index_uuid = Column(UUID(as_uuid=True), nullable=False)
+    role = Column(Integer, nullable=False)
+    created_at = Column(DateTime, nullable=False, default=datetime.utcnow)

@@ -2,6 +2,7 @@ from pydantic import BaseModel, constr, validator
 from typing import Optional, List
 import re
 from app.exception.custom import CustomException
+from app import constants
 
 
 class CreateIndex(BaseModel):
@@ -33,3 +34,14 @@ class IndexList(BaseModel):
     sort_order: Optional[str] = None
     sort_by: Optional[str] = None
     show_all: bool
+
+
+class IndexRemoveUser(BaseModel):
+    index_uuid: str
+    remove_user_uuid: str
+
+
+class IndexInviteUser(BaseModel):
+    index_uuid: str
+    email: str
+    role: constants.IndexRole
