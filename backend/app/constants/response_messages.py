@@ -13,9 +13,15 @@ INDEX_FOUND = "Index data found"
 INDEX_NOT_FOUND = "Index not found"
 INDEX_DELETED = "Index deleted successfully"
 INDEX_LIST_FETCHED = "Index list fetch successfully"
+INDEX_CAN_NOT_DELETED = "You can not delete this index"
+INDEX_USERS_FETCHED = "Index users fetched successfully"
+INDEX_USER_REMOVED = "Index user removed successfully"
+INDEX_USER_CAN_NOT_REMOVED = "You can not remove this user"
+INDEX_USER_CAN_NOT_REMOVE_SELF = "You can not remove yourself from the index"
+INDEX_USER_INVITED = "User invited successfully for the index"
 
 # Document Messages
-DOCUMENT_UPLOADED = "Docments indexed successfully"
+DOCUMENT_UPLOADED = "Docments will be indexed soon."
 DOCUMENT_TYPE_NOT_ALLOWED = "Document file type not allowed"
 DOCUMENTS_FETCHED_SUCCESSFULLY = "Documents fetched successfully"
 DOCUMENT_NOT_FOUND = "Document not found"
@@ -40,3 +46,22 @@ PROMPT_FOUND = "Prompt found successfully"
 PROMPT_DELETED = "Prompt deleted successfully"
 PROMPT_LIST_FETCHED = "Prompt list fetched successfully"
 PROMPT_UPDATED = "Prompt updated successfully"
+
+# User Messages
+USER_INVITED = "User invited successfully"
+USER_EXISTS = "User with this email already exists"
+USER_ALREADY_INVITED = "This user was already invited"
+USER_DOES_NOT_EXISTS = "User with this email does not exists !"
+BAD_PASSWORD = "email or password is wrong!"
+USER_LOGGED_IN = "User logged-in successfully"
+USER_NOT_ACTIVE = "User is not onboarded please check your email"
+USER_ONBOARDED_SUCCESSFULLY = "User onboarded successfully"
+USER_INVALID_INVITATION = "Invalid invitation"
+USER_ALREADY_ACTIVE = "Invitation already accepted."
+FORGET_PASSWORD = "You will get email to reset password"
+USER_NOT_ONBOARDED = "User is not active"
+USER_FETCHED = "User fetched successfully"
+
+
+
+

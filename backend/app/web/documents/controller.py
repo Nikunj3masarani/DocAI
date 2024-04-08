@@ -1,4 +1,4 @@
-from fastapi import Depends, status
+from fastapi import Depends, status, BackgroundTasks
 from app import constants
 from fastapi_utils.cbv import cbv
 from fastapi_utils.inferring_router import InferringRouter
@@ -18,17 +18,18 @@ class Documents:
     @router.post("/upload")
     async def upload_document(
             self,
+            background_task: BackgroundTasks,
             index_uuid: str,
             documents: List[UploadFile],
             db=Depends(get_db_session),
             document_embeddings=Depends(get_documents_embedding_function)
     ) -> DocumentResponse:
         document_service = DocumentService(db, document_embeddings)
-        response = await document_service.index_documents(documents, index_uuid=index_uuid)
+        background_task.add_task(document_service.index_documents,(documents, index_uuid))
         return DocumentResponse(
-            payload=response,
+            payload="",
             message=constants.DOCUMENT_UPLOADED,
-            status=status.HTTP_200_OK,
+            status=status.HTTP_201_CREATED,
         )
 
     @router.post('/list')

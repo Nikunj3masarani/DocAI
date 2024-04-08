@@ -55,6 +55,8 @@ class Settings(BaseSettings):
 
     rank_model_path: str = ""
     es_host_url: str = ""
+    jwt_secret_key: str = ""
+    jwt_algo: str = "HS256"
 
     @property
     def db_url(self) -> URL:

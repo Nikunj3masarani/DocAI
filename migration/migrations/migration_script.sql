@@ -46,7 +46,6 @@ CREATE TABLE IF NOT EXISTS documents (
 );
 
 
-
 CREATE TABLE IF NOT EXISTS chat (
     chat_uuid UUID PRIMARY KEY,
     chat_title VARCHAR,
@@ -65,4 +64,34 @@ CREATE TABLE IF NOT EXISTS chat_history (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     feedback_status INTEGER,
     feedback VARCHAR
+);
+
+CREATE TABLE IF NOT EXISTS invitations (
+    invite_uuid UUID PRIMARY KEY,
+    status INTEGER,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    token TEXT,
+    invite_action INTEGER,
+    invited_by UUID,
+    user_uuid UUID REFERENCES users(user_uuid)
+);
+
+
+CREATE TABLE IF NOT EXISTS users (
+    user_uuid UUID PRIMARY KEY,
+    is_active INTEGER,
+    full_name VARCHAR(255),
+    image_url TEXT DEFAULT NULL,
+    password VARCHAR(255),
+    email varchar(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS index_user_mapping (
+      uuid UUID PRIMARY KEY,
+      user_uuid UUID REFERENCES users(user_uuid),
+      index_uuid UUID REFERENCES indexes(index_uuid),
+      role INTEGER,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 );

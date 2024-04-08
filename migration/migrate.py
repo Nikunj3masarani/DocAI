@@ -1,9 +1,15 @@
+import datetime
 import uuid
 
 import psycopg2
 import os
 import json
+from passlib.context import CryptContext
 
+PWD_CONTEXT = CryptContext(schemes=['bcrypt'], deprecated='auto')
+
+def get_password_hash(password):
+    return PWD_CONTEXT.hash(password)
 
 # Function to execute migration SQL
 def run_migration():
@@ -23,8 +29,28 @@ def run_migration():
             cursor.execute(migration_sql)
 
         conn.commit()
+
         print('Migration completed successfully.')
 
+        insert_user_query = f'''INSERT INTO users (user_uuid,
+                                                   is_active,
+                                                   full_name,
+                                                   image_url, 
+                                                   password,
+                                                   created_at,
+                                                   updated_at,
+                                                   email) 
+                                                   VALUES ('{uuid.uuid4()}',
+                                                                      '{1}',
+                                                                      '{"Admin"}',
+                                                                      '{""}',
+                                                                      '{get_password_hash("admin")}',
+                                                                      '{datetime.datetime.utcnow()}',
+                                                                      '{datetime.datetime.utcnow()}',
+                                                                      '{"admin.docai@gmail.com"}');
+                                        '''
+        cursor.execute(insert_user_query)
+        conn.commit()
         with open(os.path.join(os.getcwd(), 'models.json'), 'r') as models_json_file:
             models_data = json.loads(models_json_file.read())
             for model in models_data:
