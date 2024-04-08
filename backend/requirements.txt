@@ -188,3 +188,5 @@ zipp==3.10.0
 accelerate
 websockets
 wsproto
+passlib==1.7.4
+sendgrid==6.11.0
