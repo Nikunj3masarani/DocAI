@@ -2,11 +2,11 @@ from fastapi import Depends, status
 from app import constants
 from fastapi_utils.cbv import cbv
 from fastapi_utils.inferring_router import InferringRouter
-from fastapi.responses import StreamingResponse
 from app.services.db.dependency import get_db_session
 from app.web.prompts.service import Prompt as PromptService
 from app.web.prompts.response import PromptResponse, PromptListResponse
 from app.web.prompts.validator import CreatePrompt, PromptList, UpdatePrompt
+from app.middleware.auth import AuthBearer
 router = InferringRouter()
 
 
@@ -17,6 +17,7 @@ class Prompts:
             self,
             prompt: CreatePrompt,
             db=Depends(get_db_session),
+            user=Depends(AuthBearer())
     ):
         prompt_service = PromptService(db)
         prompt_data = prompt.__dict__
@@ -32,6 +33,7 @@ class Prompts:
             self,
             prompt_uuid: str,
             db=Depends(get_db_session),
+            user=Depends(AuthBearer())
     ):
         prompt_service = PromptService(db)
         prompt_response = await prompt_service.get(prompt_uuid)
@@ -46,6 +48,7 @@ class Prompts:
             self,
             prompt_uuid: str,
             db=Depends(get_db_session),
+            user=Depends(AuthBearer())
     ):
         prompt_service = PromptService(db)
         prompt_response = await prompt_service.delete(prompt_uuid)
@@ -61,6 +64,7 @@ class Prompts:
             prompt_uuid: str,
             prompt_data: UpdatePrompt,
             db=Depends(get_db_session),
+            user=Depends(AuthBearer())
     ):
         prompt_service = PromptService(db)
         update_prompt_data = prompt_data.__dict__
@@ -78,6 +82,7 @@ class Prompts:
             self,
             data: PromptList,
             db=Depends(get_db_session),
+            user=Depends(AuthBearer())
     ):
         prompt_service = PromptService(db)
         prompt_response = await prompt_service.get_list(data)

@@ -1,10 +1,6 @@
 import uuid
-from functools import partial
-import asyncio
-import anyio
 from app.web.index.db_service import Index as IndexDBService
 from app.web.inference.haystack_service import Inference as InferenceHaystackService
-from app.web.common.chroma_document_store import ChromaDocumentStore
 from app.web.models.db_service import Model as ModelDBService
 from app.web.inference.db_service import Inference as InferenceDBService
 
@@ -21,7 +17,7 @@ class Inference:
         model_details = await model_db_service.get_data_by_id(chat_request_data.get("model_uuid"))
 
         index_db_service = IndexDBService(self.db_client)
-        index_name = await index_db_service.get_index_name(chat_request_data.get("index_uuid"))
+        index_name = await index_db_service.get_index_name(chat_request_data)
 
         inference_db_service = InferenceDBService(self.db_client)
 
@@ -54,18 +50,18 @@ class Inference:
 
         return response_generator
 
-    async def get_chat_history(self):
+    async def get_chat_history(self, user_uuid):
         inference_db_service = InferenceDBService(self.db_client)
-        return await inference_db_service.get_all_data({})
+        return await inference_db_service.get_all_data({'user_uuid': user_uuid})
 
     async def update_chat(self, data):
         inference_db_service = InferenceDBService(self.db_client)
         return await inference_db_service.update_data(data)
 
-    async def delete_chat(self, chat_uuid):
+    async def delete_chat(self, data):
         inference_db_service = InferenceDBService(self.db_client)
-        return await inference_db_service.delete_data(chat_uuid)
+        return await inference_db_service.delete_data(data)
 
-    async def get_chat_messages(self, chat_uuid):
+    async def get_chat_messages(self, data):
         inference_db_service = InferenceDBService(self.db_client)
-        return await inference_db_service.get_data_by_id(chat_uuid)
+        return await inference_db_service.get_data_by_id(data)

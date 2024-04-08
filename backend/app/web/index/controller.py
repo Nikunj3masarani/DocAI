@@ -3,7 +3,7 @@ from app import constants
 from fastapi_utils.cbv import cbv
 from fastapi_utils.inferring_router import InferringRouter
 from app.web.index.service import Index as IndexService
-from app.web.index.validator import CreateIndex, IndexList, IndexRemoveUser, IndexInviteUser
+from app.web.index.validator import CreateIndex, IndexList, IndexRemoveUser, IndexInviteUser, IndexUserUpdate
 from app.web.index.response import IndexResponse, IndexListResponse, IndexUserResponse
 from app.services.db.dependency import get_db_session
 from app.services.es.dependency import get_es_client
@@ -149,15 +149,15 @@ class Index:
     @router.post('/users/invite/update')
     async def add_index_user(
             self,
-            invite_user_data: IndexInviteUser,
+            invite_update_data: IndexUserUpdate,
             db=Depends(get_db_session)
     ):
-        index_data = invite_user_data.__dict__
+        invite_update_data = invite_update_data.__dict__
         index_service = IndexService(db)
 
-        _ = await index_service.index_invite_user(index_data)
+        _ = await index_service.index_invite_user_update(invite_update_data)
         return IndexResponse(
             payload={},
-            message=constants.INDEX_USER_INVITED,
+            message=constants.INDEX_USER_UPDATE,
             status=status.HTTP_200_OK,
         )

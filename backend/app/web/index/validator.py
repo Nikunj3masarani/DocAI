@@ -45,3 +45,11 @@ class IndexInviteUser(BaseModel):
     index_uuid: str
     email: str
     role: constants.IndexRole
+
+
+class IndexUserUpdate(BaseModel):
+    token: str
+    user_uuid: str
+    status: constants.InvitationStatus
+    index_uuid: str
+

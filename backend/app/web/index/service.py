@@ -56,4 +56,11 @@ class Index(BaseService):
 
     async def index_invite_user(self, data: Any, *args, **kwargs):
         index_db_service = IndexDBService(self.db_session)
-        return await index_db_service.invite_user_for_index(data)
+        invitation_obj = await index_db_service.invite_user_for_index(data)
+        # todo send index invitation mail
+        return {}
+
+    async def index_invite_user_update(self, data: Any, *args, **kwargs):
+        index_db_service = IndexDBService(self.db_session)
+        invitation_obj = await index_db_service.index_user_invite_status_update(data)
+        return {}

@@ -3,7 +3,6 @@ PROFILE_CREATED_SUCCESS = "User profile created successfully"
 PROFILE_GET_SUCCESS = "User Profile found successfully."
 SOMETHING_WENT_WRONG = "Something went wrong."
 USER_ALREADY_EXISTS = "User with this name already exists"
-USER_NOT_EXISTS = "User does not exists."
 VALIDATION_ERROR = "Validation Error"
 
 # Index Messages
@@ -19,6 +18,9 @@ INDEX_USER_REMOVED = "Index user removed successfully"
 INDEX_USER_CAN_NOT_REMOVED = "You can not remove this user"
 INDEX_USER_CAN_NOT_REMOVE_SELF = "You can not remove yourself from the index"
 INDEX_USER_INVITED = "User invited successfully for the index"
+INDEX_USER_UPDATE = "Index user invite status updated"
+INDEX_CANT_ACCESS = "You can not access this index"
+
 
 # Document Messages
 DOCUMENT_UPLOADED = "Docments will be indexed soon."
@@ -26,6 +28,8 @@ DOCUMENT_TYPE_NOT_ALLOWED = "Document file type not allowed"
 DOCUMENTS_FETCHED_SUCCESSFULLY = "Documents fetched successfully"
 DOCUMENT_NOT_FOUND = "Document not found"
 DOCUMENT_DELETED_SUCCESSFULLY = "Document deleted successfully"
+DOCUMENT_CAN_NOT_DELETED = "You can not delete document"
+
 
 # Model Messages
 MODEL_LIST_FETCH = "Models list fetched successfully"
@@ -61,6 +65,7 @@ USER_ALREADY_ACTIVE = "Invitation already accepted."
 FORGET_PASSWORD = "You will get email to reset password"
 USER_NOT_ONBOARDED = "User is not active"
 USER_FETCHED = "User fetched successfully"
+USER_NOT_EXISTS = "User does not exists please onboard first."
 
 
 
