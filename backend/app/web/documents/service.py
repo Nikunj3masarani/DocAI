@@ -19,7 +19,7 @@ class Documents:
         }
         document_db_service = DocumentsDBService(self.db_client)
         index_db_service = IndexDBService(self.db_client)
-        index_name = await index_db_service.get_index_name(kwargs.get("index_uuid"))
+        index_name = await index_db_service.get_index_name(kwargs)
 
         document_haystack_service = DocumentHaystackService(index_name, self.document_embedding_function)
 
@@ -49,12 +49,12 @@ class Documents:
 
         return {"status": response_messages}
 
-    async def get_all_documents(self, index_uuid):
+    async def get_all_documents(self, data):
         document_db_service = DocumentsDBService(self.db_client)
-        return await document_db_service.get_all_data(index_uuid)
+        return await document_db_service.get_all_data(data)
 
-    async def delete_documents(self, document_uuid):
+    async def delete_documents(self, document_delete_data):
         document_db_service = DocumentsDBService(self.db_client)
-        is_deleted = await document_db_service.delete_data(document_uuid)
+        is_deleted = await document_db_service.delete_data(document_delete_data)
         print(is_deleted)
         return {}

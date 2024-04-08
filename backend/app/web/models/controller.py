@@ -6,7 +6,7 @@ from fastapi.responses import StreamingResponse
 from app.services.db.dependency import get_db_session
 from app.web.models.service import Model as ModelService
 from app.web.models.response import ModelListResponse
-
+from app.middleware.auth import AuthBearer
 router = InferringRouter()
 
 
@@ -16,8 +16,10 @@ class Model:
     async def get_all_models(
             self,
             db=Depends(get_db_session),
+            user=Depends(AuthBearer())
     ):
         model_service = ModelService(db)
+
         model_list = await model_service.get_model_list()
         return ModelListResponse(
             payload=model_list,

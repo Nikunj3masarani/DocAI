@@ -7,6 +7,7 @@ from app.web.common.schema import Documents as DocumentTable
 from app.web.common.schema import IndexUserMapping as IndexUserMappingTable
 from app.web.common.schema import Chat as ChatTable
 from app.web.common.schema import User as UserTable
+from app.web.common.schema import Invitation as InvitationTable
 from app.exception import CustomException
 from app.web.index.constants import IndexType
 from app import constants
@@ -125,8 +126,13 @@ class Index(DBService):
             }
         }
 
-    async def get_index_name(self, index_uuid):
-        select_index_name_query = select(IndexTable.title).where(IndexTable.index_uuid == index_uuid)
+    async def get_index_name(self, data):
+        select_index_name_query = select(IndexTable.title).join(IndexUserMappingTable,
+                                                                IndexTable.index_uuid == IndexUserMappingTable.index_uuid
+                                                                ).where(IndexTable.index_uuid == data.get('index_uuid'),
+                                                                        IndexUserMappingTable.user_uuid == data.get(
+                                                                            'user_uuid'))
+
         select_index_name_result = await self.db_session.execute(select_index_name_query)
         select_index_name_result = select_index_name_result.scalar_one_or_none()
         if not select_index_name_result:
@@ -156,9 +162,27 @@ class Index(DBService):
         elif index_result.role != constants.IndexRole.OWNER:
             raise CustomException(message=constants.INDEX_USER_CAN_NOT_REMOVED)
         remove_index_user_query = delete(IndexUserMappingTable).where(
-                                IndexUserMappingTable.user_uuid == data.get('remove_user_uuid'),
-                                IndexUserMappingTable.index_uuid == data.get('index_uuid'))
+            IndexUserMappingTable.user_uuid == data.get('remove_user_uuid'),
+            IndexUserMappingTable.index_uuid == data.get('index_uuid'))
         _ = await self.db_session.execute(remove_index_user_query)
 
     async def invite_user_for_index(self, data):
+        select_index_query = select(UserTable).where(UserTable.email == data.get('email'))
+        select_user_result = await self.db_session.execute(select_index_query)
+        select_user_result = select_user_result.first()
+        if not select_user_result:
+            raise CustomException(constants.USER_NOT_EXISTS)
+
+        invitation_obj = InvitationTable()
+        invitation_obj.invited_by = data.get('user_uuid')
+        invitation_obj.token = str(uuid.uuid4())
+        invitation_obj.invite_uuid = uuid.uuid4()
+        invitation_obj.created_at = datetime.utcnow()
+        invitation_obj.status = constants.InvitationStatus.SENT
+        invitation_obj.invite_action = constants.UserInviteAction.INDEX
+        self.db_session.add(invitation_obj)
+        await self.db_session.commit()
+        return invitation_obj.__dict__
+
+    async def index_user_invite_status_update(self, data):
         pass

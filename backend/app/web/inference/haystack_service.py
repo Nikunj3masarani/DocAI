@@ -14,7 +14,7 @@ class Inference:
         self.prompt_builder = PromptBuilder(template=constants.RAG_PROMPT)
         self.query_embeddings_function = query_embeddings_function
         self.model_details = model_details
-        document_store = ElasticsearchDocumentStore(hosts=settings.es_host_url, index=index_name)
+        document_store = ElasticsearchDocumentStore(hosts=settings.es_host_url, index=index_name.lower())
         self.document_query_retriever = ElasticsearchBM25Retriever(document_store=document_store)
         self.document_embeddings_retriever = ElasticsearchEmbeddingRetriever(document_store=document_store)
         self.document_joiner = DocumentJoiner()
