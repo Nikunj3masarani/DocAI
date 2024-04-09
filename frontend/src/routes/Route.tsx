@@ -1,9 +1,8 @@
 import { Navigate, RouteObject, createBrowserRouter } from 'react-router-dom';
 import { ROUTE } from '@docAi-app/utils/constants/Route.constant';
-import { ForgotPassword, Login, PageNotFound, ResetPassword } from '@docAi-app/pages';
-import { AuthContainer, AuthRoute, ErrorComponent, MainContainer } from '@docAi-app/components';
+import { Chat, ForgotPassword, IndexList, Login, PageNotFound, ResetPassword } from '@docAi-app/pages';
+import { AuthContainer, AuthRoute, ErrorComponent, MainContainer, UpdateIndex } from '@docAi-app/components';
 import { Search } from '@docAi-app/pages/Search';
-import { Models } from '@docAi-app/pages/Models';
 
 const errorElement = {
     errorElement: <ErrorComponent />,
@@ -39,8 +38,18 @@ const PRIVATE_ROUTES: RouteObject[] = [
         ...errorElement,
     },
     {
-        path: `${ROUTE.MODELS}`,
-        element: <Models />,
+        path: `${ROUTE.INDEX_LIST}`,
+        element: <IndexList />,
+        ...errorElement,
+    },
+    {
+        path: `${ROUTE.INDEX_LIST}/:${ROUTE.INDEX_ID}`,
+        element: <UpdateIndex />,
+        ...errorElement,
+    },
+    {
+        path: `${ROUTE.CHAT}/:${ROUTE.CHAT_ID}`,
+        element: <Chat />,
         ...errorElement,
     },
 ];

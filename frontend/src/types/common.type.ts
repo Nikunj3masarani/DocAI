@@ -13,3 +13,19 @@ export type IconType = {
     opacity?: number | string;
     props?: any;
 };
+
+export interface FilesUpload extends FileList {
+    key: string;
+}
+
+export type OptionType = {
+    value: number | string;
+    label: string;
+};
+
+export interface Option {
+    label: string;
+    value: string;
+}
+
+export type HeaderAction = 'Create Brain' | 'Add Knowledge';

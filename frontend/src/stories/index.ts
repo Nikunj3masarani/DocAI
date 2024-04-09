@@ -1,4 +1,6 @@
 export { CircularLoader } from './components/CircularLoader';
+export { InputWithSelect } from '@docAi-app/stories/components/InputWithSelect';
+export { InputChips } from './components/InputChips';
 export { InputField } from './components/InputField';
 export { ProgressBar } from './components/ProgressBar';
 export { Button } from './components/Button';
@@ -10,3 +12,9 @@ export { Tooltip } from './components/Tooltip';
 export { NoDataFound } from './components/NoDataFound';
 export { Pagination } from './components/Pagination';
 export { SortBy } from './components/SortBy';
+export { Dialog } from './components/Dialog';
+export { TextArea } from './components/Textarea';
+export { AsyncSearchSelect } from './components/AsyncSearchSelect';
+export { TabComponent } from './components/Tab';
+export { Accordion, AccordionSummary, AccordionDetails } from './components/Accordion';
+export { ThreeDotItemMenu } from './components/Menu';

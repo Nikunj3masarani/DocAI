@@ -31,13 +31,17 @@ export const StyledList = styled(List)`
     }
     .navLink {
         color: ${({ theme }) => theme.colors.secondary};
+        background-color: ${({ theme }) => theme.colors.transparent};
+        display: flex;
+        align-items: center;
+        gap: 10px;
         font-size: 1.5rem;
         font-weight: 400;
         padding: 1.2rem 1.5rem;
 
         &.active {
-            background: ${({ theme }) => theme.colors.mercury};
-            border-radius: 0.8rem;
+            background: ${({ theme }) => theme.colors.mercury} !important;
+            border-radius: 0.8rem !important;
             width: 100%;
         }
         &:hover {

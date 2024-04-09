@@ -10,51 +10,52 @@ import {
     Tooltip,
     NoDataFound,
     ConfirmationPopup,
-    SortBy,
     Select,
     OverflowToolTip,
 } from '@docAi-app/stories';
-import { AddUpdatePrompt } from '../AddUpdatePrompt';
 import { ActionButton } from '../ActionButton';
-import { Item } from '@docAi-app/types/common.type';
 // import { copyHandler, highlightSearchedWord } from '@patent-app/utils/helpers/common.helper';
-import {
-    PAGINATION_OPTIONS,
-    PROMPT_SORT_BY_OPTIONS,
-    PROMPT_SORT_BY_PARAMS,
-    TIMEOUT,
-} from '@docAi-app/utils/constants/common.constant';
+import { PAGINATION_OPTIONS, TIMEOUT } from '@docAi-app/utils/constants/common.constant';
 import Icons from '@docAi-app/icons';
 // import { PromptApi } from '@patent-app/apis';
+import Styles from './DataGrid.module.scss';
+import { indexApi } from '@docAi-app/api';
+import { useNavigate } from 'react-router-dom';
+import { ROUTE } from '@docAi-app/utils/constants/Route.constant';
 
 const maxTags = 2;
+
+type IndexListType = {
+    index_uuid: string;
+    title: string;
+    description: string;
+};
 
 const DataGridComp = () => {
     // Hooks & Variables
     const [searchData, setSearchData] = useState('');
-    const [data, setData] = useState<Prompt[]>([]);
+    const [data, setData] = useState<IndexListType[]>([]);
     const [pager, setPager] = useState({ totalRecords: 0, filteredRecords: 0 });
     const [pagination, setPagination] = useState({ page: 1, size: 10 });
-    const [selectedData, setSelectedData] = useState<Prompt>();
+    const [selectedData, setSelectedData] = useState<IndexListType>();
     const [isOpenDialog, setIsOpenDialog] = useState(false);
     const [isDeleteConfirmationVisible, setIsDeleteConfirmationVisible] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const promptIdRef = useRef('');
-    const [sortBy, setSoryBy] = useState<Item>(PROMPT_SORT_BY_OPTIONS[0]);
-
+    const navigate = useNavigate();
     const columns: GridColDef[] = useMemo(
         () => [
             {
                 field: 'title',
-                headerName: 'PROMPT TITLE',
+                headerName: 'Index Name',
                 sortable: false,
-                width: 250,
+                width: 300,
                 filterable: false,
             },
             {
                 field: 'description',
-                headerName: 'DESCRIPTION',
-                width: 300,
+                headerName: 'Description',
+                width: 500,
                 sortable: false,
                 filterable: false,
             },
@@ -67,7 +68,7 @@ const DataGridComp = () => {
                 width: 150,
                 renderCell: (params) => {
                     return (
-                        <div className="flex gap-[1.5rem] action-btns">
+                        <div className={Styles.actionButtons}>
                             <ActionButton
                                 icon={<Icons.Edit />}
                                 onClick={() => updateDataHandler(params.row)}
@@ -76,7 +77,11 @@ const DataGridComp = () => {
 
                             <ActionButton
                                 icon={<Icons.Delete />}
-                                onClick={() => handleDeleteClick(params.row?.id)}
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    console.log(params);
+                                    handleDeleteClick(params.row?.index_uuid);
+                                }}
                                 title="Delete"
                             />
                         </div>
@@ -88,35 +93,46 @@ const DataGridComp = () => {
     );
 
     useEffect(() => {
-        // onApiCall();
-    }, [pagination, sortBy]);
+        onApiCall();
+    }, [pagination , searchData]);
 
     // Api Calls
 
     const onApiCall = (data = '') => {
-        // const sortByParams = PROMPT_SORT_BY_PARAMS[sortBy.value] || {};
-        // const params = {
-        //     search: data,
-        //     pageNumber: pagination.page,
-        //     recordsPerPage: pagination.size,
-        //     showAll: false,
-        //     ...sortByParams,
-        // };
-        // PromptApi.getList(params)
-        //     .then((res) => {
-        //         setData(res.payload);
-        //         if (res.pager)
-        //             setPager({
-        //                 totalRecords: res.pager.totalRecords,
-        //                 filteredRecords: res.pager.filteredRecords,
-        //             });
-        //     })
-        //     .catch((err) => {
-        //         console.log('Error =>', err);
-        //     })
-        //     .finally(() => {
-        //         setIsLoading(false);
-        //     });
+        const params = {
+            search: data,
+            page_number: pagination.page,
+            records_per_page: pagination.size,
+            sort_order: '',
+            sort_by: '',
+            show_all: true,
+        };
+        indexApi
+            .getAllIndex(params)
+            .then((res) => {
+                setData((prev) => {
+                    return res.payload.map((result) => {
+                        return {
+                            title: result.title,
+                            description: result.description,
+                            id: result.index_uuid,
+                            created_at: result.created_at,
+                        };
+                    });
+                });
+                setData(res.payload);
+                if (res.pager)
+                    setPager({
+                        totalRecords: res.pager.totalRecords,
+                        filteredRecords: res.pager.filteredRecords,
+                    });
+            })
+            .catch((err) => {
+                console.log('Error =>', err);
+            })
+            .finally(() => {
+                setIsLoading(false);
+            });
     };
 
     // Event Handlers
@@ -144,6 +160,8 @@ const DataGridComp = () => {
     };
 
     const onSearchData = (data: string) => {
+
+        
         if (pagination.page !== 1) {
             setPagination((prev) => ({ ...prev, page: 1 }));
         } else {
@@ -164,11 +182,14 @@ const DataGridComp = () => {
         // setSelectedData(data);
         // setIsOpenDialog(true);
         console.log(data);
+        navigate(`${data['index_uuid']}` , {state : {title : data.title}});
     };
 
     const handleDeleteClick = (id: string) => {
-        promptIdRef.current = id;
-        setIsDeleteConfirmationVisible(true);
+        indexApi.deleteIndex({ index_uuid: id }).then(() => {
+            onApiCall();
+        });
+        // setIsDeleteConfirmationVisible(true);
     };
 
     const handleCloseDeleteConfirmation = () => {
@@ -179,64 +200,55 @@ const DataGridComp = () => {
     const handleConfirmDeleteConfirmation = () => {
         deletePromptApiCall(promptIdRef.current);
     };
-    const handleSortByClick = (item: Item) => {
-        // setSoryBy(item);
-    };
+
     // Helpers
 
     // JSX Elements
 
     const renderNoRows = () => {
-        return <NoDataFound message="No prompts were found based on your search" />;
+        return <NoDataFound message="No Brains were found based on your search" />;
     };
 
     return (
         <>
-            <header className="flex justify-between items-center mb-[1.4rem]">
-                <h2 className="font-[600] text-[3rem] m-0">Manage Models</h2>
-                <div className="flex items-center gap-[1rem]">
+            <header className={Styles.header}>
+                <div className={Styles['header__body']}>
                     <SearchInput
                         value={searchData}
+                        placeholder="Search Brain"
                         onClearClick={() => {
                             onSearchData('');
                             setSearchData('');
                         }}
                         onChange={(e) => onSearchData(e.target.value)}
                     />
-                    <div>
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={() => {
-                                setIsOpenDialog(true);
-                                setSelectedData(undefined);
-                            }}
-                        >
-                            <span className="mr-[0.5rem]">
-                                <Icons.Plus />
-                            </span>{' '}
-                            Prompt
-                        </Button>
-                    </div>
-
-                    <span className="w-[14rem] text-center font-medium text-[1.5rem]"> Sort By :</span>
-
-                    <SortBy items={PROMPT_SORT_BY_OPTIONS} onItemClick={handleSortByClick} value={sortBy} />
                 </div>
             </header>
-            <div className="w-[100%] h-[calc(100vh-24rem)]">
+            <div className={Styles.dataGrid}>
                 <DataGrid
+                    disableColumnFilter={true}
+                    disableColumnSelector={true}
+                    disableColumnResize={true}
+                    disableColumnMenu={true}
+                    autosizeOptions={{
+                        expand: false,
+                    }}
+                    getRowId={(row) => row.index_uuid}
                     rows={data}
                     columns={columns}
                     hideFooter={true}
                     slots={{
                         noRowsOverlay: renderNoRows,
                     }}
-                    // loading={isLoading}
+                    // onRowClick={(row, e) => {
+                    //     console.log(e);
+                    //     navigate(`${row.id}`);
+                    // }}
+                    loading={isLoading}
                 />
             </div>
             {pager?.totalRecords >= 10 ? (
-                <div className="flex justify-between w-[100%] mt-[1rem]">
+                <div className={Styles.pagination}>
                     <div>
                         <Select
                             options={PAGINATION_OPTIONS}
@@ -257,15 +269,13 @@ const DataGridComp = () => {
                 </div>
             ) : null}
 
-            {/* <Dialog
+            <Dialog
                 open={isOpenDialog}
                 onClose={() => setIsOpenDialog(false)}
                 title={selectedData?.id ? 'Update Prompt' : 'Create Prompt'}
-            >
-                <AddUpdatePrompt onClose={(e: boolean) => onCloseDialog(e)} selectedData={selectedData} />
-            </Dialog>
+            ></Dialog>
 
-            <ConfirmationPopup
+            {/* <ConfirmationPopup
                 open={isDeleteConfirmationVisible}
                 okayButtonLabel="Yes"
                 cancelButtonLabel="No"

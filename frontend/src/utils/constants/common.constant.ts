@@ -41,3 +41,11 @@ export const PAGINATION_OPTIONS = [
     { label: 50, value: 50 },
     { label: 100, value: 100 },
 ];
+
+export const InputChipsAddOnOption = {
+    Tab: 'Tab',
+    Comma: ',',
+    Enter: 'Enter',
+};
+
+export const CHIPS_OPTIONS = [InputChipsAddOnOption.Enter, InputChipsAddOnOption.Tab, InputChipsAddOnOption.Comma];

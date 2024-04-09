@@ -21,7 +21,7 @@ export const Select = ({ options, ...props }: SelectProps) => {
                         );
                     })
                 ) : (
-                    <></>
+                    null
                 )}
             </SelectStyle>
         </FormControl>

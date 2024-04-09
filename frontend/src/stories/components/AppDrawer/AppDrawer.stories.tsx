@@ -4,11 +4,12 @@ import InboxIcon from '@mui/icons-material/MoveToInbox'
 import { AppDrawer } from './AppDrawer.component'
 
 const meta = {
-  title: 'Naviagation/AppDrawer',
+  title: 'Navigation/AppDrawer',
   component: AppDrawer,
   tags: ['autodocs'],
-} satisfies Meta<typeof AppDrawer>
-export default meta
+} satisfies Meta<typeof AppDrawer>;
+
+export default meta;
 type Story = StoryObj<typeof meta>
 
 export const Controlled: Story = {

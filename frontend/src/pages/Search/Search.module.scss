@@ -1,4 +1,5 @@
-$headerHeight: 8rem;
+@import '@docAi-app/styles/abstracts/_abstracts.scss';
+
 .container {
     display: flex;
     flex-direction: column;
@@ -11,7 +12,17 @@ $headerHeight: 8rem;
     &__header {
         height: $headerHeight;
         width: 100%;
-        background-color: purple;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 2px solid $black;
+
+        &__body {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 2rem;
+        }
     }
     &__body {
         height: calc(100vh - $headerHeight);

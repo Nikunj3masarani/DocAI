@@ -1,7 +1,7 @@
 // Note: If your color is rgba(colorName, 0.05) name it as colorName5
 // If your color is rgba(colorName, 0.5) name it as colorName50
 
-import "@mui/material/styles/createTheme";
+import '@mui/material/styles/createTheme';
 
 const COLORS = {
     primary: '#753FEA',
@@ -23,6 +23,7 @@ const COLORS = {
     error: '#FF3434',
     black: '#000000',
     black10: 'rgba(#000000, 0.1)',
+    black20 : 'rgba(#000000 , 0.2)',
     white: '#FFFFFF',
 
     mercury: '#E8E6DE',
@@ -38,6 +39,8 @@ const COLORS = {
     cinder: '#151515',
     cinder10: 'rgba(#151515, 0.1)',
     seashell: '#F1F1F1',
+    transparent: 'transparent',
+    red : '#red',
 
     zIndex: {
         linearLoader: 1400,

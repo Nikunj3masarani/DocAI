@@ -1,5 +1,5 @@
 //Import Third Party lib
-import { SearchInput, Select } from '@docAi-app/stories';
+import { Button, Dialog, InputChips, SearchInput, Select } from '@docAi-app/stories';
 import { Form } from 'react-final-form';
 
 //Import Storybook
@@ -26,10 +26,16 @@ import Logo from '@docAi-app/../public/assets/images/logo.svg';
 //Import Style
 import Style from './Search.module.scss';
 import { Field } from 'react-final-form';
+import { useState } from 'react';
+import { HeaderAction } from '@docAi-app/types/common.type';
+import { AddKnowledge, CreateBrain } from '@docAi-app/components';
+import PsychologyOutlinedIcon from '@mui/icons-material/PsychologyOutlined';
 
 const Search = () => {
     // useRef
     // useState
+    const [headerAction, setHeaderAction] = useState<HeaderAction | undefined>();
+    const [showDialogue, setShowDialogue] = useState<boolean>(false);
     // Variables Dependent upon State
 
     // Api Calls
@@ -46,7 +52,42 @@ const Search = () => {
     };
     return (
         <div className={Style.container}>
-            <div className={Style['container__header']}></div>
+            <Dialog
+                open={showDialogue}
+                onClose={() => {
+                    setShowDialogue(false);
+                    setHeaderAction(undefined);
+                }}
+                title={headerAction === 'Create Brain' ? 'Add New Brain' : 'Add Knowledge to Brain'}
+            >
+                {headerAction === 'Create Brain' ? <CreateBrain /> : <AddKnowledge />}
+            </Dialog>
+            <div className={Style.container__header}>
+                <div>
+                    <h1>My Brains</h1>
+                </div>
+                <div className={Style.container__header__body}>
+                    <Button
+                        variant="contained"
+                        onClick={() => {
+                            setShowDialogue(true);
+                            setHeaderAction('Create Brain');
+                        }}
+                    >
+                        <PsychologyOutlinedIcon />
+                        Create Brain
+                    </Button>
+                    <Button
+                        variant="outlined"
+                        onClick={() => {
+                            setShowDialogue(true);
+                            setHeaderAction('Add Knowledge');
+                        }}
+                    >
+                        Add Knowledge
+                    </Button>
+                </div>
+            </div>
             <div className={Style['container__body']}>
                 <div className={Style.content}>
                     <div className={Style.content__header}>

@@ -33,11 +33,9 @@ export const removeEmptyField = (value: Record<string, string>): object => {
     const newValue = value;
     if (typeof value === 'object' && value !== null) {
         const keys = Object.keys(value);
-        keys.forEach((val: string) => {
-            if (!value[val as keyof typeof value]) {
-                delete newValue?.val;
-            }
-        });
+        keys.forEach((key : string) => {
+            if(newValue[key] === '') delete newValue[key];
+        })
     }
     return newValue;
 };
