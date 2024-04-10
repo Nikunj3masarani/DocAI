@@ -66,17 +66,6 @@ CREATE TABLE IF NOT EXISTS chat_history (
     feedback VARCHAR
 );
 
-CREATE TABLE IF NOT EXISTS invitations (
-    invite_uuid UUID PRIMARY KEY,
-    status INTEGER,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    token TEXT,
-    invite_action INTEGER,
-    invited_by UUID,
-    user_uuid UUID REFERENCES users(user_uuid)
-);
-
-
 CREATE TABLE IF NOT EXISTS users (
     user_uuid UUID PRIMARY KEY,
     is_active INTEGER,
@@ -86,6 +75,16 @@ CREATE TABLE IF NOT EXISTS users (
     email varchar(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS invitations (
+    invite_uuid UUID PRIMARY KEY,
+    status INTEGER,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    token TEXT,
+    invite_action INTEGER,
+    invited_by UUID,
+    user_uuid UUID REFERENCES users(user_uuid)
 );
 
 CREATE TABLE IF NOT EXISTS index_user_mapping (
