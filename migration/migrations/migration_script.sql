@@ -93,5 +93,5 @@ CREATE TABLE IF NOT EXISTS index_user_mapping (
       user_uuid UUID REFERENCES users(user_uuid),
       index_uuid UUID REFERENCES indexes(index_uuid),
       role INTEGER,
-      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
