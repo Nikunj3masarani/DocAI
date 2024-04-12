@@ -1,6 +1,6 @@
 //Import Third Party lib
 
-import { CircularLoader, IconButton } from '@docAi-app/stories';
+import { CircularLoader, IconButton, Select } from '@docAi-app/stories';
 import { Divider } from '@mui/material';
 import { Form } from 'react-final-form';
 
@@ -22,7 +22,7 @@ import { Form } from 'react-final-form';
 import { AsyncSearchSelect } from '@docAi-app/stories';
 import SendIcon from '@mui/icons-material/Send';
 import { StyledInputBase, StyledPaper } from './InputWithSelect.styled';
-import { indexApi } from '@docAi-app/api';
+import { ModelApi, indexApi } from '@docAi-app/api';
 import { onLoadReaders } from '@docAi-app/utils/helper/common.helper';
 import { useEffect, useState } from 'react';
 import { Option } from '@docAi-app/types/common.type';
@@ -57,9 +57,19 @@ const InputWithSelect = ({ disable, handleSubmit }: InputWithSelectProps) => {
     // useRef
     // useState
     const [index, setIndex] = useState<Option>();
+    const [modelOption, setModelOption] = useState<Option[]>([]);
+
     useEffect(() => {
         indexList('').then((res) => {
             setIndex(res.options[0]);
+        });
+
+        ModelApi.getModelsList().then((res) => {
+            let models = res.payload.models;
+           models =  models.map((model) => {
+                return { label: model.display_name, value: model.model_uuid };
+            });
+            setModelOption(models);
         });
     }, []);
     // Variables Dependent upon State
@@ -80,6 +90,7 @@ const InputWithSelect = ({ disable, handleSubmit }: InputWithSelectProps) => {
             onSubmit={handleSubmit}
             initialValues={{
                 index: index,
+                model: modelOption && modelOption?.at(0)?.value ?? '',
             }}
             render={({ handleSubmit, form }) => {
                 return (
@@ -106,6 +117,22 @@ const InputWithSelect = ({ disable, handleSubmit }: InputWithSelectProps) => {
                                                     setIndex(v as Option);
                                                 }}
                                                 loadOptions={(searchString: string) => indexList(searchString)}
+                                            />
+                                        );
+                                    }}
+                                />
+                            </div>
+                            <Divider sx={{ height: 50, m: 0.5 }} orientation="vertical" />
+                            <div className={Style.models}>
+                                <Field
+                                    name="model"
+                                    subscription={{ touched: true, value: true, error: true }}
+                                    render={({ input }) => {
+                                        return (
+                                            <Select
+                                                {...input}
+                                                options={modelOption}
+                                                placeholder="Select Model"
                                             />
                                         );
                                     }}

@@ -56,6 +56,11 @@
     color: $black;
     border-radius: 10px;
     max-width: 80%;
+    position: relative;
+}
+
+.messageSkeleton {
+ width: 80%;   
 }
 
 .user {
@@ -68,8 +73,27 @@
     background-color: $primary10;
     position: relative;
     &:hover {
-         .feedback {
+        .feedback {
             visibility: visible;
+        }
+    }
+
+    &__header {
+        position: absolute;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 1rem;
+        top: 0;
+        left: 0;
+        transform: translateY(-100%);
+        z-index: 2;
+        width: 100%;
+
+        span{
+            display:  flex;
+            justify-content: flex-start;
+            align-items: center;
         }
     }
 }

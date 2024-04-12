@@ -5,6 +5,7 @@ export const DOCUMENTS = 'documents';
 export const INDEX_UUID = 'index_uuid';
 export const PROMPT_UUID = 'prompt_uuid';
 export const CHAT = 'chat';
+export const USERS = 'users';
 
 export const METHOD = {
     GET: 'get',
@@ -14,6 +15,16 @@ export const METHOD = {
 };
 
 export const ENDPOINTS = {
+    AUTH: {
+        LOGIN: {
+            METHOD: METHOD.POST,
+            URL: `${USERS}/login`,
+        },
+        FORGOT_PASSWORD: {
+            METHOD: METHOD.POST,
+            URL: `${USERS}/forgot-password`,
+        },
+    },
     INDEX_MANAGEMENT: {
         GET_INDEX: {
             URL: `${INDEX}/?${INDEX_UUID}`,
@@ -31,6 +42,18 @@ export const ENDPOINTS = {
         GET_ALL_INDEX: {
             URL: `${INDEX}/list`,
             METHOD: `${METHOD.POST}`,
+        },
+        GET_USERS: {
+            URL: `${INDEX}/${USERS}/?${INDEX_UUID}`,
+            METHOD: METHOD.GET,
+        },
+        INVITE_USER: {
+            URL: `${INDEX}/${USERS}/invite`,
+            METHOD: METHOD.POST,
+        },
+        REMOVE_USERS: {
+            URL: `${INDEX}/${USERS}/remove`,
+            METHOD: METHOD.POST,
         },
     },
     MODELS: {
@@ -74,6 +97,10 @@ export const ENDPOINTS = {
         },
         DELETE_CHAT: {
             METHOD: METHOD.DELETE,
+            URL: `${CHAT}`,
+        },
+        GET_CHAT: {
+            METHOD: METHOD.POST,
             URL: `${CHAT}`,
         },
     },

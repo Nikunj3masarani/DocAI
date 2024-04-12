@@ -1,6 +1,6 @@
 import axios, { AxiosError } from 'axios';
 import { ApiConfig, ApiErrorResponse, ApiResponse, AxiosRequest } from '@docAi-app/types/Api.type';
-import { getFromLocalStorage, removeFromStore } from '@docAi-app/utils/helper/storage.helper';
+import { getFromLocalStorage, removeFromLocalStorage } from '@docAi-app/utils/helper/storage.helper';
 import { ACCESS_TOKEN_KEY } from '@docAi-app/utils/constants/storage.constant';
 import { ERROR_STATUS_CODE } from '@docAi-app/utils/constants/common.constant';
 
@@ -26,9 +26,9 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use((config: AxiosRequest) => {
     const token = getFromLocalStorage(ACCESS_TOKEN_KEY);
-    // if (token) {
-    //     config.headers.Authorization = 'Bearer ' + token;
-    // }
+    if (token) {
+        config.headers.Authorization = 'Bearer ' + token;
+    }
     return config;
 });
 
@@ -40,7 +40,7 @@ axiosInstance.interceptors.response.use(
         const { status } = error?.response || {};
 
         if (status === ERROR_STATUS_CODE[401]) {
-            removeFromStore(ACCESS_TOKEN_KEY);
+            removeFromLocalStorage(ACCESS_TOKEN_KEY);
             return Promise.reject({ show: false });
         }
 

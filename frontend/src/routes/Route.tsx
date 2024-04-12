@@ -7,6 +7,7 @@ import { Search } from '@docAi-app/pages/Search';
 const errorElement = {
     errorElement: <ErrorComponent />,
 };
+
 const AUTHCHILDROUTES: RouteObject[] = [
     {
         index: true,
@@ -14,7 +15,6 @@ const AUTHCHILDROUTES: RouteObject[] = [
         ...errorElement,
     },
     {
-        index: true,
         path: ROUTE.LOGIN,
         element: <Login />,
         ...errorElement,
@@ -32,6 +32,11 @@ const AUTHCHILDROUTES: RouteObject[] = [
 ];
 
 const PRIVATE_ROUTES: RouteObject[] = [
+    {
+        index: true,
+        element: <Navigate to={ROUTE.SEARCH} />,
+        ...errorElement,
+    },
     {
         path: `${ROUTE.SEARCH}`,
         element: <Search />,

@@ -1,6 +1,6 @@
 //Import Third Party lib
 import { Field, Form } from 'react-final-form';
-import { useNavigate } from 'react-router-dom';
+import { Route, useNavigate } from 'react-router-dom';
 
 //Import Storybook
 import { Button, InputField } from '@docAi-app/stories';
@@ -29,6 +29,7 @@ import { removeEmptyField, validation } from '@docAi-app/utils/helper/validation
 
 //Import Style
 import Styles from './ForgotPassword.module.scss';
+import { authApi } from '@docAi-app/api';
 
 const ForgotPassword = () => {
     // useRef
@@ -74,6 +75,14 @@ const ForgotPassword = () => {
     const handleSubmit = (val: {
         [P in (typeof formControls)[number]]: string;
     }) => {
+        authApi
+            .forgotPassword({ email: val['email'] })
+            .then(() => {
+                navigate(`${ROUTE.ROOT}${ROUTE.AUTH}/${ROUTE.LOGIN}`);
+            })
+            .catch(() => {
+                console.log('Error while forgot password');
+            });
     };
 
     // Your component logic here

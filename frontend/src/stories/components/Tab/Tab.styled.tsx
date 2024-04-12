@@ -7,6 +7,7 @@ export const StyledTabs = styled(Tabs)`
         background: ${({ theme }) => theme.colors.primary};
     }
     .MuiTabs-flexContainer {
+        justify-content: stretch;
         button:not(:last-child) {
             margin-right: 10px;
         }
@@ -28,6 +29,7 @@ export const StyledTab = styled(Tab)`
         font-weight: normal;
         text-transform: none;
         border-radius: 8px;
+        width: 100%;
         color: ${({ theme }) => theme.colors.black} !important;
         font-family: ${({ theme }) => theme.typography.fontFamily};
     }

@@ -28,12 +28,12 @@ import Styles from './IndexList.module.scss';
 import { useState } from 'react';
 import { HeaderAction } from '@docAi-app/types/common.type';
 
-
 const IndexList = () => {
     // useRef
     // useState
     const [headerAction, setHeaderAction] = useState<HeaderAction | undefined>();
     const [showDialogue, setShowDialogue] = useState<boolean>(false);
+    const [isBrainCreated, setIsBrainCreated] = useState<boolean>(false);
     // Variables Dependent upon State
 
     // Api Calls
@@ -56,7 +56,16 @@ const IndexList = () => {
                 }}
                 title={headerAction === 'Create Brain' ? 'Add New Brain' : 'Add Knowledge to Brain'}
             >
-                {headerAction === 'Create Brain' ? <CreateBrain /> : <AddKnowledge />}
+                {headerAction === 'Create Brain' ? (
+                    <CreateBrain
+                        close={(val: boolean) => {
+                            setShowDialogue(val);
+                            setIsBrainCreated(true);
+                        }}
+                    />
+                ) : (
+                    <AddKnowledge />
+                )}
             </Dialog>
             <div className={Styles.header}>
                 <div>
@@ -84,7 +93,7 @@ const IndexList = () => {
                     </Button>
                 </div>
             </div>
-            <DataGridComp />
+            <DataGridComp initialSearchValue={''} />
         </div>
     );
 };

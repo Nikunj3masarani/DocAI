@@ -29,11 +29,16 @@ import { Validation } from '@docAi-app/types/validation.type';
 
 //Import Style
 import Styles from './Login.module.scss';
+import { authApi } from '@docAi-app/api';
+import { setToLocalStorage } from '@docAi-app/utils/helper/storage.helper';
+import { ACCESS_TOKEN_KEY, CURRENT_USER_EMAIL } from '@docAi-app/utils/constants/storage.constant';
+import { useAuth } from '@docAi-app/hooks';
 
 const Login = () => {
     // useRef
     // useState
     const navigate = useNavigate();
+    const auth = useAuth();
 
     // Variables Dependent upon State
 
@@ -86,7 +91,15 @@ const Login = () => {
 
     const handleSubmit = (val: {
         [P in (typeof formControls)[number]]: string;
-    }) => {};
+    }) => {
+        authApi.login(val).then((res) => {
+            const token = res.payload.token;
+            setToLocalStorage(ACCESS_TOKEN_KEY, token);
+            setToLocalStorage(CURRENT_USER_EMAIL, val['email']);
+            auth.setIsLogin(true);
+            navigate(`${ROUTE.ROOT}`);
+        });
+    };
 
     return (
         <div className={Styles.container}>

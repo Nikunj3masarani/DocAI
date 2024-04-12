@@ -1,10 +1,9 @@
 //Import Third Party lib
 
 import { TabComponent } from '@docAi-app/stories';
-import { Tab, Tabs } from '@mui/material';
 import { useState } from 'react';
 import { BrainSettings } from '../BrainSettings/BrainSettings.component';
-import { AddKnowledge } from '..';
+import { AddKnowledge, People } from '..';
 
 //Import Storybook
 
@@ -21,7 +20,9 @@ import { AddKnowledge } from '..';
 //Import Util, Helper , Constant
 
 //Import Icon
-
+import SettingsIcon from '@mui/icons-material/Settings';
+import AssignmentIcon from '@mui/icons-material/Assignment';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 //Import Api
 
 //Import Assets
@@ -49,16 +50,19 @@ const tabItem = [
         label: 'Settings',
         value: 0,
         canAccess: true,
+        icon: <SettingsIcon />,
     },
     {
         label: 'Update Knowledge',
         value: 1,
         canAccess: true,
+        icon: <AssignmentIcon />,
     },
     {
         label: 'Invite People',
         value: 2,
         canAccess: true,
+        icon: <AccountCircleIcon />,
     },
 ];
 const UpdateIndex = () => {
@@ -85,6 +89,11 @@ const UpdateIndex = () => {
             <CustomTabPanel value={1} index={activeTab}>
                 <>
                     <AddKnowledge />
+                </>
+            </CustomTabPanel>
+            <CustomTabPanel value={2} index={activeTab}>
+                <>
+                    <People />
                 </>
             </CustomTabPanel>
         </>

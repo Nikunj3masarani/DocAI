@@ -9,3 +9,6 @@ export { AddKnowledge } from './AddKnowledge';
 export { FileListing } from './FileListing';
 export { UpdateIndex } from './UpdateIndex';
 export { BrainSettings } from './BrainSettings';
+export { InvitePeople } from './InvitePeople';
+export { People } from './People';
+export { UsersWithAccess } from './UsersWithAccess';

@@ -1,4 +1,4 @@
-export const getFromLocalStorage = (key: string) => {
+const getFromLocalStorage = (key: string) => {
     const item = localStorage.getItem(key);
     if (item) {
         return JSON.parse(item);
@@ -6,6 +6,18 @@ export const getFromLocalStorage = (key: string) => {
     return null;
 };
 
-export const removeFromStore = (key: string) => {
-    localStorage.removeItem(key);
+const setToLocalStorage = (key: string, obj = {}) => {
+    localStorage.setItem(key, JSON.stringify(obj));
 };
+
+const removeFromLocalStorage = (key: string) => {
+    const item = getFromLocalStorage(key);
+    if (item) {
+        localStorage.removeItem(key);
+        return true;
+    } else {
+        return false;
+    }
+};
+
+export { getFromLocalStorage, setToLocalStorage, removeFromLocalStorage };

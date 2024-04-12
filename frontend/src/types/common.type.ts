@@ -25,7 +25,7 @@ export type OptionType = {
 
 export interface Option {
     label: string;
-    value: string;
+    value: string | number;
 }
 
 export type HeaderAction = 'Create Brain' | 'Add Knowledge';

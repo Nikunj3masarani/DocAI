@@ -13,15 +13,15 @@ export const EMAIL_VALIDATION: Validation = {
 
 export const PASSWORD_VALIDATION: Validation = {
     required: { message: 'Password in required' },
-    between: {
-        minLength: PASSWORD.MIN_LENGTH,
-        maxLength: PASSWORD.MAX_LENGTH,
-        message: `Password length must be between ${PASSWORD.MIN_LENGTH} and ${PASSWORD.MAX_LENGTH}`,
-    },
-    regex: {
-        message: 'Password must contain alpha numeric characters',
-        regexPattern: REGEX.ALPHA_NUMERIC_WITH_SPECIAL_REGEXP,
-    },
+    // between: {
+    //     minLength: PASSWORD.MIN_LENGTH,
+    //     maxLength: PASSWORD.MAX_LENGTH,
+    //     message: `Password length must be between ${PASSWORD.MIN_LENGTH} and ${PASSWORD.MAX_LENGTH}`,
+    // },
+    // regex: {
+    //     message: 'Password must contain alpha numeric characters',
+    //     regexPattern: REGEX.ALPHA_NUMERIC_WITH_SPECIAL_REGEXP,
+    // },
 };
 
 export const CONFIRM_PASSWORD_VALIDATION: Validation = {

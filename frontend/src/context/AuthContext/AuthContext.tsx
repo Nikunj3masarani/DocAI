@@ -1,4 +1,6 @@
-import { createContext, useState } from 'react';
+import { ACCESS_TOKEN_KEY } from '@docAi-app/utils/constants/storage.constant';
+import { getFromLocalStorage } from '@docAi-app/utils/helper/storage.helper';
+import { createContext, useEffect, useState } from 'react';
 interface AuthContextType {
     isLogin: boolean;
     setIsLogin: (newLoginState: boolean) => void;
@@ -7,14 +9,14 @@ interface AuthContextType {
 const initialAuthContextValue = {
     isLogin: false,
     setIsLogin: (newLoginState: boolean) => {
-        console.log(newLoginState);
     },
 };
 
 const AuthContext = createContext<AuthContextType>(initialAuthContextValue);
 
 const AuthContextProvider = ({ children }: { children: React.ReactNode }) => {
-    const [isLogin, setIsLogin] = useState(true);
+    const [isLogin, setIsLogin] = useState(getFromLocalStorage(ACCESS_TOKEN_KEY) ? true : false);
+
     const initialValues = {
         isLogin: isLogin,
         setIsLogin: setIsLogin,

@@ -1,3 +1,4 @@
+import { Option } from '@docAi-app/types/common.type';
 export const ERROR_STATUS_CODE = {
     401: 401,
     403: 403,
@@ -49,3 +50,18 @@ export const InputChipsAddOnOption = {
 };
 
 export const CHIPS_OPTIONS = [InputChipsAddOnOption.Enter, InputChipsAddOnOption.Tab, InputChipsAddOnOption.Comma];
+
+export const USER_ROLE: Readonly<Record<string, Option>> = {
+    viewer: {
+        label: 'Viewer',
+        value: 3,
+    },
+    editor: {
+        label: 'Editor',
+        value: 2,
+    },
+    owner: {
+        label: 'Owner',
+        value: 1,
+    },
+} as const;

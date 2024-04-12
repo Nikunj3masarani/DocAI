@@ -36,7 +36,6 @@ const FileListing = ({
     files: FilesUpload[] | undefined;
     deleteFiles: (file: FilesUpload) => void;
 }) => {
-    console.log(files);
     // useRef
     // useState
     // Variables Dependent upon State

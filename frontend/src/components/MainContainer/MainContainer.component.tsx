@@ -49,7 +49,6 @@ const handleDeleteChat = ({ messageId }: { messageId: string }) => {
 
 const MainContainer = () => {
     const params = useLocation();
-    console.log(params);
     useEffect(() => {
         // chatApi.getChatList().then((res) => {
         //     setMessageList(res.payload);
@@ -62,7 +61,6 @@ const MainContainer = () => {
     ]);
     const [editTitleId, setEditTitleId] = useState<number>(-1);
     const isTitleEditing = (messageId: number) => {
-        console.log(editTitleId === messageId);
         return editTitleId === messageId ? Styles.active : '';
     };
     const [editedMessage, setEditedMessage] = useState<string>();
@@ -161,7 +159,6 @@ const MainContainer = () => {
                                                                         { label: 'delete', value: 0, id: 1 },
                                                                     ]}
                                                                     handleItemClick={(v: itemsProps) => {
-                                                                        console.log(v);
                                                                         if (v.id === 0) {
                                                                             setEditTitleId(messageId);
                                                                             setEditedMessage(message);

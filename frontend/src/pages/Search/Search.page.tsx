@@ -1,5 +1,5 @@
 //Import Third Party lib
-import { Button, Dialog, InputChips, SearchInput, Select } from '@docAi-app/stories';
+import { Button, Dialog, InputChips, InputWithSelect, SearchInput, Select } from '@docAi-app/stories';
 import { Form } from 'react-final-form';
 
 //Import Storybook
@@ -30,12 +30,18 @@ import { useState } from 'react';
 import { HeaderAction } from '@docAi-app/types/common.type';
 import { AddKnowledge, CreateBrain } from '@docAi-app/components';
 import PsychologyOutlinedIcon from '@mui/icons-material/PsychologyOutlined';
+import { chatApi } from '@docAi-app/api/chat.api';
+import { uuidGenerator } from '@docAi-app/utils/helper/common.helper';
+import { useNavigate } from 'react-router-dom';
+import { ROUTE } from '@docAi-app/utils/constants/Route.constant';
 
 const Search = () => {
     // useRef
     // useState
     const [headerAction, setHeaderAction] = useState<HeaderAction | undefined>();
     const [showDialogue, setShowDialogue] = useState<boolean>(false);
+    const [disableSearchInput, setSearchInput] = useState<boolean>(false);
+    const navigate = useNavigate();
     // Variables Dependent upon State
 
     // Api Calls
@@ -48,7 +54,17 @@ const Search = () => {
 
     // Your component logic here
     const handleSubmit = (val) => {
-        console.log(val);
+        setSearchInput((prev) => !prev);
+
+        const chatUuid = uuidGenerator();
+        chatApi
+            .getChat({ index_uuid: val['index'].value, query: val.message, chat_uuid: chatUuid })
+            .then(() => {
+                navigate(`${ROUTE.ROOT}/${ROUTE.CHAT}/${chatUuid}`);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
     };
     return (
         <div className={Style.container}>
@@ -95,56 +111,7 @@ const Search = () => {
                         <h1>Talk to DocAi</h1>
                     </div>
                     <div className={Style.content__body}>
-                        <Form
-                            initialValues={{
-                                query: '',
-                                model: 'gpt',
-                            }}
-                            onSubmit={handleSubmit}
-                            render={() => {
-                                return (
-                                    <form onSubmit={handleSubmit}>
-                                        <div>
-                                            <Field
-                                                name="query"
-                                                render={({ input }) => {
-                                                    return (
-                                                        <SearchInput
-                                                            onClearClick={() => {
-                                                                console.log('being cll');
-                                                            }}
-                                                            {...input}
-                                                            type="text"
-                                                            fullWidth
-                                                            placeholder="Search"
-                                                            required
-                                                        />
-                                                    );
-                                                }}
-                                            />
-                                        </div>
-                                        <div className={Style.select}>
-                                            <Field
-                                                name="model"
-                                                render={({ input }) => {
-                                                    return (
-                                                        <Select
-                                                            {...input}
-                                                            options={[
-                                                                { label: 'gpt', value: 'gpt' },
-                                                                { label: 'bard', value: 'bard' },
-                                                            ]}
-                                                            label="Select Model"
-                                                            placeholder="Select Model bbb"
-                                                        />
-                                                    );
-                                                }}
-                                            />
-                                        </div>
-                                    </form>
-                                );
-                            }}
-                        />
+                        <InputWithSelect handleSubmit={handleSubmit} disable={disableSearchInput} />
                     </div>
                 </div>
             </div>

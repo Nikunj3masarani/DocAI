@@ -12,6 +12,14 @@ interface DeleteChatRequestBody {
     chat_uuid: string;
 }
 
+interface GetChatRequestBody {
+    index_uuid: string;
+    query: string;
+    model_uuid: string;
+    prompt_uuid: string;
+    chat_uuid: string;
+}
+
 const getChatList = () => {
     const data: ApiConfig<undefined> = {
         method: ENDPOINTS.CHAT.GET_LIST.METHOD as Method,
@@ -40,10 +48,22 @@ const deleteChat = (requestBody: DeleteChatRequestBody) => {
 
     return apiCall(data);
 };
+
+const getChat = (requestBody: Partial<GetChatRequestBody>) => {
+    const data: ApiConfig<Partial<GetChatRequestBody>> = {
+        method: ENDPOINTS.CHAT.GET_CHAT.METHOD as Method,
+        url: ENDPOINTS.CHAT.GET_CHAT.URL,
+        data: requestBody,
+    };
+
+    return apiCall(data);
+};
+
 const chatApi = {
     getChatList,
     editMessageTitle,
     deleteChat,
+    getChat,
 };
 
 export { chatApi };

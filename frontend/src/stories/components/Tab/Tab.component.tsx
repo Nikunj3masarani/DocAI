@@ -5,6 +5,7 @@ type TabItem = {
     label: string;
     value: number;
     canAccess?: boolean;
+    icon?: React.ReactNode;
 };
 
 type TabProps = {
@@ -42,6 +43,8 @@ function TabComponent({ selectedTabValue, handleTabChange, items, type = 'square
         >
             {items.map((item) => (
                 <StyledTab
+                    icon={item.icon}
+                    iconPosition="start"
                     key={item.value}
                     label={item.label}
                     classes={{

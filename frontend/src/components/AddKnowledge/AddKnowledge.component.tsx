@@ -1,6 +1,6 @@
 //Import Third Party lib
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 //Import Storybook
 
@@ -82,7 +82,6 @@ const AddKnowledge = () => {
         DocumentAPi.getDocuments({ index_uuid: indexUuid }).then(({ payload }: { payload: any }) => {
             setFiles(payload.documents);
         });
-        console.log(params['index-id'] !== undefined);
         if (params['index-id'] !== undefined) {
             indexApi.getIndex({ index_uuid: indexUuid }).then(({ payload }) => {
                 setIndex({
@@ -95,7 +94,6 @@ const AddKnowledge = () => {
 
     useEffect(() => {}, []);
     const handleSubmit = (v) => {
-        console.log(v);
     };
     return (
         <div className={Styles.fileUploader}>
@@ -142,7 +140,6 @@ const AddKnowledge = () => {
                                                         menuPlacement="auto"
                                                         debounceTimeout={1000}
                                                         onChange={(v) => {
-                                                            console.log(v);
                                                             setIndex(v as Option);
                                                         }}
                                                         required={true}

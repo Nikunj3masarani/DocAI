@@ -31,9 +31,13 @@ type IndexListType = {
     description: string;
 };
 
-const DataGridComp = () => {
+interface DataGripComp {
+    initialSearchValue : string
+}
+
+const DataGridComp = ({ initialSearchValue }: DataGripComp) => {
     // Hooks & Variables
-    const [searchData, setSearchData] = useState('');
+    const [searchData, setSearchData] = useState(initialSearchValue);
     const [data, setData] = useState<IndexListType[]>([]);
     const [pager, setPager] = useState({ totalRecords: 0, filteredRecords: 0 });
     const [pagination, setPagination] = useState({ page: 1, size: 10 });
@@ -79,7 +83,6 @@ const DataGridComp = () => {
                                 icon={<Icons.Delete />}
                                 onClick={(e) => {
                                     e.preventDefault();
-                                    console.log(params);
                                     handleDeleteClick(params.row?.index_uuid);
                                 }}
                                 title="Delete"
@@ -94,7 +97,7 @@ const DataGridComp = () => {
 
     useEffect(() => {
         onApiCall();
-    }, [pagination , searchData]);
+    }, [pagination, searchData]);
 
     // Api Calls
 
@@ -160,8 +163,6 @@ const DataGridComp = () => {
     };
 
     const onSearchData = (data: string) => {
-
-        
         if (pagination.page !== 1) {
             setPagination((prev) => ({ ...prev, page: 1 }));
         } else {
@@ -181,8 +182,7 @@ const DataGridComp = () => {
     const updateDataHandler = (data) => {
         // setSelectedData(data);
         // setIsOpenDialog(true);
-        console.log(data);
-        navigate(`${data['index_uuid']}` , {state : {title : data.title}});
+        navigate(`${data['index_uuid']}`, { state: { title: data.title } });
     };
 
     const handleDeleteClick = (id: string) => {

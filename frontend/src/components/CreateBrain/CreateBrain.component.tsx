@@ -27,17 +27,15 @@ import { Button } from '@docAi-app/stories';
 
 //Import Style
 import Styles from './CreateBrain.module.scss';
-import { useEffect, useReducer, useState } from 'react';
+import { useEffect, useMemo, useReducer, useRef, useState } from 'react';
 import { ModelApi, indexApi } from '@docAi-app/api';
 import { PromptsApi } from '@docAi-app/api/prompts.api';
 import { CreateIndexRequestBody } from '@docAi-app/types/index.type';
 import { Validation } from '@docAi-app/types/validation.type';
 import { removeEmptyField, validation } from '@docAi-app/utils/helper/validation.helper';
-import { CreateBrainProps } from '@docAi-app/types/Brain.type';
 import { useNavigate, useParams } from 'react-router-dom';
 import { onLoadReaders } from '@docAi-app/utils/helper/common.helper';
 import { Option } from '@docAi-app/types/common.type';
-import { ROUTE } from '@docAi-app/utils/constants/Route.constant';
 
 interface ModelOption {
     model_uuid: string;
@@ -57,6 +55,9 @@ interface CustomPrompts {
     promptStatus: string;
 }
 
+interface CreateBrainProps {
+    close?: (val: boolean) => void;
+}
 const statusOptions = [
     { label: 'Private', value: 'Private' },
     { label: 'Public', value: 'Public' },
@@ -70,7 +71,8 @@ export const getPromptList = async (searchString: string) => {
         sort_by: '',
         sort_order: '',
     });
-    const options = (res.payload as unknown as PromptListData[]).map((data) => {
+    const payload = res.payload;
+    const options = (payload as unknown as PromptListData[]).map((data) => {
         return {
             label: data.title,
             value: data.prompt_uuid,
@@ -79,29 +81,34 @@ export const getPromptList = async (searchString: string) => {
     return { options: onLoadReaders(searchString, options), list: res.payload };
 };
 
-const CreateBrain = () => {
-    const navigate = useNavigate();
+const CreateBrain = ({ close }: CreateBrainProps) => {
     const params = useParams<{ 'index-id': string }>();
 
     // useRef
     const [modelOption, setModelOption] = useState<ModelOption[]>([]);
 
     const [promptList, setPromptList] = useState<Partial<PromptListData[]>>();
-    const [customPrompt, setCustomPrompt] = useState<Partial<PromptListData>>({
-        title: '',
-        content: '',
-        status: '',
-    });
 
-    const [prompt, setPrompt] = useState<Option>({
-        label: '',
-        value: '',
-    });
-    const [indexInfo, setIndexInfo] = useState({
+    const [indexInfo, setIndexInfo] = useState<{
+        title: string;
+        description: string;
+        status: string;
+        tags: string[];
+        model: string;
+        promptTitle: string;
+        promptContent: string;
+        promptValue: string;
+        promptStatus: string;
+    }>({
         title: '',
         description: '',
         status: '',
         tags: [],
+        model: '',
+        promptTitle: '',
+        promptContent: '',
+        promptValue: '',
+        promptStatus: '',
     });
     // useState
 
@@ -111,29 +118,51 @@ const CreateBrain = () => {
 
     // Event Handlers
 
-    useEffect(() => {}, []);
-
     useEffect(() => {
-        const index_uuid = params['index-id'] ?? '';
+        const indexUuid = params['index-id'] ?? '';
         ModelApi.getModelsList().then(({ payload }) => {
             setModelOption(payload.models);
         });
 
-        indexApi.getIndex({ index_uuid: index_uuid }).then(({ payload }) => {
-            const initPayload = payload;
-            setIndexInfo({
-                title: initPayload.title,
-                description: initPayload.description,
-                tags: payload.tags,
-                status: payload.status,
+        if (indexUuid !== '') {
+            indexApi.getIndex({ index_uuid: indexUuid }).then(({ payload }) => {
+                const initPayload = payload;
+                let promptDetails = {
+                    promptTitle: '',
+                    promptContent: '',
+                    promptStatus: '',
+                };
+
+                if (payload.prompt_uuid) {
+                    PromptsApi.getPrompt({ prompt_uuid: payload.prompt_uuid }).then(({ payload }) => {
+                        promptDetails = {
+                            promptTitle: payload.Prompt.title,
+                            promptContent: payload.Prompt.content,
+                            promptStatus: payload.Prompt.status,
+                        };
+                        setIndexInfo({
+                            title: initPayload.title,
+                            description: initPayload.description,
+                            tags: initPayload.tags,
+                            status: initPayload.status,
+                            promptValue: initPayload.prompt_uuid,
+                            model: initPayload.model_uuid,
+                            ...promptDetails,
+                        });
+                    });
+                } else {
+                    setIndexInfo({
+                        title: initPayload.title,
+                        description: initPayload.description,
+                        tags: payload.tags,
+                        status: payload.status,
+                        promptValue: payload.prompt_uuid,
+                        model: initPayload.model_uuid,
+                        ...promptDetails,
+                    });
+                }
             });
-            if (payload.prompt_uuid) {
-                PromptsApi.getPrompt({ prompt_uuid: payload.prompt_uuid }).then(({ payload }) => {
-                    setPrompt({ label: payload.Prompt.title, value: initPayload.prompt_uuid });
-                    setCustomPrompt(payload.Prompt);
-                });
-            }
-        });
+        }
     }, [params]);
     // Helpers
 
@@ -153,7 +182,10 @@ const CreateBrain = () => {
         let errors = {
             title: '',
             description: '',
+            promptDescription: '',
+            promptName: '',
         };
+
         formControls.forEach((controlName) => {
             errors[controlName] = validation(fieldValidation[controlName], val[controlName]);
         });
@@ -170,7 +202,7 @@ const CreateBrain = () => {
 
     // Your component logic here
 
-    const handleSubmit = (v: CustomPrompts & CreateIndexRequestBody) => {
+    const handleSubmit = (v) => {
         const customPrompt = {
             title: v.promptName,
             description: v.promptDescription,
@@ -182,12 +214,12 @@ const CreateBrain = () => {
             description: v.description,
             status: v.status,
             tags: v.tags ?? [],
-            prompt_uuid: prompt?.value,
+            prompt_uuid: v.prompt_uuid.value,
             model: v.model,
         };
 
-        const isCustomPrompt = promptList?.filter((prompt) => {
-            return prompt?.title !== customPrompt.title;
+        const isCustomPrompt = !promptList?.filter((prompt) => {
+            return prompt?.title === customPrompt.title;
         }).length;
 
         const isPromptUpdated = promptList?.filter((prompt) => {
@@ -207,15 +239,14 @@ const CreateBrain = () => {
             });
         } else if (isCustomPrompt) {
             PromptsApi.createPrompt(customPrompt).then(({ payload }) => {
-                console.log(payload);
                 indexDetails.prompt_uuid = payload.prompt_uuid;
                 indexApi.createIndex(indexDetails).then(() => {
-                    navigate(`${ROUTE.ROOT}${ROUTE.INDEX_LIST}`);
+                    if (close) close(!true);
                 });
             });
         } else {
             indexApi.createIndex(indexDetails).then(() => {
-                navigate(`${ROUTE.ROOT}${ROUTE.INDEX_LIST}`);
+                if (close) close(!true);
             });
         }
     };
@@ -223,16 +254,18 @@ const CreateBrain = () => {
     return (
         <div>
             <Form
+                keepDirtyOnReinitialize={true}
+                subscription={{ submitting: true }}
                 initialValues={{
                     title: indexInfo.title,
                     description: indexInfo.description,
                     status: indexInfo.status,
                     tags: indexInfo.tags,
-                    model: modelOption.length > 0 ? modelOption[0].model_uuid : '',
-                    prompt_uuid: prompt,
-                    promptName: customPrompt.title,
-                    promptDescription: customPrompt.content,
-                    promptStatus: customPrompt.status,
+                    model: indexInfo.model ?? modelOption.length > 0 ? modelOption[0].model_uuid : '',
+                    prompt_uuid: { label: indexInfo.promptTitle, value: indexInfo.promptValue },
+                    promptName: indexInfo.promptTitle,
+                    promptDescription: indexInfo.promptContent,
+                    promptStatus: indexInfo.promptStatus,
                 }}
                 validate={validate}
                 onSubmit={handleSubmit}
@@ -242,17 +275,13 @@ const CreateBrain = () => {
                             <div className={Styles['formContainer__field']}>
                                 <Field
                                     name="title"
+                                    subscription={{ touched: true, value: true, error: true }}
                                     render={({ input, meta }) => {
                                         return (
                                             <InputField
                                                 {...input}
                                                 type="text"
                                                 fullWidth
-                                                onChange={(v) => {
-                                                    setIndexInfo((prev) => {
-                                                        return { ...prev, title: v.target.value };
-                                                    });
-                                                }}
                                                 label="Name"
                                                 placeholder="Enter your brain name"
                                                 required
@@ -270,16 +299,12 @@ const CreateBrain = () => {
                             <div className={Styles['formContainer__field']}>
                                 <Field
                                     name="description"
+                                    subscription={{ touched: true, value: true, error: true }}
                                     render={({ input, meta }) => {
                                         return (
                                             <TextArea
                                                 {...input}
                                                 rows={4}
-                                                onChange={(v) => {
-                                                    setIndexInfo((prev) => {
-                                                        return { ...prev, description: v.target.value };
-                                                    });
-                                                }}
                                                 multiline
                                                 type="text"
                                                 fullWidth
@@ -300,6 +325,7 @@ const CreateBrain = () => {
                             <div className={Styles['formContainer__field']}>
                                 <Field
                                     name="model"
+                                    subscription={{ touched: true, value: true, error: true }}
                                     render={({ input }) => {
                                         return (
                                             <Select
@@ -318,6 +344,7 @@ const CreateBrain = () => {
                             <div className={Styles['formContainer__field']}>
                                 <Field
                                     name="status"
+                                    subscription={{ touched: true, value: true, error: true }}
                                     render={({ input }) => {
                                         return (
                                             <Select
@@ -334,6 +361,7 @@ const CreateBrain = () => {
                                 <label>Tags</label>
                                 <Field
                                     name="tags"
+                                    subscription={{ touched: true, value: true, error: true }}
                                     render={({ input, meta }) => (
                                         <InputChips
                                             {...input}
@@ -354,13 +382,16 @@ const CreateBrain = () => {
                             <div className={Styles['formContainer__field']}>
                                 <Field
                                     name="prompt_uuid"
+                                    subscription={{ touched: true, value: true, error: true }}
                                     render={({ input }) => {
+                                        const label = indexInfo.promptTitle;
                                         return (
                                             <AsyncSearchSelect
                                                 {...input}
                                                 label="Select Prompt"
                                                 placeholder="Select Prompt"
                                                 menuPlacement="bottom"
+                                                // value={{ label: label, value: input.value }}
                                                 loadOptions={(searchString: string) => {
                                                     return getPromptList(searchString).then((res) => {
                                                         setPromptList(res.list);
@@ -369,15 +400,24 @@ const CreateBrain = () => {
                                                 }}
                                                 debounceTimeout={1000}
                                                 onChange={(v) => {
-                                                    setPrompt(v as Option);
-                                                    setCustomPrompt({
-                                                        title: v.label,
-                                                        content: promptList?.filter(
-                                                            (prompt) => prompt.title === v.label,
-                                                        )[0]?.content,
-                                                    });
+                                                    const promptUuid = v.value;
+
+                                                    form.change('prompt_uuid', v);
+                                                    const tempPrompt = promptList?.filter(
+                                                        (prompt) => prompt?.prompt_uuid === promptUuid,
+                                                    );
+                                                    form.change('promptName', v.label);
+                                                    form.change('promptDescription', tempPrompt[0]?.content);
+                                                    // input.onChange(v);
+                                                    // setIndexInfo((prev) => ({
+                                                    //     ...prev,
+                                                    //     promptValue: v.value ?? prev.promptValue,
+                                                    //     promptTitle: v.label ?? prev.promptTitle,
+                                                    //     promptContent:
+                                                    //         promptList?.filter((prompt) => prompt.title === v.label)[0]
+                                                    //             ?.content ?? prev.promptContent,
+                                                    // }));
                                                 }}
-                                                required={true}
                                             />
                                         );
                                     }}
@@ -387,10 +427,12 @@ const CreateBrain = () => {
                             <div className={Styles['formContainer__field']}>
                                 <Field
                                     name="promptName"
+                                    subscription={{ touched: true, value: true, error: true }}
                                     render={({ input, meta }) => {
                                         return (
                                             <InputField
                                                 {...input}
+                                                // value={indexInfo.promptTitle}
                                                 type="text"
                                                 fullWidth
                                                 label="Prompt Name"
@@ -400,6 +442,10 @@ const CreateBrain = () => {
                                                     meta.touched &&
                                                     meta.error && <span style={{ width: '100%' }}>{meta.error}</span>
                                                 }
+                                                // onChange={(v) => {
+                                                //     input.onChange(v);
+                                                //     setIndexInfo((prev) => ({ ...prev, promptTitle: v.target.value }));
+                                                // }}
                                             />
                                         );
                                     }}
@@ -409,6 +455,7 @@ const CreateBrain = () => {
                             <div className={Styles['formContainer__field']}>
                                 <Field
                                     name="promptDescription"
+                                    subscription={{ touched: true, value: true, error: true }}
                                     render={({ input, meta }) => {
                                         return (
                                             <TextArea
@@ -420,6 +467,12 @@ const CreateBrain = () => {
                                                 label="Prompt Description"
                                                 placeholder="Enter your prompt description"
                                                 error={meta.touched && meta.error && true}
+                                                // onChange={(v) => {
+                                                //     setIndexInfo((prev) => ({
+                                                //         ...prev,
+                                                //         promptContent: v.target.value,
+                                                //     }));
+                                                // }}
                                                 helperText={
                                                     meta.touched &&
                                                     meta.error && <span style={{ width: '100%' }}>{meta.error}</span>
