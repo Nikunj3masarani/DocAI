@@ -1,0 +1,70 @@
+//Import Third Party lib
+
+import {
+    StyledAccordion,
+    StyledAccordionDetails,
+    StyledAccordionDetailsProps,
+    StyledAccordionProps,
+    StyledAccordionSummary,
+    StyledAccordionSummaryProps,
+} from './Accordion.styled';
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+//Import Storybook
+
+//Import Component
+
+//Import Page
+
+//Import Hook
+
+//Import Context
+
+//Import Model Type
+
+//Import Util, Helper , Constant
+
+//Import Icon
+
+//Import Api
+
+//Import Assets
+
+//Import Style
+
+const AccordionSummary = (props: StyledAccordionSummaryProps) => {
+    const { expandIcon, className, children } = props;
+
+    return (
+        <StyledAccordionSummary
+            className={className}
+            expandIcon={expandIcon ?? <ArrowDownwardIcon />}
+            aria-controls="panel1-content"
+            id="panel1-header"
+        >
+            {children}
+        </StyledAccordionSummary>
+    );
+};
+
+const AccordionDetails = ({ children, className }: StyledAccordionDetailsProps) => {
+    return <StyledAccordionDetails className={className}>{children}</StyledAccordionDetails>;
+};
+
+const Accordion = ({ children, className }: StyledAccordionProps) => {
+    // useRef
+    // useState
+    // Variables Dependent upon State
+
+    // Api Calls
+
+    // Event Handlers
+
+    // Helpers
+
+    // JSX Methods
+
+    // Your component logic here
+    return <StyledAccordion className={className}>{children}</StyledAccordion>;
+};
+
+export { Accordion, AccordionSummary, AccordionDetails };

@@ -1,0 +1,16 @@
+@import '@docAi-app/styles/abstracts/_abstracts.scss';
+
+.container {
+    height: calc(100vh - $headerHeight);
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+    flex: 1;
+    gap: 2rem;
+}
+    
+.childComponents {
+    background-color: $secondary10;
+    border-radius: 2rem;
+    padding: 2rem 2.8rem 2rem 2rem;
+}

@@ -1,0 +1,18 @@
+.fileListContainer {
+    overflow: auto;
+    max-height: 15rem;
+    p {
+        margin-left: 2rem;
+    }
+    &__file {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
