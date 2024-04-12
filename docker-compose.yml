@@ -31,14 +31,17 @@ services:
       - /home/nikunj/models/:/models/
 
   frontend:
-    build: ./frontend
+    build:
+      context: ./frontend
+      args:
+          ENVIRONMENT: development
     ports:
-      - "8053:8053"
+      - "3000:3000"
     depends_on:
       backend:
         condition: service_started
     environment:
-      BACKEND_URL: "http://backend:8080"
+      VITE_BASE_API: "http://backend:8080/api/"
 
   database:
     image: postgres:latest
