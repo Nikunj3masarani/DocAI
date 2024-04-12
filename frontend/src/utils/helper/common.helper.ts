@@ -12,9 +12,15 @@ export const isEmptyValue = (value: unknown) => {
     return false;
 };
 
-export const onLoadReaders = async (searchString: string, readersList: Option[]): Promise<{ options: Option[] }> => {
+export const onLoadReaders = async (
+    searchString: string,
+    readersList: Option[] = [],
+): Promise<{ options: Option[] }> => {
     return {
-        options: readersList.filter((reader) => reader.label.toLowerCase().indexOf(searchString.toLowerCase()) > -1),
+        options:
+            readersList.length === 0
+                ? []
+                : readersList.filter((reader) => reader.label.toLowerCase().indexOf(searchString.toLowerCase()) > -1),
     };
 };
 

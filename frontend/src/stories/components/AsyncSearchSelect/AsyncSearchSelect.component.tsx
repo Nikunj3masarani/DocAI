@@ -6,13 +6,13 @@ import {
     AsyncSearchSelectContainerStyled,
     AsyncSearchSelectLabelStyled,
     AsyncSearchSelectStyled,
+    CustomDropDownIcon,
     CustomOptionStyled,
 } from './AsyncSearchSelect.styled';
 import { CheckboxComp } from '../Checkbox';
 import theme from '@docAi-app/theme';
-import DownArrow from '@docAi-app/icons/DownArrow.icon';
 import SearchIcon from '@docAi-app/icons/Search.icon';
-
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 export interface AsyncSelectDataType {
     value: string;
     label: string;
@@ -431,7 +431,7 @@ const AsyncSearchSelect = ({
                         menuPlacement={menuPlacement}
                         // menuPortalTarget={document.body}
                         components={{
-                            DropdownIndicator: () => <DownArrow width={16} height={16} />,
+                            DropdownIndicator: () => <ArrowDropDownIcon />,
                             IndicatorSeparator: () => null,
                             Menu,
                             Option,

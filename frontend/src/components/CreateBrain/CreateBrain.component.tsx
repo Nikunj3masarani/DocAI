@@ -27,12 +27,12 @@ import { Button } from '@docAi-app/stories';
 
 //Import Style
 import Styles from './CreateBrain.module.scss';
-import { useEffect,useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ModelApi, indexApi } from '@docAi-app/api';
 import { PromptsApi } from '@docAi-app/api/prompts.api';
 import { Validation } from '@docAi-app/types/validation.type';
 import { removeEmptyField, validation } from '@docAi-app/utils/helper/validation.helper';
-import {  useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { onLoadReaders } from '@docAi-app/utils/helper/common.helper';
 
 interface ModelOption {
@@ -47,7 +47,6 @@ export interface PromptListData {
     content: string;
     created_at: string;
 }
-
 
 interface CreateBrainProps {
     close?: (val: boolean) => void;
@@ -65,14 +64,21 @@ export const getPromptList = async (searchString: string) => {
         sort_by: '',
         sort_order: '',
     });
-    const payload = res.payload;
+
+    const payload = res?.payload ?? [];
     const options = (payload as unknown as PromptListData[]).map((data) => {
         return {
-            label: data.title,
-            value: data.prompt_uuid,
+            label: data.title ?? '',
+            value: data.prompt_uuid ?? '',
         };
     });
-    return { options: onLoadReaders(searchString, options), list: res.payload };
+    // const newOptions = await onLoadReaders(searchString, options);
+    if (res?.payload) {
+        return { options: options, list: res.payload };
+    } else
+        return {
+            options: options.length === 0 ? [] : options,
+        };
 };
 
 const CreateBrain = ({ close }: CreateBrainProps) => {
@@ -244,7 +250,6 @@ const CreateBrain = ({ close }: CreateBrainProps) => {
             });
         }
     };
-
     return (
         <div>
             <Form
@@ -263,7 +268,7 @@ const CreateBrain = ({ close }: CreateBrainProps) => {
                 }}
                 validate={validate}
                 onSubmit={handleSubmit}
-                render={({ handleSubmit, form }) => {
+                render={({ handleSubmit, form, values }) => {
                     return (
                         <form onSubmit={handleSubmit} className={Styles.formContainer}>
                             <div className={Styles['formContainer__field']}>
@@ -386,16 +391,14 @@ const CreateBrain = ({ close }: CreateBrainProps) => {
                                                 placeholder="Select Prompt"
                                                 menuPlacement="bottom"
                                                 // value={{ label: label, value: input.value }}
-                                                loadOptions={(searchString: string) => {
-                                                    return getPromptList(searchString).then((res) => {
-                                                        setPromptList(res.list);
-                                                        return res.options;
-                                                    });
+                                                loadOptions={async (searchString: string) => {
+                                                    const res = await getPromptList(searchString);
+                                                    setPromptList(res?.list);
+                                                    return { options: [], hasMore: false };
                                                 }}
                                                 debounceTimeout={1000}
                                                 onChange={(v) => {
                                                     const promptUuid = v.value;
-
                                                     form.change('prompt_uuid', v);
                                                     const tempPrompt = promptList?.filter(
                                                         (prompt) => prompt?.prompt_uuid === promptUuid,
@@ -495,8 +498,8 @@ const CreateBrain = ({ close }: CreateBrainProps) => {
 
                             <div className={Styles.formContainer__actionButton}>
                                 <Button
+                                    variant="outlined"
                                     type="button"
-                                    variant="contained"
                                     onClick={() => {
                                         form.reset();
                                     }}
@@ -506,7 +509,7 @@ const CreateBrain = ({ close }: CreateBrainProps) => {
 
                                 <Button
                                     type="submit"
-                                    variant="outlined"
+                                    variant="contained"
                                     onClick={() => {
                                         form.submit();
                                     }}

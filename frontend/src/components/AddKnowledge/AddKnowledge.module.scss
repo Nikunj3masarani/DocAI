@@ -39,15 +39,25 @@
     position: relative;
     top: -2rem;
 }
+
 .fileListContainer {
-    display: flex;
     width: 100%;
     padding-inline: 2rem;
 }
 
 .formContainer {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.field {
     width: 30%;
 }
+
 .fileList {
     display: flex;
     justify-content: start;
@@ -55,5 +65,12 @@
     align-self: flex-start;
     width: 70%;
     margin-top: 2rem;
-    margin-left: 2rem;
+    margin-left: 30%;
+}
+
+.actionButton {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 70%;
 }

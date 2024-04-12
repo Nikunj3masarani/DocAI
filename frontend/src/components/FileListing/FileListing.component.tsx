@@ -32,6 +32,7 @@ import { indexApi } from '@docAi-app/api';
 const FileListing = ({
     files = [],
     deleteFiles,
+    handleSubmit
 }: {
     files: FilesUpload[] | undefined;
     deleteFiles: (file: FilesUpload) => void;
@@ -62,18 +63,15 @@ const FileListing = ({
         <>NO document uploded yet</>
     ) : (
         <>
-            <div className={Style.header}>
-                <div>{<p>Knowledge to Upload </p>}</div>
-                <Button variant="contained">Upload</Button>
-            </div>
+           
             <ul className={`${Style.fileListContainer}`}>
-                {files.map((file: FilesUpload) => {
+                {files.map(({ file, key }: FilesUpload) => {
                     return (
-                        <li className={Style.fileListContainer__file} key={file.key}>
-                            <p> {file[0].name}</p>
+                        <li className={Style.fileListContainer__file} key={key}>
+                            <p> {file?.name}</p>
                             <IconButton
                                 onClick={() => {
-                                    deleteFiles(file);
+                                    deleteFiles({ file, key });
                                 }}
                             >
                                 <Delete />

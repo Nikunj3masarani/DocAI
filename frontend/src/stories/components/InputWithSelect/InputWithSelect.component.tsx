@@ -47,7 +47,10 @@ export const indexList = async (searchString: string) => {
             value: data.index_uuid,
         };
     });
-    return onLoadReaders(searchString, options);
+
+    return {
+        options: options.length === 0 ? [] : options,
+    };
 };
 type InputWithSelectProps = {
     disable: boolean;

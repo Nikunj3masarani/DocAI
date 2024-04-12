@@ -22,7 +22,6 @@ const axiosInstance = axios.create({
     headers: {
         ...defaultHeaders,
     },
-    timeout:  10000
 });
 
 axiosInstance.interceptors.request.use((config: AxiosRequest) => {
@@ -69,7 +68,6 @@ export const apiCall = async <ResponsePayload, RequestBody = undefined>(
     if (showLoader) {
         showLoading();
     }
-
     return axiosInstance
         .request<ResponsePayload, ApiResponse<ResponsePayload>, RequestBody>(apiReqConfig)
         .then((response) => {
@@ -83,10 +81,10 @@ export const apiCall = async <ResponsePayload, RequestBody = undefined>(
             return response;
         })
         .catch((error) => {
-            if (error && showAlertToast && error.message) {
-                console.log({ error });
-            }
-            throw error;
+            // if (error && showAlertToast && error.message) {
+            //     console.log({ error });
+            // }
+            // throw error;
         })
         .finally(() => {
             if (showLoader) {

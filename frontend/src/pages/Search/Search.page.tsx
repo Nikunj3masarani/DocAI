@@ -108,7 +108,7 @@ const Search = () => {
                 <div className={Style.content}>
                     <div className={Style.content__header}>
                         <img src={Logo} alt="basf logo" />
-                        <h1>Talk to DocAi</h1>
+                        <h1>Talk to DocAI</h1>
                     </div>
                     <div className={Style.content__body}>
                         <InputWithSelect handleSubmit={handleSubmit} disable={disableSearchInput} />

@@ -16,6 +16,8 @@ const getDocuments = (requestBody: GetDocumentsRequestBody) => {
     return apiCall(data);
 };
 
+
+
 const DocumentAPi = {
     getDocuments,
 };

@@ -118,11 +118,19 @@ const CustomOptionStyled = styled('div')`
     }
 `;
 
+const CustomDropDownIcon = styled('div')`
+    height: 0;
+    width: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 4px solid rgba(0, 0, 0, 0.54);
+`;
 export {
     AsyncSearchSelectContainerStyled,
     AsyncSearchSelectLabelStyled,
     AsyncSearchSelectStyled,
     CustomOptionStyled,
     AsyncCreatableStyled,
+    CustomDropDownIcon,
 };
 export type { AsyncPaginateProps };

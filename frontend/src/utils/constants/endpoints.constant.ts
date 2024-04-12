@@ -85,6 +85,10 @@ export const ENDPOINTS = {
             METHOD: `${METHOD.POST}`,
             URL: `${DOCUMENTS}/list?index_uuid`,
         },
+        UPLOAD_DOCUMENTS : {
+            METHOD : METHOD.POST,
+            URL: `${DOCUMENTS}/upload`
+        }
     },
     CHAT: {
         GET_LIST: {
