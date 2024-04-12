@@ -34,7 +34,9 @@ class Index(DBService):
         index_obj.created_by = data.get('user_uuid')
         index_obj.index_type = IndexType.DOCUMENT.value
         index_obj.tags = data.get('tags')
-        index_obj.prompt_uuid = data.get("prompt_uuid")
+        prompt_uuid = data.get('prompt_uuid')
+        if prompt_uuid:
+            index_obj.prompt_uuid = prompt_uuid
         index_obj.model = data.get("model")
         index_obj.created_at = datetime.now()
         index_user_mapping = IndexUserMappingTable()
