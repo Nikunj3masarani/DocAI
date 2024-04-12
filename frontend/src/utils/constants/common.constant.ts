@@ -10,25 +10,6 @@ export const TIMEOUT = {
     TOAST: 5000,
 };
 
-export const PROMPT_SORT_BY_PARAMS: Record<string, PromptSorting> = {
-    latestFirst: {
-        sortBy: 'created_at',
-        sortOrder: 'DESC',
-    },
-    oldestFirst: {
-        sortBy: 'created_at',
-        sortOrder: 'ASC',
-    },
-    lowToHighRatings: {
-        sortBy: 'rating',
-        sortOrder: 'ASC',
-    },
-    highToLowRatings: {
-        sortBy: 'rating',
-        sortOrder: 'DESC',
-    },
-};
-
 export const PROMPT_SORT_BY_OPTIONS = [
     { label: 'Latest First', value: 'latestFirst' },
     { label: 'Oldest First', value: 'oldestFirst' },

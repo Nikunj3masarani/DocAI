@@ -1,5 +1,5 @@
 import { styled } from '@mui/material/styles';
-import Tab from '@mui/material/Tab';
+import Tab, { TabProps } from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 
 export const StyledTabs = styled(Tabs)`
@@ -14,7 +14,7 @@ export const StyledTabs = styled(Tabs)`
     }
 `;
 
-export const StyledTab = styled(Tab)`
+export const StyledTab = styled(Tab)<TabProps>`
     &.customSelected {
         background-color: ${({ theme }) => theme.colors.transparent};
         color: ${({ theme }) => theme.colors.black};

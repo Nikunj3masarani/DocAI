@@ -1,52 +1,46 @@
-# Use an official Node.js runtime as a parent image
-FROM node:18-alpine as build
+# Use a lightweight Node.js image
+FROM node:18-alpine
+ARG ENVIRONMENT 
 
-ARG ENVIRONMENT
-
-# Set the working directory
+# Set working directory
 WORKDIR /app
 
-# Copy .yarn/releases folder to use latest yarn version
 COPY .yarn ./.yarn
 COPY .yarnrc.yml ./.yarnrc.yml
 
-# Copy package.json and yarn.lock (or package-lock.json) to the container
+# Copy package.json and yarn.lock
 COPY package.json yarn.lock ./
 
 # Install dependencies
-RUN yarn
+RUN yarn install
 
+RUN yarn add -D sass
+# Copy the rest of the project files (excluding node_modules)
 COPY . ./
 
+# Build the project for production
 RUN yarn build:${ENVIRONMENT}
 
-# Stage 2: Serve the built React app
-FROM nginx:stable-alpine
+# Expose the port where the app is running (default React port)
+EXPOSE 3000
 
-WORKDIR /usr/share/nginx/port8091
+# Start the development server (replace with your actual start command)
+CMD [ "yarn", "run", "preview", "--host" ]
 
-RUN rm -rf ./*
+# ## sudo docker build -t [YOUR_CONTAINER_NAME] --build-arg ENVIRONMENT=[YOUR_ENVIRONMENT_NAME]
+# ## Example -
+# ## sudo docker build -t your --build-arg ENVIRONMENT=development . 
+# ## sudo docker build -t swd --build-arg ENVIRONMENT=int . 
+# ## sudo docker build -t swd --build-arg ENVIRONMENT=production . 
 
-# Copy the build output from the previous stage to the Nginx web root directory
-COPY --from=build /app/dist .
+# ## To run run container
+# ## sudo docker run -p 8080:3000 [YOUR_CONTAINER_NAME]
+# ## Example -
+# ## sudo docker run -p 8080:3000 docai
 
-# add your nginx configurations
-COPY ./nginx.conf /etc/nginx/conf.d/default.conf
+# ## To get Docker information of running docker containers
+# ## sudo docker ps
 
-# Expose port 80 to the outside world
-EXPOSE 8091
-
-# Start Nginx server
-CMD ["nginx", "-g", "daemon off;"]
-
-## To Run this file Fire below command
-## sudo docker build -t [YOUR_CONTAINER_NAME] --build-args ENVIRONMENT=[YOUR_ENVIRONMENT_NAME]
-## Example -
-## sudo docker build -t your --build-arg ENVIRONMENT=development . 
-## sudo docker build -t swd --build-arg ENVIRONMENT=int . 
-## sudo docker build -t swd --build-arg ENVIRONMENT=production . 
-
-## To run run container
-## sudo docker run -d -it --rm -p 8080:8091 [YOUR_CONTAINER_NAME]
-## Example -
-## sudo docker run -d -it --rm -p 8080:8091 swd
+# ## To Stop Container
+# ## sudo docker kill [YOUR_CONTAINER_ID]
+# ## sudo docker kill 12fe53441

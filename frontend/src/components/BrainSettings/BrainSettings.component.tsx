@@ -1,10 +1,5 @@
 //Import Third Party lib
-import { indexApi } from '@docAi-app/api';
-import { PromptsApi } from '@docAi-app/api/prompts.api';
 import { CreateBrain } from '@docAi-app/components';
-import { CreateBrainProps } from '@docAi-app/types/Brain.type';
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
 
 //Import Storybook
 

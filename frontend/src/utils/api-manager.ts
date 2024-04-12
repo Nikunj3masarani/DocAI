@@ -22,6 +22,7 @@ const axiosInstance = axios.create({
     headers: {
         ...defaultHeaders,
     },
+    timeout:  10000
 });
 
 axiosInstance.interceptors.request.use((config: AxiosRequest) => {

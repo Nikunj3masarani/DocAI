@@ -5,7 +5,7 @@ type TabItem = {
     label: string;
     value: number;
     canAccess?: boolean;
-    icon?: React.ReactNode;
+    icon?: React.ReactElement;
 };
 
 type TabProps = {

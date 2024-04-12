@@ -27,15 +27,13 @@ import { Button } from '@docAi-app/stories';
 
 //Import Style
 import Styles from './CreateBrain.module.scss';
-import { useEffect, useMemo, useReducer, useRef, useState } from 'react';
+import { useEffect,useState } from 'react';
 import { ModelApi, indexApi } from '@docAi-app/api';
 import { PromptsApi } from '@docAi-app/api/prompts.api';
-import { CreateIndexRequestBody } from '@docAi-app/types/index.type';
 import { Validation } from '@docAi-app/types/validation.type';
 import { removeEmptyField, validation } from '@docAi-app/utils/helper/validation.helper';
-import { useNavigate, useParams } from 'react-router-dom';
+import {  useParams } from 'react-router-dom';
 import { onLoadReaders } from '@docAi-app/utils/helper/common.helper';
-import { Option } from '@docAi-app/types/common.type';
 
 interface ModelOption {
     model_uuid: string;
@@ -49,11 +47,7 @@ export interface PromptListData {
     content: string;
     created_at: string;
 }
-interface CustomPrompts {
-    promptName: string;
-    promptDescription: string;
-    promptStatus: string;
-}
+
 
 interface CreateBrainProps {
     close?: (val: boolean) => void;

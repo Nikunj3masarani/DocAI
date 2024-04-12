@@ -4,7 +4,6 @@ import { ENDPOINTS } from '@docAi-app/utils/constants/endpoints.constant';
 import { Method } from 'axios';
 import { CreateIndexRequestBody, GetAllIndexResponse } from '@docAi-app/types/index.type';
 import { parseEndpoint } from '@docAi-app/utils/helper/common.helper';
-import { USER_ROLE } from '@docAi-app/utils/constants/common.constant';
 
 interface GetIndexParams {
     index_uuid: string;

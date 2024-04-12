@@ -66,7 +66,7 @@ const InputWithSelect = ({ disable, handleSubmit }: InputWithSelectProps) => {
 
         ModelApi.getModelsList().then((res) => {
             let models = res.payload.models;
-           models =  models.map((model) => {
+            models = models.map((model) => {
                 return { label: model.display_name, value: model.model_uuid };
             });
             setModelOption(models);
@@ -90,7 +90,7 @@ const InputWithSelect = ({ disable, handleSubmit }: InputWithSelectProps) => {
             onSubmit={handleSubmit}
             initialValues={{
                 index: index,
-                model: modelOption && modelOption?.at(0)?.value ?? '',
+                model: (modelOption && modelOption?.at(0)?.value) ?? '',
             }}
             render={({ handleSubmit, form }) => {
                 return (
@@ -128,13 +128,7 @@ const InputWithSelect = ({ disable, handleSubmit }: InputWithSelectProps) => {
                                     name="model"
                                     subscription={{ touched: true, value: true, error: true }}
                                     render={({ input }) => {
-                                        return (
-                                            <Select
-                                                {...input}
-                                                options={modelOption}
-                                                placeholder="Select Model"
-                                            />
-                                        );
+                                        return <Select {...input} options={modelOption} placeholder="Select Model" />;
                                     }}
                                 />
                             </div>

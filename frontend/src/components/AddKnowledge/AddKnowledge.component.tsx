@@ -26,14 +26,13 @@ import { FileUploader } from 'react-drag-drop-files';
 import Styles from './AddKnowledge.module.scss';
 import { onLoadReaders, uuidGenerator } from '@docAi-app/utils/helper/common.helper';
 import { FileListing } from '@docAi-app/components/FileListing';
-import { useLocation, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { DocumentAPi } from '@docAi-app/api/documents.api';
 import { AsyncSearchSelect } from '@docAi-app/stories';
 import { indexApi } from '@docAi-app/api';
 import { Option } from '@docAi-app/types/common.type';
 import { Form } from 'react-final-form';
 import { Field } from 'react-final-form';
-import { isArray } from 'lodash';
 
 const fileTypes = ['PDF', 'TXT', 'HTML'];
 const MAX_SIZE = 10;
@@ -67,7 +66,6 @@ const AddKnowledge = () => {
             return prevFiles ? [...prevFiles, fileToUpload] : [fileToUpload];
         });
     };
-    const location = useLocation();
     const deleteFiles = (fileToRemove: FilesUpload) => {
         setFiles(
             files!.filter((file) => {
@@ -93,8 +91,7 @@ const AddKnowledge = () => {
     }, [params['index-id']]);
 
     useEffect(() => {}, []);
-    const handleSubmit = (v) => {
-    };
+    const handleSubmit = (v) => {};
     return (
         <div className={Styles.fileUploader}>
             <FileUploader
@@ -134,7 +131,6 @@ const AddKnowledge = () => {
                                                 return (
                                                     <AsyncSearchSelect
                                                         {...input}
-                                                        value={index}
                                                         label="Select Brain"
                                                         placeholder="Select Brain"
                                                         menuPlacement="auto"

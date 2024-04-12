@@ -3,15 +3,11 @@ import { SelectChangeEvent } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { debounce } from 'lodash';
 import {
-    Button,
     Dialog,
     Pagination,
     SearchInput,
-    Tooltip,
     NoDataFound,
-    ConfirmationPopup,
     Select,
-    OverflowToolTip,
 } from '@docAi-app/stories';
 import { ActionButton } from '../ActionButton';
 // import { copyHandler, highlightSearchedWord } from '@patent-app/utils/helpers/common.helper';
@@ -21,9 +17,8 @@ import Icons from '@docAi-app/icons';
 import Styles from './DataGrid.module.scss';
 import { indexApi } from '@docAi-app/api';
 import { useNavigate } from 'react-router-dom';
-import { ROUTE } from '@docAi-app/utils/constants/Route.constant';
 
-const maxTags = 2;
+// const maxTags = 2;
 
 type IndexListType = {
     index_uuid: string;

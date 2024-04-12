@@ -1,5 +1,5 @@
 import { styled } from '@mui/material';
-import { IconType } from '@patent-app/types/Common.type';
+import { IconType } from '@docAi-app/types/common.type';
 
 const StyledPath = styled('path')<IconType>`
     fill: ${({ fill, theme }) => (fill ? fill : theme.colors.secondary)};

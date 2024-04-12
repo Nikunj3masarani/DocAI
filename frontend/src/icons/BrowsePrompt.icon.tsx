@@ -1,11 +1,11 @@
 import { styled } from '@mui/material/styles';
-import { IconType } from '@patent-app/types/Common.type';
+import { IconType } from '@docAi-app/types/common.type';
 
 const StyledG = styled('g')<IconType>`
     fill: ${({ theme, fill }) => (fill ? fill : theme.colors.secondary)};
 `;
 
-const StyledPath = styled('path')<IconType>`
+const StyledPath = styled('path')<Partial<IconType>>`
     stroke: ${({ theme, stroke }) => (stroke ? stroke : theme.colors.black)};
 `;
 

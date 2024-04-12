@@ -61,6 +61,10 @@ export const StyledHeader = styled('div')`
     justify-content: space-between;
     align-items: center;
     padding: 2.1rem 3rem;
+
+    img {
+        height: 6rem;
+    }
 `;
 
 export const StyledListItem = styled(ListItem)``;
