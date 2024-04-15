@@ -13,7 +13,7 @@ const getModelsList = () => {
     return apiCall<ModelListResponse>(data);
 };
 
-const ModelApi = {
-    getModelsList
-}
-export { ModelApi };
+const modelApi = {
+    getModelsList,
+};
+export { modelApi };

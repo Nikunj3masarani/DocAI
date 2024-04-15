@@ -1,11 +1,12 @@
 //Import Third Party lib
-import { AsyncSearchSelect, InputChips, InputField, Select, TextArea } from '@docAi-app/stories';
+import { useEffect, useState } from 'react';
+import { Form, Field } from 'react-final-form';
+import { useParams } from 'react-router-dom';
+
 import { CHIPS_OPTIONS } from '@docAi-app/utils/constants/common.constant';
-import { Form } from 'react-final-form';
-import { Field } from 'react-final-form';
-import { Button } from '@docAi-app/stories';
 
 //Import Storybook
+import { AsyncSearchSelect, InputChips, InputField, Select, TextArea, Button } from '@docAi-app/stories';
 
 //Import Component
 
@@ -16,24 +17,20 @@ import { Button } from '@docAi-app/stories';
 //Import Context
 
 //Import Model Type
+import { Validation } from '@docAi-app/types/validation.type';
 
 //Import Util, Helper , Constant
+import { removeEmptyField, validation } from '@docAi-app/utils/helper/validation.helper';
 
 //Import Icon
 
 //Import Api
+import { modelApi, indexApi, promptApi } from '@docAi-app/api';
 
 //Import Assets
 
 //Import Style
 import Styles from './CreateBrain.module.scss';
-import { useEffect, useState } from 'react';
-import { ModelApi, indexApi } from '@docAi-app/api';
-import { PromptsApi } from '@docAi-app/api/prompts.api';
-import { Validation } from '@docAi-app/types/validation.type';
-import { removeEmptyField, validation } from '@docAi-app/utils/helper/validation.helper';
-import { useParams } from 'react-router-dom';
-import { onLoadReaders } from '@docAi-app/utils/helper/common.helper';
 
 interface ModelOption {
     model_uuid: string;
@@ -51,12 +48,14 @@ export interface PromptListData {
 interface CreateBrainProps {
     close?: (val: boolean) => void;
 }
+
 const statusOptions = [
     { label: 'Private', value: 'Private' },
     { label: 'Public', value: 'Public' },
 ];
+
 export const getPromptList = async (searchString: string) => {
-    const res = await PromptsApi.getPromptsList({
+    const res = await promptApi.getPromptsList({
         search: searchString,
         page_number: 1,
         records_per_page: 10,
@@ -81,10 +80,15 @@ export const getPromptList = async (searchString: string) => {
         };
 };
 
+const formControls = ['title', 'description'] as const;
+
+type FieldValidation = {
+    [P in (typeof formControls)[number]]: Partial<Validation>;
+};
+
 const CreateBrain = ({ close }: CreateBrainProps) => {
     const params = useParams<{ 'index-id': string }>();
 
-    // useRef
     const [modelOption, setModelOption] = useState<ModelOption[]>([]);
 
     const [promptList, setPromptList] = useState<Partial<PromptListData[]>>();
@@ -110,17 +114,10 @@ const CreateBrain = ({ close }: CreateBrainProps) => {
         promptValue: '',
         promptStatus: '',
     });
-    // useState
-
-    // Variables Dependent upon State
-
-    // Api Calls
-
-    // Event Handlers
 
     useEffect(() => {
         const indexUuid = params['index-id'] ?? '';
-        ModelApi.getModelsList().then(({ payload }) => {
+        modelApi.getModelsList().then(({ payload }) => {
             setModelOption(payload.models);
         });
 
@@ -134,7 +131,7 @@ const CreateBrain = ({ close }: CreateBrainProps) => {
                 };
 
                 if (payload.prompt_uuid) {
-                    PromptsApi.getPrompt({ prompt_uuid: payload.prompt_uuid }).then(({ payload }) => {
+                    promptApi.getPrompt({ prompt_uuid: payload.prompt_uuid }).then(({ payload }) => {
                         promptDetails = {
                             promptTitle: payload.Prompt.title,
                             promptContent: payload.Prompt.content,
@@ -164,14 +161,8 @@ const CreateBrain = ({ close }: CreateBrainProps) => {
             });
         }
     }, [params]);
-    // Helpers
 
-    // JSX Methods
-    const formControls = ['title', 'description'] as const;
-
-    type FieldValidation = {
-        [P in (typeof formControls)[number]]: Partial<Validation>;
-    };
+    // Event Handlers
 
     const fieldValidation: FieldValidation = {
         title: { required: { message: 'Name is required' } },
@@ -200,8 +191,6 @@ const CreateBrain = ({ close }: CreateBrainProps) => {
         return Object.keys(errorObject).length > 0 ? errorObject : {};
     };
 
-    // Your component logic here
-
     const handleSubmit = (v) => {
         const customPrompt = {
             title: v.promptName,
@@ -227,7 +216,7 @@ const CreateBrain = ({ close }: CreateBrainProps) => {
         }).length;
 
         if (isPromptUpdated) {
-            PromptsApi.updatePrompt({
+            promptApi.updatePrompt({
                 params: {
                     prompt_uuid: indexDetails.prompt_uuid,
                 },
@@ -238,7 +227,7 @@ const CreateBrain = ({ close }: CreateBrainProps) => {
                 },
             });
         } else if (isCustomPrompt) {
-            PromptsApi.createPrompt(customPrompt).then(({ payload }) => {
+            promptApi.createPrompt(customPrompt).then(({ payload }) => {
                 indexDetails.prompt_uuid = payload.prompt_uuid;
                 indexApi.createIndex(indexDetails).then(() => {
                     if (close) close(!true);
@@ -250,6 +239,8 @@ const CreateBrain = ({ close }: CreateBrainProps) => {
             });
         }
     };
+
+    // Your component logic here
     return (
         <div>
             <Form

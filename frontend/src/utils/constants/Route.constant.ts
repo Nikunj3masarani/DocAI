@@ -8,7 +8,7 @@ export const ROUTE = {
     CHAT: 'chat',
     INDEX_LIST: 'index-list',
     INDEX_ID: 'index-id',
-    CHAT_ID: 'chat-uuid',
+    CHAT_ID: 'chat_uuid',
     BRAINS: 'brains',
     INVITE: 'invite',
     WILDCARD: '*',

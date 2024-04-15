@@ -1,9 +1,9 @@
 //Import Third Party lib
-import { CreateBrain } from '@docAi-app/components';
 
 //Import Storybook
 
 //Import Component
+import { CreateBrain } from '@docAi-app/components';
 
 //Import Page
 
@@ -24,17 +24,6 @@ import { CreateBrain } from '@docAi-app/components';
 //Import Style
 
 const BrainSettings = () => {
-    // useRef
-    // useState
-    // Variables Dependent upon State
-
-    // Api Calls
-
-    // Event Handlers
-
-    // Helpers
-
-    // JSX Methods
 
     // Your component logic here
     return (

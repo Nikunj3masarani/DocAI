@@ -12,3 +12,4 @@ export { BrainSettings } from './BrainSettings';
 export { InvitePeople } from './InvitePeople';
 export { People } from './People';
 export { UsersWithAccess } from './UsersWithAccess';
+export { MessageTypeField } from './MessageTypeField';

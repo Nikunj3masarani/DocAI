@@ -1,6 +1,7 @@
 import { ApiConfig } from '@docAi-app/types/Api.type';
-import { apiCall } from '@docAi-app/utils/api-manager';
+import { apiCall, generateStream } from '@docAi-app/utils/api-manager';
 import { ENDPOINTS } from '@docAi-app/utils/constants/endpoints.constant';
+import { parseEndpoint } from '@docAi-app/utils/helper/common.helper';
 import { Method } from 'axios';
 
 interface EditMessageTitleRequestBody {
@@ -12,6 +13,7 @@ interface DeleteChatRequestBody {
     chat_uuid: string;
 }
 
+interface GetChatMessageRequestParams extends DeleteChatRequestBody {}
 interface GetChatRequestBody {
     index_uuid: string;
     query: string;
@@ -56,14 +58,23 @@ const getChat = (requestBody: Partial<GetChatRequestBody>) => {
         data: requestBody,
     };
 
-    return apiCall(data);
+    return generateStream(data);
 };
 
+const getChatMessage = (requestParams: GetChatMessageRequestParams) => {
+    const data: ApiConfig<GetChatMessageRequestParams> = {
+        method: ENDPOINTS.CHAT.GET_CHAT_MESSAGE.METHOD as Method,
+        url: parseEndpoint(ENDPOINTS.CHAT.GET_CHAT_MESSAGE.URL, { ...requestParams }),
+    };
+
+    return apiCall(data);
+};
 const chatApi = {
     getChatList,
     editMessageTitle,
     deleteChat,
     getChat,
+    getChatMessage,
 };
 
 export { chatApi };
