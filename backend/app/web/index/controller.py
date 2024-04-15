@@ -3,7 +3,7 @@ from app import constants
 from fastapi_utils.cbv import cbv
 from fastapi_utils.inferring_router import InferringRouter
 from app.web.index.service import Index as IndexService
-from app.web.index.validator import CreateIndex, IndexList, IndexRemoveUser, IndexInviteUser, IndexUserUpdate
+from app.web.index.validator import CreateIndex, IndexList, IndexRemoveUser, IndexInviteUser, IndexUserUpdate, UpdateIndex
 from app.web.index.response import IndexResponse, IndexListResponse, IndexUserResponse
 from app.services.db.dependency import get_db_session
 from app.services.es.dependency import get_es_client
@@ -32,6 +32,25 @@ class Index:
             status=status.HTTP_200_OK,
         )
 
+    @router.put("/")
+    async def update_index(
+        self,
+        index_data: UpdateIndex,
+        db=Depends(get_db_session),
+        es_client=Depends(get_es_client),
+        user=Depends(AuthBearer())
+
+    ) -> IndexResponse:
+        index_service = IndexService(db, es_client)
+        index_data_dict = index_data.__dict__
+        index_data_dict['user_uuid'] = user.get('user_uuid')
+        response = await index_service.update(index_data_dict)
+        return IndexResponse(
+            payload=response,
+            message=constants.INDEX_UPDATED,
+            status=status.HTTP_200_OK,
+        )
+        
     @router.get("/")
     async def get_index(
         self,
