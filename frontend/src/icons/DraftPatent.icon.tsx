@@ -5,7 +5,7 @@ const StyledG = styled('g')`
     fill: ${({ fill, theme }) => (fill ? fill : theme.colors.secondary)};
 `;
 
-const DraftPatent = ({ width = 13, height = 16, fill, ...props }: IconType) => (
+const DraftPatent = ({ width = 13, height = 16, fill, ...props }: Partial<IconType>) => (
     <svg xmlns="http://www.w3.org/2000/svg" width={width} height={height} fill="none" viewBox="0 0 13 16" {...props}>
         <StyledG fill={fill}>
             <g fillRule="evenodd" clipRule="evenodd">

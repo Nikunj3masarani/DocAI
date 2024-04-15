@@ -4,8 +4,10 @@ import { ENDPOINTS } from '@docAi-app/utils/constants/endpoints.constant';
 import { parseEndpoint } from '@docAi-app/utils/helper/common.helper';
 import { Method } from 'axios';
 
-interface EditMessageTitleRequestBody {
+interface EditMessageTitleParams {
     chat_uuid: string;
+}
+interface EditMessageTitleRequestBody {
     title: string;
 }
 
@@ -31,11 +33,11 @@ const getChatList = () => {
     return apiCall(data);
 };
 
-const editMessageTitle = (requestBody: EditMessageTitleRequestBody) => {
+const editMessageTitle = ({ title, chat_uuid }: EditMessageTitleRequestBody & EditMessageTitleParams) => {
     const data: ApiConfig<EditMessageTitleRequestBody> = {
         method: ENDPOINTS.CHAT.UPDATE_TITLE.METHOD as Method,
-        url: ENDPOINTS.CHAT.UPDATE_TITLE.URL,
-        data: requestBody,
+        url: parseEndpoint(ENDPOINTS.CHAT.UPDATE_TITLE.URL, { chat_uuid }),
+        data: { title },
     };
 
     return apiCall(data);
@@ -44,8 +46,7 @@ const editMessageTitle = (requestBody: EditMessageTitleRequestBody) => {
 const deleteChat = (requestBody: DeleteChatRequestBody) => {
     const data: ApiConfig<DeleteChatRequestBody> = {
         method: ENDPOINTS.CHAT.DELETE_CHAT.METHOD as Method,
-        url: ENDPOINTS.CHAT.DELETE_CHAT.URL,
-        data: requestBody,
+        url: parseEndpoint(ENDPOINTS.CHAT.DELETE_CHAT.URL , {...requestBody}),
     };
 
     return apiCall(data);

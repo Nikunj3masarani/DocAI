@@ -52,6 +52,8 @@
 
 .chatList {
     padding-left: 0;
+    height: 30rem;
+    overflow: auto;
 
     ul {
         padding-left: 10px;

@@ -99,11 +99,11 @@ export const ENDPOINTS = {
         },
         UPDATE_TITLE: {
             METHOD: METHOD.PUT,
-            URL: `${CHAT}`,
+            URL: `${CHAT}/?${ROUTE.CHAT_ID}`,
         },
         DELETE_CHAT: {
             METHOD: METHOD.DELETE,
-            URL: `${CHAT}`,
+            URL: `${CHAT}?${ROUTE.CHAT_ID}`,
         },
         GET_CHAT: {
             METHOD: METHOD.POST,
