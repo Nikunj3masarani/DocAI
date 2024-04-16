@@ -26,9 +26,8 @@ class CreateIndex(BaseModel):
             raise CustomException('Spaces are not allowed')
         return v
 
+
 class UpdateIndex(BaseModel):
-    index_uuid: str
-    title: str
     description: Optional[constr(strip_whitespace=True,
                                  min_length=0, max_length=512)]
     status: Optional[str]
@@ -47,7 +46,8 @@ class UpdateIndex(BaseModel):
         if ' ' in v:
             raise CustomException('Spaces are not allowed')
         return v
-    
+
+
 class IndexList(BaseModel):
     search: Optional[str] = None
     page_number: Optional[int] = None
@@ -73,4 +73,3 @@ class IndexUserUpdate(BaseModel):
     user_uuid: str
     status: constants.InvitationStatus
     index_uuid: str
-

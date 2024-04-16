@@ -76,8 +76,8 @@ class Index(DBService):
         index_query = select(IndexTable).where(IndexTable.index_uuid == data.get('index_uuid'))
         index_result = await self.db_session.execute(index_query)
         index_result = index_result.first()
-            
-        index_result =index_result[0]    
+
+        index_result = index_result[0]
         # Update index attributes
         index_result.title = data.get("title", index_result.title)
         index_result.description = data.get("description", index_result.description)
@@ -86,10 +86,8 @@ class Index(DBService):
         index_result.prompt_uuid = data.get("prompt_uuid", index_result.prompt_uuid)
         # index_result.model = data.get("model", index_result.model)
         await self.db_session.commit()
-        
-        return index_result.__dict__
 
-        
+        return index_result.__dict__
 
     async def delete_data(self, data: Any, *args, **kwargs) -> None:
         select_index_query = select(IndexTable, IndexUserMappingTable.role).join(

@@ -35,6 +35,7 @@ class Index:
     @router.put("/")
     async def update_index(
         self,
+        index_uuid: str,
         index_data: UpdateIndex,
         db=Depends(get_db_session),
         es_client=Depends(get_es_client),
@@ -44,6 +45,7 @@ class Index:
         index_service = IndexService(db, es_client)
         index_data_dict = index_data.__dict__
         index_data_dict['user_uuid'] = user.get('user_uuid')
+        index_data_dict['index_uuid'] = index_uuid
         response = await index_service.update(index_data_dict)
         return IndexResponse(
             payload=response,
