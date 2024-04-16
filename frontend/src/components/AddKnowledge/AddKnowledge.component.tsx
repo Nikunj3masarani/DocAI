@@ -31,6 +31,7 @@ import { indexApi, documentApi } from '@docAi-app/api';
 //Import Style
 import Styles from './AddKnowledge.module.scss';
 import { ROUTE } from '@docAi-app/utils/constants/Route.constant';
+import { getAlert } from '@docAi-app/hooks';
 
 const fileTypes = ['PDF', 'TXT', 'HTML'];
 const MAX_SIZE = 10;
@@ -136,6 +137,8 @@ const AddKnowledge = () => {
         documentApi
             .uploadDocuments({ requestBody: formData, requestParams: { index_uuid: v.index.value } })
             .then((res) => {
+                console.log(res.message);
+                getAlert('info', res.message);
                 navigate(`${ROUTE.ROOT}${ROUTE.INDEX_LIST}`);
             });
     };

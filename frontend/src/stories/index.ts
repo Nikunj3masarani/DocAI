@@ -17,3 +17,4 @@ export { AsyncSearchSelect } from './components/AsyncSearchSelect';
 export { TabComponent } from './components/Tab';
 export { Accordion, AccordionSummary, AccordionDetails } from './components/Accordion';
 export { ThreeDotItemMenu } from './components/Menu';
+export { Alert, StyledToastContainer, toast, ToastBody, Slide, ToastCloseIcon } from './components/Alert';
