@@ -74,3 +74,10 @@
     align-items: center;
     width: 70%;
 }
+
+.fileError {
+    border: 3px dashed red;
+    p {
+        color: red;
+    }
+}

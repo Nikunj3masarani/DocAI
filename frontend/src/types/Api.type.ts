@@ -1,12 +1,11 @@
 import { AxiosRequestConfig, AxiosHeaders, Method } from 'axios';
 
 export type PagerType = {
-    filteredRecords: number;
     pageNumber?: number;
     recordsPerPage: number;
     sortBy: string;
     sortOrder: string;
-    totalRecords: number;
+    total_records: number;
 };
 
 export type ApiResponse<T> = {

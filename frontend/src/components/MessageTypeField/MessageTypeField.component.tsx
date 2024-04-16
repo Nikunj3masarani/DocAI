@@ -5,7 +5,6 @@ import { useEffect, useState } from 'react';
 //Import Storybook
 import { CircularLoader, IconButton, Select, AsyncSearchSelect } from '@docAi-app/stories';
 
-
 //Import Component
 
 //Import Page
@@ -32,11 +31,10 @@ import { modelApi, indexApi } from '@docAi-app/api';
 import Style from './MessageTypeField.module.scss';
 import { StyledInputBase, StyledPaper } from './MessageTypeField.styled';
 
-
-export const indexList = async (searchString: string) => {
+export const indexList = async (searchString: string, loadOptions, { page }) => {
     const res = await indexApi.getAllIndex({
         search: searchString,
-        page_number: 1,
+        page_number: page,
         records_per_page: 10,
         show_all: true,
     });
@@ -46,9 +44,14 @@ export const indexList = async (searchString: string) => {
             value: data.index_uuid,
         };
     });
+    const done = res?.pager?.per_page * page < res?.pager?.total_records;
 
     return {
         options: options.length === 0 ? [] : options,
+        hasMore: done ?? false,
+        additional: {
+            page: searchString ? 1 : page + 1,
+        },
     };
 };
 type MessageTypeFieldProps = {
@@ -62,7 +65,7 @@ const MessageTypeField = ({ disable, handleSubmit }: MessageTypeFieldProps) => {
     const [modelOption, setModelOption] = useState<Option[]>([]);
 
     useEffect(() => {
-        indexList('').then((res) => {
+        indexList('', undefined, { page: 1 }).then((res) => {
             setIndex(res.options[0]);
         });
 
@@ -118,7 +121,8 @@ const MessageTypeField = ({ disable, handleSubmit }: MessageTypeFieldProps) => {
                                                 onChange={(v) => {
                                                     setIndex(v as Option);
                                                 }}
-                                                loadOptions={(searchString: string) => indexList(searchString)}
+                                                loadOptions={indexList}
+                                                additional={{ page: 1 }}
                                             />
                                         );
                                     }}

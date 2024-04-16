@@ -1,4 +1,4 @@
-import { NavLink, Outlet, useLocation } from 'react-router-dom';
+import { NavLink, Outlet, useLocation, useNavigate, useNavigation } from 'react-router-dom';
 import {
     Accordion,
     AccordionDetails,
@@ -57,20 +57,23 @@ const MainContainer = () => {
         return editTitleId === messageId ? Styles.active : '';
     };
     const [editedMessage, setEditedMessage] = useState<string>();
+    const navigate = useNavigate();
     useEffect(() => {
-        chatApi.getChatList().then((res) => {
-            const tempList = res.payload;
-            Object.keys(tempList).forEach((key: string) => {
-                const tempObj = tempList[key].map((tempMessage) => {
-                    return { message: tempMessage.chat_title, messageId: tempMessage.chat_uuid };
-                });
+        if (params.pathname.includes('chat') || params.pathname.includes('search')) {
+            chatApi.getChatList().then((res) => {
+                const tempList = res.payload;
+                Object.keys(tempList).forEach((key: string) => {
+                    const tempObj = tempList[key].map((tempMessage) => {
+                        return { message: tempMessage.chat_title, messageId: tempMessage.chat_uuid };
+                    });
 
-                setMessageList((prev) => {
-                    return { ...prev, [key]: tempObj };
+                    setMessageList((prev) => {
+                        return { ...prev, [key]: tempObj };
+                    });
                 });
             });
-        });
-    }, [params]);
+        }
+    }, [params.pathname]);
     const sideNavItem = sideNavigationItems.map((navigationItem, index) => {
         return (
             <>
@@ -119,7 +122,15 @@ const MainContainer = () => {
                                                     <ul>
                                                         {messageList[key].map(({ message, messageId }: MessageList) => {
                                                             return (
-                                                                <li>
+                                                                <li key={messageId}>
+                                                                    <div
+                                                                        className={`${Styles.messageTitleContainer} ${messageId !== editTitleId ? Styles['messageTitleContainer__enable'] : Styles['messageTitleContainer__disable']}`}
+                                                                        onClick={() => {
+                                                                            navigate(
+                                                                                `${ROUTE.ROOT}${ROUTE.CHAT}/${messageId}`,
+                                                                            );
+                                                                        }}
+                                                                    />
                                                                     <input
                                                                         value={
                                                                             messageId === editTitleId
@@ -144,27 +155,29 @@ const MainContainer = () => {
                                                                                     Object.keys(
                                                                                         prevMessageList,
                                                                                     ).forEach((key) => {
-                                                                                        prevMessageList[key].map(
-                                                                                            ({
-                                                                                                message,
-                                                                                                messageId,
-                                                                                            }: MessageList) => {
-                                                                                                if (
-                                                                                                    messageId ===
-                                                                                                        editTitleId &&
-                                                                                                    editedMessage
-                                                                                                ) {
-                                                                                                    return {
-                                                                                                        editedMessage,
-                                                                                                        messageId,
-                                                                                                    };
-                                                                                                }
-                                                                                                return {
+                                                                                        prevMessageList[key] =
+                                                                                            prevMessageList[key].map(
+                                                                                                ({
                                                                                                     message,
                                                                                                     messageId,
-                                                                                                };
-                                                                                            },
-                                                                                        );
+                                                                                                }: MessageList) => {
+                                                                                                    if (
+                                                                                                        messageId ===
+                                                                                                            editTitleId &&
+                                                                                                        editedMessage
+                                                                                                    ) {
+                                                                                                        return {
+                                                                                                            message:
+                                                                                                                editedMessage,
+                                                                                                            messageId,
+                                                                                                        };
+                                                                                                    }
+                                                                                                    return {
+                                                                                                        message,
+                                                                                                        messageId,
+                                                                                                    };
+                                                                                                },
+                                                                                            );
                                                                                     });
                                                                                     return { ...prevMessageList };
                                                                                 });
@@ -205,7 +218,6 @@ const MainContainer = () => {
                                                                                                         ({
                                                                                                             messageId,
                                                                                                         }: MessageList) => {
-                                                                                                           
                                                                                                             return (
                                                                                                                 messageToDeleteId !==
                                                                                                                 messageId
@@ -220,7 +232,7 @@ const MainContainer = () => {
                                                                                                         key
                                                                                                     ];
                                                                                             });
-                                                                                           
+
                                                                                             return {
                                                                                                 ...prevMessageList,
                                                                                             };

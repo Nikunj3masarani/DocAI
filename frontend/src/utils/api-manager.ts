@@ -29,6 +29,9 @@ axiosInstance.interceptors.request.use((config: AxiosRequest) => {
     if (token) {
         config.headers.Authorization = 'Bearer ' + token;
     }
+    if (config.url?.includes('upload')) {
+        config.headers['Content-Type'] = 'multipart/form-data';
+    }
     return config;
 });
 
@@ -88,7 +91,6 @@ export const generateStream = async <ResponsePayload, RequestBody = undefined>(
     if (response.status !== 200) throw new Error(response.status.toString());
     if (!response.body) throw new Error('Response body does not exist');
 
-
     return getIterableStream(response.body);
 };
 
@@ -99,7 +101,6 @@ export const apiCall = async <ResponsePayload, RequestBody = undefined>(
         ...defaultApiConfig,
         ...apiConfig,
     };
-
     if (showLoader) {
         showLoading();
     }

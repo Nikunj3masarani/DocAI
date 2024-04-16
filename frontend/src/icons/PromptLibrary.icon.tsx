@@ -5,7 +5,7 @@ const StyledPath = styled('path')<IconType>`
     fill: ${({ theme, fill }) => (fill ? fill : theme.colors.secondary)};
 `;
 
-const PromptLibrary = ({ width = 14, height = 14, fill, ...props }: IconType) => (
+const PromptLibrary = ({ width = 14, height = 14, fill, ...props }:Partial<IconType>) => (
     <svg xmlns="http://www.w3.org/2000/svg" width={width} height={height} viewBox="0 0 14 14" fill="none" {...props}>
         <StyledPath
             fill={fill}

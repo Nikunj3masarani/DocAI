@@ -42,6 +42,7 @@ interface AsyncSearchSelectCompProps {
     onCustomHandler?: () => void;
     hideSelectedOptions?: boolean;
     createLabel?: string;
+    additional: { page: number };
 }
 
 const AsyncSearchSelect = ({
@@ -60,12 +61,12 @@ const AsyncSearchSelect = ({
     onCustomHandler,
     onOptionChange,
     createLabel = '',
+    additional,
     ...props
 }: AsyncSearchSelectCompProps) => {
     const Menu = (props: any) => {
-        
         return (
-            <components.Menu {...props} >
+            <components.Menu {...props}>
                 <CustomOptionStyled>
                     {isCustomOption && (
                         <button onClick={onCustomHandler}>
@@ -242,6 +243,7 @@ const AsyncSearchSelect = ({
                         defaultOptions
                         loadOptions={loadOptions}
                         menuPlacement={menuPlacement}
+                        additional={additional}
                         // menuPortalTarget={document.body}
                         onChange={(v) => {
                             if (onOptionChange) onOptionChange(v);
@@ -261,7 +263,7 @@ const AsyncSearchSelect = ({
                 ) : (
                     <AsyncSearchSelectStyled
                         {...props}
-                        maxMenuHeight={360}
+                        maxMenuHeight={150}
                         styles={{
                             container: (defaultStyles) => {
                                 return {
@@ -436,6 +438,7 @@ const AsyncSearchSelect = ({
                             Menu,
                             Option,
                         }}
+                        additional={additional}
                         hideSelectedOptions={hideSelectedOptions}
                     />
                 )}
