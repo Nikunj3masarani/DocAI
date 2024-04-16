@@ -4,7 +4,7 @@ from haystack_integrations.document_stores.elasticsearch import ElasticsearchDoc
 from haystack_integrations.components.retrievers.elasticsearch import ElasticsearchEmbeddingRetriever
 from haystack_integrations.components.retrievers.elasticsearch import ElasticsearchBM25Retriever
 from haystack.components.joiners import DocumentJoiner
-from openai import AsyncAzureOpenAI
+from openai import AsyncAzureOpenAI, AsyncOpenAI
 from app import constants
 from app.settings import settings
 
@@ -22,11 +22,8 @@ class Inference:
         self.callback_function = callback_function
 
     def get_answer(self, query):
-        llm = AsyncAzureOpenAI(
-            api_key=self.model_details.get('api_key'),
-            api_version=self.model_details.get('api_version'),
-            azure_endpoint=self.model_details.get('deployment_url'),
-            azure_deployment=self.model_details.get('target_name'),
+        llm = AsyncOpenAI(
+            api_key=settings.openai_api_key,
         )
 
         query_embeddings = self.query_embeddings_function.run(text=query)
