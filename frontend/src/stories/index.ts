@@ -1,5 +1,4 @@
 export { CircularLoader } from './components/CircularLoader';
-export { InputWithSelect } from '@docAi-app/stories/components/InputWithSelect';
 export { InputChips } from './components/InputChips';
 export { InputField } from './components/InputField';
 export { ProgressBar } from './components/ProgressBar';

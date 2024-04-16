@@ -5,7 +5,7 @@ const StyledPath = styled('path')`
     fill: ${({ fill, theme }) => (fill ? fill : theme.colors.secondary)};
 `;
 
-const Delete = ({ width = 15, height = 14, fill, ...props }: IconType) => (
+const Delete = ({ width = 15, height = 14, fill, ...props }: Partial<IconType>) => (
     <svg
         id="Layer_1"
         xmlns="http://www.w3.org/2000/svg"

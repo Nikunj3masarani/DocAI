@@ -1,10 +1,13 @@
 import { ApiConfig } from '@docAi-app/types/Api.type';
-import { apiCall } from '@docAi-app/utils/api-manager';
+import { apiCall, generateStream } from '@docAi-app/utils/api-manager';
 import { ENDPOINTS } from '@docAi-app/utils/constants/endpoints.constant';
+import { parseEndpoint } from '@docAi-app/utils/helper/common.helper';
 import { Method } from 'axios';
 
-interface EditMessageTitleRequestBody {
+interface EditMessageTitleParams {
     chat_uuid: string;
+}
+interface EditMessageTitleRequestBody {
     title: string;
 }
 
@@ -12,6 +15,7 @@ interface DeleteChatRequestBody {
     chat_uuid: string;
 }
 
+interface GetChatMessageRequestParams extends DeleteChatRequestBody {}
 interface GetChatRequestBody {
     index_uuid: string;
     query: string;
@@ -29,11 +33,11 @@ const getChatList = () => {
     return apiCall(data);
 };
 
-const editMessageTitle = (requestBody: EditMessageTitleRequestBody) => {
+const editMessageTitle = ({ title, chat_uuid }: EditMessageTitleRequestBody & EditMessageTitleParams) => {
     const data: ApiConfig<EditMessageTitleRequestBody> = {
         method: ENDPOINTS.CHAT.UPDATE_TITLE.METHOD as Method,
-        url: ENDPOINTS.CHAT.UPDATE_TITLE.URL,
-        data: requestBody,
+        url: parseEndpoint(ENDPOINTS.CHAT.UPDATE_TITLE.URL, { chat_uuid }),
+        data: { title },
     };
 
     return apiCall(data);
@@ -42,8 +46,7 @@ const editMessageTitle = (requestBody: EditMessageTitleRequestBody) => {
 const deleteChat = (requestBody: DeleteChatRequestBody) => {
     const data: ApiConfig<DeleteChatRequestBody> = {
         method: ENDPOINTS.CHAT.DELETE_CHAT.METHOD as Method,
-        url: ENDPOINTS.CHAT.DELETE_CHAT.URL,
-        data: requestBody,
+        url: parseEndpoint(ENDPOINTS.CHAT.DELETE_CHAT.URL , {...requestBody}),
     };
 
     return apiCall(data);
@@ -56,14 +59,23 @@ const getChat = (requestBody: Partial<GetChatRequestBody>) => {
         data: requestBody,
     };
 
-    return apiCall(data);
+    return generateStream(data);
 };
 
+const getChatMessage = (requestParams: GetChatMessageRequestParams) => {
+    const data: ApiConfig<GetChatMessageRequestParams> = {
+        method: ENDPOINTS.CHAT.GET_CHAT_MESSAGE.METHOD as Method,
+        url: parseEndpoint(ENDPOINTS.CHAT.GET_CHAT_MESSAGE.URL, { ...requestParams }),
+    };
+
+    return apiCall(data);
+};
 const chatApi = {
     getChatList,
     editMessageTitle,
     deleteChat,
     getChat,
+    getChatMessage,
 };
 
 export { chatApi };

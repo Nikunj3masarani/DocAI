@@ -1,10 +1,14 @@
 //Import Third Party lib
-
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
+import { Form, Field } from 'react-final-form';
+import { useParams } from 'react-router-dom';
+import { FileUploader } from 'react-drag-drop-files';
 
 //Import Storybook
+import { AsyncSearchSelect, Button } from '@docAi-app/stories';
 
 //Import Component
+import { FileListing } from '@docAi-app/components/FileListing';
 
 //Import Page
 
@@ -13,71 +17,56 @@ import { useEffect, useState } from 'react';
 //Import Context
 
 //Import Model Type
+import { FilesUpload, Option } from '@docAi-app/types/common.type';
 
 //Import Util, Helper , Constant
+import { uuidGenerator } from '@docAi-app/utils/helper/common.helper';
 
 //Import Icon
 //Import Api
+import { indexApi, documentApi } from '@docAi-app/api';
 
 //Import Assets
 
 //Import Style
-import { FileUploader } from 'react-drag-drop-files';
 import Styles from './AddKnowledge.module.scss';
-import { onLoadReaders, uuidGenerator } from '@docAi-app/utils/helper/common.helper';
-import { FileListing } from '@docAi-app/components/FileListing';
-import { useParams } from 'react-router-dom';
-import { DocumentAPi } from '@docAi-app/api/documents.api';
-import { AsyncSearchSelect } from '@docAi-app/stories';
-import { indexApi } from '@docAi-app/api';
-import { Option } from '@docAi-app/types/common.type';
-import { Form } from 'react-final-form';
-import { Field } from 'react-final-form';
 
 const fileTypes = ['PDF', 'TXT', 'HTML'];
-const MAX_SIZE = 10;
+const MAX_SIZE = 10101010;
 
-interface FilesUpload extends FileList {
-    key: string;
-}
 export const indexList = async (searchString: string) => {
-    const res = await indexApi.getAllIndex({
-        search: searchString,
-        page_number: 1,
-        records_per_page: 10,
-        show_all: true,
-    });
-    const options = res.payload.map((data) => {
+    const res = await indexApi
+        .getAllIndex({
+            search: searchString,
+            page_number: 1,
+            records_per_page: 10,
+            show_all: true,
+        })
+        .then((response) => {
+            return response;
+        })
+        .catch(() => {
+            return {
+                payload: [],
+            };
+        });
+    const options = res?.payload.map((data) => {
         return {
             label: data.title,
             value: data.index_uuid,
         };
     });
-    return onLoadReaders(searchString, options);
+    return { options: options.length === 0 ? [] : options };
 };
 
 const AddKnowledge = () => {
     const [files, setFiles] = useState<FilesUpload[]>();
     const [index, setIndex] = useState<Option>();
-    const handleChange = (file: FileList) => {
-        const fileToUpload: FilesUpload = { ...file, key: uuidGenerator() };
-
-        setFiles((prevFiles) => {
-            return prevFiles ? [...prevFiles, fileToUpload] : [fileToUpload];
-        });
-    };
-    const deleteFiles = (fileToRemove: FilesUpload) => {
-        setFiles(
-            files!.filter((file) => {
-                return file.key !== fileToRemove.key;
-            }),
-        );
-    };
     const params = useParams();
 
     useEffect(() => {
         const indexUuid = params['index-id'] ?? '';
-        DocumentAPi.getDocuments({ index_uuid: indexUuid }).then(({ payload }: { payload: any }) => {
+        documentApi.getDocuments({ index_uuid: indexUuid }).then(({ payload }: { payload: any }) => {
             setFiles(payload.documents);
         });
         if (params['index-id'] !== undefined) {
@@ -90,8 +79,30 @@ const AddKnowledge = () => {
         }
     }, [params['index-id']]);
 
-    useEffect(() => {}, []);
+
+    // event handlers
+    const handleChange = (files: FileList) => {
+        const fileArr = Array.from(files);
+
+        const fileToUpload: FilesUpload[] = fileArr.map((file: File) => {
+            return { file, key: uuidGenerator() };
+        });
+        setFiles((prevFiles) => {
+            return prevFiles ? [...prevFiles, ...fileToUpload] : [...fileToUpload];
+        });
+    };
+
+    const deleteFiles = (fileToRemove: FilesUpload) => {
+        setFiles(
+            files!.filter((file) => {
+                return file.key !== fileToRemove.key;
+            }),
+        );
+    };
+
     const handleSubmit = (v) => {};
+
+    // component logic
     return (
         <div className={Styles.fileUploader}>
             <FileUploader
@@ -115,30 +126,28 @@ const AddKnowledge = () => {
                 </div>
             </FileUploader>
             <div className={Styles.fileListContainer}>
-                <div className={Styles.formContainer}>
+                <div>
                     <Form
-                        initialValues={{
-                            index: index ?? undefined,
-                        }}
+                        initialValues={useMemo(() => {
+                            return {
+                                index: index ?? undefined,
+                            };
+                        }, [])}
                         onSubmit={handleSubmit}
-                        render={({ handleSubmit }) => {
+                        keepDirtyOnReinitialize={true}
+                        render={({ handleSubmit, pristine }) => {
                             return (
-                                <form onSubmit={handleSubmit}>
-                                    <div>
+                                <form onSubmit={handleSubmit} className={Styles.formContainer}>
+                                    <div className={Styles.field}>
                                         <Field
                                             name="index"
                                             render={({ input }) => {
                                                 return (
                                                     <AsyncSearchSelect
                                                         {...input}
-                                                        label="Select Brain"
                                                         placeholder="Select Brain"
                                                         menuPlacement="auto"
                                                         debounceTimeout={1000}
-                                                        onChange={(v) => {
-                                                            setIndex(v as Option);
-                                                        }}
-                                                        required={true}
                                                         isDisabled={params && params['index-id'] ? true : false}
                                                         loadOptions={(searchString: string) => indexList(searchString)}
                                                     />
@@ -146,11 +155,18 @@ const AddKnowledge = () => {
                                             }}
                                         />
                                     </div>
+                                    <div className={Styles.actionButton}>
+                                        <div>{<p>Knowledge to Upload </p>}</div>
+                                        <Button type="submit" variant="contained" disabled={pristine}>
+                                            Upload
+                                        </Button>
+                                    </div>
                                 </form>
                             );
                         }}
                     />
                 </div>
+
                 <div className={Styles.fileList}>{<FileListing files={files} deleteFiles={deleteFiles} />}</div>
             </div>
         </div>

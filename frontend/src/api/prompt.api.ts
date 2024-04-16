@@ -81,6 +81,6 @@ const updatePrompt = async ({ requestBody, params }: updatePrompt) => {
     return apiCall(data);
 };
 
-const PromptsApi = { getPromptsList, createPrompt, getPrompt, updatePrompt };
+const promptApi = { getPromptsList, createPrompt, getPrompt, updatePrompt };
 
-export { PromptsApi };
+export { promptApi };

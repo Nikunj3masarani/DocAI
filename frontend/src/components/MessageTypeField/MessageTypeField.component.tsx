@@ -1,10 +1,10 @@
 //Import Third Party lib
-
-import { CircularLoader, IconButton, Select } from '@docAi-app/stories';
-import { Divider } from '@mui/material';
-import { Form } from 'react-final-form';
+import { Form, Field } from 'react-final-form';
+import { useEffect, useState } from 'react';
 
 //Import Storybook
+import { CircularLoader, IconButton, Select, AsyncSearchSelect } from '@docAi-app/stories';
+
 
 //Import Component
 
@@ -15,24 +15,23 @@ import { Form } from 'react-final-form';
 //Import Context
 
 //Import Model Type
+import { Option } from '@docAi-app/types/common.type';
 
 //Import Util, Helper , Constant
 
 //Import Icon
-import { AsyncSearchSelect } from '@docAi-app/stories';
+import { Divider } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
-import { StyledInputBase, StyledPaper } from './InputWithSelect.styled';
-import { ModelApi, indexApi } from '@docAi-app/api';
-import { onLoadReaders } from '@docAi-app/utils/helper/common.helper';
-import { useEffect, useState } from 'react';
-import { Option } from '@docAi-app/types/common.type';
+
 //Import Api
+import { modelApi, indexApi } from '@docAi-app/api';
 
 //Import Assets
 
 //Import Style
-import Style from './InputWithSelect.module.scss';
-import { Field } from 'react-final-form';
+import Style from './MessageTypeField.module.scss';
+import { StyledInputBase, StyledPaper } from './MessageTypeField.styled';
+
 
 export const indexList = async (searchString: string) => {
     const res = await indexApi.getAllIndex({
@@ -47,13 +46,16 @@ export const indexList = async (searchString: string) => {
             value: data.index_uuid,
         };
     });
-    return onLoadReaders(searchString, options);
+
+    return {
+        options: options.length === 0 ? [] : options,
+    };
 };
-type InputWithSelectProps = {
+type MessageTypeFieldProps = {
     disable: boolean;
     handleSubmit: (v: any) => void;
 };
-const InputWithSelect = ({ disable, handleSubmit }: InputWithSelectProps) => {
+const MessageTypeField = ({ disable, handleSubmit }: MessageTypeFieldProps) => {
     // useRef
     // useState
     const [index, setIndex] = useState<Option>();
@@ -64,7 +66,7 @@ const InputWithSelect = ({ disable, handleSubmit }: InputWithSelectProps) => {
             setIndex(res.options[0]);
         });
 
-        ModelApi.getModelsList().then((res) => {
+        modelApi.getModelsList().then((res) => {
             let models = res.payload.models;
             models = models.map((model) => {
                 return { label: model.display_name, value: model.model_uuid };
@@ -97,7 +99,7 @@ const InputWithSelect = ({ disable, handleSubmit }: InputWithSelectProps) => {
                     <form
                         onSubmit={(v: any) => {
                             handleSubmit(v);
-                            form.change('message', '');
+                            form.reset();
                         }}
                         className={Style.formContainer}
                     >
@@ -168,4 +170,4 @@ const InputWithSelect = ({ disable, handleSubmit }: InputWithSelectProps) => {
     );
 };
 
-export { InputWithSelect };
+export { MessageTypeField };

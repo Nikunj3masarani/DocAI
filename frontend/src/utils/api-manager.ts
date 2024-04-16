@@ -22,7 +22,6 @@ const axiosInstance = axios.create({
     headers: {
         ...defaultHeaders,
     },
-    timeout:  10000
 });
 
 axiosInstance.interceptors.request.use((config: AxiosRequest) => {
@@ -58,6 +57,41 @@ axiosInstance.interceptors.response.use(
     },
 );
 
+export async function* getIterableStream(body: ReadableStream<Uint8Array>): AsyncIterable<string> {
+    const reader = body.getReader();
+    const decoder = new TextDecoder();
+    while (true) {
+        const chunk = await reader.read();
+        const { value, done } = chunk;
+        if (done) {
+            break;
+        }
+        const decodedChunk = decoder.decode(value, { stream: true });
+        yield decodedChunk;
+    }
+}
+
+export const generateStream = async <ResponsePayload, RequestBody = undefined>(
+    apiConfig: ApiConfig<RequestBody>,
+): Promise<AsyncIterable<string>> => {
+    const { method, url, data } = apiConfig;
+    const token = getFromLocalStorage(ACCESS_TOKEN_KEY);
+    const baseUrl = import.meta.env.VITE_BASE_API;
+    const response = await fetch(`${baseUrl}${url}`, {
+        method,
+        headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ ...data, stream: true }),
+    });
+    if (response.status !== 200) throw new Error(response.status.toString());
+    if (!response.body) throw new Error('Response body does not exist');
+
+
+    return getIterableStream(response.body);
+};
+
 export const apiCall = async <ResponsePayload, RequestBody = undefined>(
     apiConfig: ApiConfig<RequestBody>,
 ): Promise<ApiResponse<ResponsePayload>> => {
@@ -83,10 +117,10 @@ export const apiCall = async <ResponsePayload, RequestBody = undefined>(
             return response;
         })
         .catch((error) => {
-            if (error && showAlertToast && error.message) {
-                console.log({ error });
-            }
-            throw error;
+            // if (error && showAlertToast && error.message) {
+            //     console.log({ error });
+            // }
+            // throw error;
         })
         .finally(() => {
             if (showLoader) {

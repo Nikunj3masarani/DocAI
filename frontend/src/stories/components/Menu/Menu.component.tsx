@@ -1,7 +1,7 @@
 import * as React from 'react';
 import IconButton from '@mui/material/IconButton';
 import MenuItem from '@mui/material/MenuItem';
-import {Button} from '../Button';
+import { Button } from '../Button';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 
 // import { DOWNLOAD_MENU_OPTIONS } from '@foster/util/constants';
@@ -18,7 +18,7 @@ export type itemsProps = {
 
 type MenuItemsProps = {
     menuItems: itemsProps[];
-    handleItemClick: (item: itemsProps | { export_type: string }) => void;
+    handleItemClick: (item: itemsProps) => void;
     header: string;
     subTitle: string;
 };
@@ -59,13 +59,7 @@ const ThreeDotItemMenu = ({ menuItems, handleItemClick, header, subTitle }: Menu
 
     return (
         <StyledMenuMain>
-            <IconButton   
-                aria-label="more"
-
-                id="long-button"
-                aria-haspopup="true"
-                onClick={handleClick}
-            >
+            <IconButton aria-label="more" id="long-button" aria-haspopup="true" onClick={handleClick}>
                 <MoreVertIcon />
             </IconButton>
             <StyledMenu

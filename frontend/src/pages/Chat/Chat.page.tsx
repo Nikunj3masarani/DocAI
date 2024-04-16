@@ -1,6 +1,6 @@
 //Import Third Party lib
 
-import { AddKnowledge, CreateBrain } from '@docAi-app/components';
+import { AddKnowledge, CreateBrain, MessageTypeField } from '@docAi-app/components';
 import { HeaderAction } from '@docAi-app/types/common.type';
 import { useEffect, useRef, useState } from 'react';
 
@@ -32,15 +32,27 @@ import DescriptionIcon from '@mui/icons-material/Description';
 //Import Style
 import Style from './Chat.module.scss';
 import { Button, Dialog } from '@docAi-app/stories';
-import { InputWithSelect } from '@docAi-app/stories/components/InputWithSelect/InputWithSelect.component';
 import { Skeleton } from '@mui/material';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { chatApi } from '@docAi-app/api';
+import { ROUTE } from '@docAi-app/utils/constants/Route.constant';
+import { uuidGenerator } from '@docAi-app/utils/helper/common.helper';
 const SYSTEM = 'system' as const;
 const USER = 'user' as const;
 
 interface Message {
     sender: typeof SYSTEM | typeof USER;
     message: string;
+    key: string;
 }
+
+interface GetChatApiProps {
+    indexId: string;
+    userText: string;
+    chatId: string;
+    modelId: string;
+}
+
 const Chat = () => {
     // useRef
     // useState
@@ -48,27 +60,95 @@ const Chat = () => {
     const [showDialogue, setShowDialogue] = useState<boolean>(false);
     const [messageList, setMessageList] = useState<Message[]>([]);
     const [canUserType, setCanUserType] = useState<boolean>(true);
+    const [showLoading, setShowLoading] = useState<boolean>(false);
     const messageContainerRef = useRef<HTMLDivElement | null>(null);
+    const systemLastMessageRef = useRef<HTMLDivElement | null>(null);
+    const { state } = useLocation();
+    const navigate = useNavigate();
+    const params = useParams();
     // Variables Dependent upon State
 
     // Api Calls
 
-    // Event Handlers
+    const scrollBottom = () => {
+        // console.log(messageContainerRef.current?.offsetHeight);
+        // console.log(messageContainerRef.current?.scrollHeight);
 
+        // messageContainerRef.current?.scrollTo(0, messageContainerRef.current.scrollHeight);
+        messageContainerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    };
+    // Event Handlers
+    const getChatApi = ({ indexId, userText, chatId, modelId }: GetChatApiProps) => {
+
+        chatApi
+            .getChat({
+                index_uuid: indexId,
+                query: userText,
+                chat_uuid: chatId,
+                model_uuid: modelId,
+            })
+            .then(async (response) => {
+                while (true) {
+                    const res = await response.next();
+                    const { value, done } = res;
+                    if (done) {
+                        setCanUserType(true);
+                        break;
+                    }
+
+                    if (value) {
+                        setShowLoading(false);
+                    }
+                    // for (let i = 0; i < value.length; i++) {
+                    //     systemLastMessageRef.current!.innerHTML += value.at(i);
+                    // }
+                    systemLastMessageRef.current!.innerHTML += value;
+                    // systemLastMessageRef.current!.innerHTML +=
+                    scrollBottom();
+                }
+            });
+    };
     // Helpers
     useEffect(() => {
-        setMessageList(() => {
-            return [
-                {
-                    sender: 'user',
-                    message:
-                        'What is stack , tell me descriptive about it , how can you describe more about it , it will help me to gain knowledge of stack data structure and its various use',
-                },
-                { sender: 'system', message: 'Stack is data structure' },
-            ];
-        });
-        messageContainerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
-    }, []);
+        if (state && state.needToCreate) {
+            setCanUserType(false);
+            setMessageList(() => {
+                return [
+                    {
+                        sender: 'user',
+                        message: `${state.userText}`,
+                        key: uuidGenerator(),
+                    },
+                    { sender: 'system', message: '', key: uuidGenerator() },
+                ];
+            });
+            setShowLoading(true);
+
+            getChatApi({
+                indexId: state.indexId,
+                userText: state.userText,
+                chatId: state.chatId,
+                modelId: state.modelId,
+            });
+            navigate('.', { replace: true });
+        } else {
+            const chatUuid = params[ROUTE.CHAT_ID];
+            chatApi.getChatMessage({ chat_uuid: chatUuid }).then((res) => {
+                let tempMessageList: Message[] = [];
+                res.payload.forEach((tempMessage) => {
+                    tempMessageList.push({ sender: 'user', message: tempMessage.user_message, key: uuidGenerator() });
+
+                    tempMessageList.push({
+                        sender: 'system',
+                        message: tempMessage.assistant_message,
+                        key: uuidGenerator(),
+                    });
+                });
+                if (tempMessageList && tempMessageList.length > 0) setMessageList(tempMessageList);
+                scrollBottom();
+            });
+        }
+    }, [state, params[ROUTE.CHAT_ID]]);
 
     // JSX Methods
 
@@ -115,12 +195,23 @@ const Chat = () => {
                 </div>
             </div>
             <div className={Style.container__body}>
-                <div className={Style.messageContainer} ref={messageContainerRef}>
+                <div className={Style.messageContainer}>
                     {messageList?.map((chat, index) => {
                         return (
                             <>
-                                <div className={`${Style.message} ${getChat(chat)}`}>
-                                    {chat.sender === 'system' ? (
+                                <div
+                                    key={chat.key}
+                                    className={`${Style.message} ${getChat(chat)}`}
+                                    style={{
+                                        visibility: `${showLoading && index === messageList.length - 1 && chat.sender === 'system' ? 'hidden' : 'visible'}`,
+                                    }}
+                                    ref={
+                                        index === messageList.length - 1 && chat.sender === 'system'
+                                            ? systemLastMessageRef
+                                            : null
+                                    }
+                                >
+                                    {/* {chat.sender === 'system' ? (
                                         <div className={Style.system__header}>
                                             <span>
                                                 <DescriptionIcon />
@@ -128,7 +219,7 @@ const Chat = () => {
                                             </span>
                                             <span>modelName</span>
                                         </div>
-                                    ) : null}
+                                    ) : null} */}
 
                                     {chat.message}
                                     {chat.sender === 'system' ? (
@@ -148,8 +239,7 @@ const Chat = () => {
                                         </div>
                                     ) : null}
                                 </div>
-                                {index === messageList.length - 1 && !canUserType ? (
-                                    
+                                {index === messageList.length - 1 && showLoading ? (
                                     <div className={`${Style.messageSkeleton} `}>
                                         <Skeleton animation="wave" />
                                         <Skeleton animation="wave" />
@@ -159,17 +249,30 @@ const Chat = () => {
                             </>
                         );
                     })}
+                    <div ref={messageContainerRef}></div>
                 </div>
 
                 <div className={Style.container__footer}>
-                    <InputWithSelect
+                    <MessageTypeField
                         disable={!canUserType}
                         handleSubmit={(v) => {
-                            setCanUserType(false);
-                            setMessageList((prev) => {
-                                return [...prev, { message: v.message, sender: 'user' }];
+                            getChatApi({
+                                indexId: v.index.value,
+                                modelId: v.model,
+                                userText: v.message,
+                                chatId: params[ROUTE.CHAT_ID] ?? '',
                             });
-                            messageContainerRef.current?.scrollIntoView({ behavior: 'smooth' });
+
+                            setCanUserType(false);
+                            setShowLoading(true);
+                            setMessageList((prev) => {
+                                return [
+                                    ...prev,
+                                    { message: v.message, sender: 'user', key: uuidGenerator() },
+                                    { sender: 'system', message: '', key: uuidGenerator() },
+                                ];
+                            });
+                            scrollBottom();
                         }}
                     />
                 </div>

@@ -1,9 +1,8 @@
 .fileListContainer {
     overflow: auto;
     max-height: 15rem;
-    p {
-        margin-left: 2rem;
-    }
+    padding-left: 1rem;
+    
     &__file {
         display: flex;
         justify-content: space-between;
@@ -11,8 +10,3 @@
     }
 }
 
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}

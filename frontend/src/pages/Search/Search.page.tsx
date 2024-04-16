@@ -1,6 +1,5 @@
 //Import Third Party lib
-import { Button, Dialog, InputChips, InputWithSelect, SearchInput, Select } from '@docAi-app/stories';
-import { Form } from 'react-final-form';
+import { Button, Dialog } from '@docAi-app/stories';
 
 //Import Storybook
 
@@ -25,10 +24,9 @@ import Logo from '@docAi-app/../public/assets/images/logo.svg';
 
 //Import Style
 import Style from './Search.module.scss';
-import { Field } from 'react-final-form';
 import { useState } from 'react';
 import { HeaderAction } from '@docAi-app/types/common.type';
-import { AddKnowledge, CreateBrain } from '@docAi-app/components';
+import { AddKnowledge, CreateBrain, MessageTypeField } from '@docAi-app/components';
 import PsychologyOutlinedIcon from '@mui/icons-material/PsychologyOutlined';
 import { chatApi } from '@docAi-app/api/chat.api';
 import { uuidGenerator } from '@docAi-app/utils/helper/common.helper';
@@ -57,14 +55,35 @@ const Search = () => {
         setSearchInput((prev) => !prev);
 
         const chatUuid = uuidGenerator();
-        chatApi
-            .getChat({ index_uuid: val['index'].value, query: val.message, chat_uuid: chatUuid })
-            .then(() => {
-                navigate(`${ROUTE.ROOT}/${ROUTE.CHAT}/${chatUuid}`);
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+        navigate(`${ROUTE.ROOT}${ROUTE.CHAT}/${chatUuid}`, {
+            state: {
+                needToCreate: true,
+                userText: val.message,
+                indexId: val['index'].value,
+                modelId: val['model'],
+                chatId: chatUuid,
+            },
+        });
+        // chatApi
+        //     .getChat({
+        //         index_uuid: val['index'].value,
+        //         query: val.message,
+        //         chat_uuid: chatUuid,
+        //         model_uuid: val['model'],
+        //     })
+        //     .then(async (response) => {
+        //         while (true) {
+        //             const res = await response.next();
+        //             const { value, done } = res;
+        //             console.log(value);
+        //             if (done) break;
+        //         }
+
+        //         navigate(`${ROUTE.ROOT}${ROUTE.CHAT}/${chatUuid}`, {});
+        //     })
+        // .catch((err) => {
+        //     console.log(err);
+        // });
     };
     return (
         <div className={Style.container}>
@@ -108,10 +127,10 @@ const Search = () => {
                 <div className={Style.content}>
                     <div className={Style.content__header}>
                         <img src={Logo} alt="basf logo" />
-                        <h1>Talk to DocAi</h1>
+                        <h1>Talk to DocAI</h1>
                     </div>
                     <div className={Style.content__body}>
-                        <InputWithSelect handleSubmit={handleSubmit} disable={disableSearchInput} />
+                        <MessageTypeField handleSubmit={handleSubmit} disable={false} />
                     </div>
                 </div>
             </div>

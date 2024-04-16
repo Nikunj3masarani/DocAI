@@ -27,11 +27,10 @@ import { ROUTE } from '@docAi-app/utils/constants/Route.constant';
 //Import Style
 
 const AuthRoute = ({ children }: { children: React.ReactNode }) => {
-    // useRef
-    // useState
     const { isLogin } = useAuth();
     const navigate = useNavigate();
     const url = useLocation();
+    
     const currentPath = url.pathname;
     const isReset = false;
     

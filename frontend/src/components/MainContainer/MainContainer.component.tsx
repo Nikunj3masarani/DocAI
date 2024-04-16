@@ -1,4 +1,4 @@
-import { NavLink, Outlet, useLocation, useParams } from 'react-router-dom';
+import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import {
     Accordion,
     AccordionDetails,
@@ -37,34 +37,40 @@ const getAccordionClasses = (activeAccordion: boolean) => {
 };
 interface MessageList {
     message: string;
-    messageId: number;
+    messageId: string;
 }
 
 const handleEditMessageTitle = ({ messageId, message }: { messageId: string; message: string }) => {
-    // chatApi.editMessageTitle({ chat_uuid: messageId, title: message });
+    chatApi.editMessageTitle({ chat_uuid: messageId, title: message });
 };
 const handleDeleteChat = ({ messageId }: { messageId: string }) => {
-    // chatApi.deleteChat({chat_uuid : messageId});
+    chatApi.deleteChat({ chat_uuid: messageId });
 };
 
 const MainContainer = () => {
     const params = useLocation();
-    useEffect(() => {
-        // chatApi.getChatList().then((res) => {
-        //     setMessageList(res.payload);
-        // });
-    }, [params]);
+
     const [activeAccordion, setActiveAccordion] = useState(false);
-    const [messageList, setMessageList] = useState<MessageList[]>([
-        { message: 'First Message', messageId: 1 },
-        { message: 'Second Message', messageId: 2 },
-    ]);
-    const [editTitleId, setEditTitleId] = useState<number>(-1);
-    const isTitleEditing = (messageId: number) => {
+    const [messageList, setMessageList] = useState<Record<string, MessageList[]>>({});
+    const [editTitleId, setEditTitleId] = useState<string>('');
+    const isTitleEditing = (messageId: string) => {
         return editTitleId === messageId ? Styles.active : '';
     };
     const [editedMessage, setEditedMessage] = useState<string>();
+    useEffect(() => {
+        chatApi.getChatList().then((res) => {
+            const tempList = res.payload;
+            Object.keys(tempList).forEach((key: string) => {
+                const tempObj = tempList[key].map((tempMessage) => {
+                    return { message: tempMessage.chat_title, messageId: tempMessage.chat_uuid };
+                });
 
+                setMessageList((prev) => {
+                    return { ...prev, [key]: tempObj };
+                });
+            });
+        });
+    }, [params]);
     const sideNavItem = sideNavigationItems.map((navigationItem, index) => {
         return (
             <>
@@ -76,7 +82,7 @@ const MainContainer = () => {
                                 isActive ? `navLink active ${Styles.menuItem}` : `navLink ${Styles.menuItem}`
                             }
                         >
-                            <navigationItem.icon />
+                            <navigationItem.icon width={13} height={16} />
                             {navigationItem.label}
                         </NavLink>
                     </li>
@@ -106,7 +112,134 @@ const MainContainer = () => {
                                 </AccordionSummary>
                                 <AccordionDetails className={Styles.accordionDetails}>
                                     <ul className={Styles.chatList}>
-                                        <li>
+                                        {Object.keys(messageList).map((key: string) => {
+                                            return (
+                                                <li>
+                                                    {key}
+                                                    <ul>
+                                                        {messageList[key].map(({ message, messageId }: MessageList) => {
+                                                            return (
+                                                                <li>
+                                                                    <input
+                                                                        value={
+                                                                            messageId === editTitleId
+                                                                                ? editedMessage
+                                                                                : message
+                                                                        }
+                                                                        disabled={messageId !== editTitleId}
+                                                                        onChange={(v) => {
+                                                                            setEditedMessage(v.target.value);
+                                                                        }}
+                                                                    />
+                                                                    <div
+                                                                        className={`${Styles.checkButton} ${isTitleEditing(messageId)}`}
+                                                                    >
+                                                                        <IconButton
+                                                                            onClick={() => {
+                                                                                handleEditMessageTitle({
+                                                                                    message: editedMessage!,
+                                                                                    messageId: messageId,
+                                                                                });
+                                                                                setMessageList((prevMessageList) => {
+                                                                                    Object.keys(
+                                                                                        prevMessageList,
+                                                                                    ).forEach((key) => {
+                                                                                        prevMessageList[key].map(
+                                                                                            ({
+                                                                                                message,
+                                                                                                messageId,
+                                                                                            }: MessageList) => {
+                                                                                                if (
+                                                                                                    messageId ===
+                                                                                                        editTitleId &&
+                                                                                                    editedMessage
+                                                                                                ) {
+                                                                                                    return {
+                                                                                                        editedMessage,
+                                                                                                        messageId,
+                                                                                                    };
+                                                                                                }
+                                                                                                return {
+                                                                                                    message,
+                                                                                                    messageId,
+                                                                                                };
+                                                                                            },
+                                                                                        );
+                                                                                    });
+                                                                                    return { ...prevMessageList };
+                                                                                });
+
+                                                                                setEditTitleId('-1');
+                                                                            }}
+                                                                        >
+                                                                            <CheckIcon />
+                                                                        </IconButton>
+                                                                    </div>
+                                                                    <div className={Styles.threeDotMenu}>
+                                                                        <ThreeDotItemMenu
+                                                                            menuItems={[
+                                                                                { label: 'edit', value: 0, id: 0 },
+                                                                                { label: 'delete', value: 0, id: 1 },
+                                                                            ]}
+                                                                            handleItemClick={(
+                                                                                v: Partial<itemsProps>,
+                                                                            ) => {
+                                                                                if (v.id === 0) {
+                                                                                    setEditTitleId(messageId);
+                                                                                    setEditedMessage(message);
+                                                                                } else {
+                                                                                    handleDeleteChat({
+                                                                                        messageId: messageId + '',
+                                                                                    });
+                                                                                    const messageToDeleteId = messageId;
+
+                                                                                    setMessageList(
+                                                                                        (prevMessageList) => {
+                                                                                            Object.keys(
+                                                                                                prevMessageList,
+                                                                                            ).forEach((key) => {
+                                                                                                prevMessageList[key] =
+                                                                                                    prevMessageList[
+                                                                                                        key
+                                                                                                    ].filter(
+                                                                                                        ({
+                                                                                                            messageId,
+                                                                                                        }: MessageList) => {
+                                                                                                           
+                                                                                                            return (
+                                                                                                                messageToDeleteId !==
+                                                                                                                messageId
+                                                                                                            );
+                                                                                                        },
+                                                                                                    );
+                                                                                                if (
+                                                                                                    prevMessageList[key]
+                                                                                                        .length === 0
+                                                                                                )
+                                                                                                    delete prevMessageList[
+                                                                                                        key
+                                                                                                    ];
+                                                                                            });
+                                                                                           
+                                                                                            return {
+                                                                                                ...prevMessageList,
+                                                                                            };
+                                                                                        },
+                                                                                    );
+                                                                                }
+                                                                            }}
+                                                                            header={''}
+                                                                            subTitle={''}
+                                                                        />
+                                                                    </div>
+                                                                </li>
+                                                            );
+                                                        })}
+                                                    </ul>
+                                                </li>
+                                            );
+                                        })}
+                                        {/* <li>
                                             Yesterday
                                             <ul>
                                                 {messageList.map(({ message, messageId }: MessageList) => {
@@ -189,7 +322,7 @@ const MainContainer = () => {
                                                 })}
                                             </ul>
                                         </li>
-                                        <li>Previous 7 days</li>
+                                        <li>Previous 7 days</li> */}
                                     </ul>
                                 </AccordionDetails>
                             </Accordion>

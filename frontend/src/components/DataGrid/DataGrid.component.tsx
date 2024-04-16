@@ -1,22 +1,41 @@
+//Import Third Party lib
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { SelectChangeEvent } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import { debounce } from 'lodash';
-import {
-    Dialog,
-    Pagination,
-    SearchInput,
-    NoDataFound,
-    Select,
-} from '@docAi-app/stories';
-import { ActionButton } from '../ActionButton';
-// import { copyHandler, highlightSearchedWord } from '@patent-app/utils/helpers/common.helper';
-import { PAGINATION_OPTIONS, TIMEOUT } from '@docAi-app/utils/constants/common.constant';
-import Icons from '@docAi-app/icons';
-// import { PromptApi } from '@patent-app/apis';
-import Styles from './DataGrid.module.scss';
-import { indexApi } from '@docAi-app/api';
 import { useNavigate } from 'react-router-dom';
+
+//Import Storybook
+import { Dialog, Pagination, SearchInput, NoDataFound, Select } from '@docAi-app/stories';
+
+//Import Component
+import { ActionButton } from '@docAi-app/components/ActionButton';
+
+//Import Page
+
+//Import Hook
+
+//Import Context
+
+//Import Model Type
+
+//Import Util, Helper , Constant
+import { PAGINATION_OPTIONS, TIMEOUT } from '@docAi-app/utils/constants/common.constant';
+
+//Import Icon
+import Icons from '@docAi-app/icons';
+
+//Import Api
+import { indexApi } from '@docAi-app/api';
+
+//Import Assets
+
+//Import Style
+import Styles from './DataGrid.module.scss';
+import { debounce } from 'lodash';
+
+
+// import { copyHandler, highlightSearchedWord } from '@patent-app/utils/helpers/common.helper';
+// import { PromptApi } from '@patent-app/apis';
 
 // const maxTags = 2;
 
@@ -95,7 +114,6 @@ const DataGridComp = ({ initialSearchValue }: DataGripComp) => {
     }, [pagination, searchData]);
 
     // Api Calls
-
     const onApiCall = (data = '') => {
         const params = {
             search: data,

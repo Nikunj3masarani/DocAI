@@ -1,3 +1,5 @@
+import { ROUTE } from './Route.constant';
+
 export const INDEX = 'index';
 export const MODELS = 'models';
 export const PROMPTS = 'prompts';
@@ -85,6 +87,10 @@ export const ENDPOINTS = {
             METHOD: `${METHOD.POST}`,
             URL: `${DOCUMENTS}/list?index_uuid`,
         },
+        UPLOAD_DOCUMENTS: {
+            METHOD: METHOD.POST,
+            URL: `${DOCUMENTS}/upload`,
+        },
     },
     CHAT: {
         GET_LIST: {
@@ -93,15 +99,19 @@ export const ENDPOINTS = {
         },
         UPDATE_TITLE: {
             METHOD: METHOD.PUT,
-            URL: `${CHAT}`,
+            URL: `${CHAT}/?${ROUTE.CHAT_ID}`,
         },
         DELETE_CHAT: {
             METHOD: METHOD.DELETE,
-            URL: `${CHAT}`,
+            URL: `${CHAT}?${ROUTE.CHAT_ID}`,
         },
         GET_CHAT: {
             METHOD: METHOD.POST,
             URL: `${CHAT}`,
+        },
+        GET_CHAT_MESSAGE: {
+            METHOD: METHOD.GET,
+            URL: `${CHAT}/?${ROUTE.CHAT_ID}`,
         },
     },
 };

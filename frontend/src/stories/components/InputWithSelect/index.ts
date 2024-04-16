@@ -1,1 +1,0 @@
-export { InputWithSelect } from "./InputWithSelect.component";

@@ -14,7 +14,9 @@ export type IconType = {
     props?: any;
 };
 
-export interface FilesUpload extends FileList {
+
+export interface FilesUpload {
+    file: File;
     key: string;
 }
 
