@@ -1,7 +1,7 @@
 //Import Third Party lib
 import { useEffect, useState } from 'react';
 import { Form, Field } from 'react-final-form';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import { CHIPS_OPTIONS } from '@docAi-app/utils/constants/common.constant';
 
@@ -31,6 +31,7 @@ import { modelApi, indexApi, promptApi } from '@docAi-app/api';
 
 //Import Style
 import Styles from './CreateBrain.module.scss';
+import { ROUTE } from '@docAi-app/utils/constants/Route.constant';
 
 interface ModelOption {
     model_uuid: string;
@@ -46,7 +47,8 @@ export interface PromptListData {
 }
 
 interface CreateBrainProps {
-    close?: (val: boolean) => void;
+    close?: () => void;
+    isBrainCreated?: () => void;
 }
 
 const statusOptions = [
@@ -71,7 +73,7 @@ export const getPromptList = async (searchString: string) => {
             value: data.prompt_uuid ?? '',
         };
     });
-    // const newOptions = await onLoadReaders(searchString, options);
+
     if (res?.payload) {
         return { options: options, list: res.payload };
     } else
@@ -86,8 +88,9 @@ type FieldValidation = {
     [P in (typeof formControls)[number]]: Partial<Validation>;
 };
 
-const CreateBrain = ({ close }: CreateBrainProps) => {
+const CreateBrain = ({ close, isBrainCreated }: CreateBrainProps) => {
     const params = useParams<{ 'index-id': string }>();
+    const navigate = useNavigate();
 
     const [modelOption, setModelOption] = useState<ModelOption[]>([]);
 
@@ -230,13 +233,24 @@ const CreateBrain = ({ close }: CreateBrainProps) => {
             promptApi.createPrompt(customPrompt).then(({ payload }) => {
                 indexDetails.prompt_uuid = payload.prompt_uuid;
                 indexApi.createIndex(indexDetails).then(() => {
-                    if (close) close(!true);
+                    if (close) close();
+                    if (isBrainCreated) isBrainCreated();
                 });
             });
         } else {
-            indexApi.createIndex(indexDetails).then(() => {
-                if (close) close(!true);
-            });
+            if (params['index-id']) {
+                indexApi
+                    .updateIndex({ requestBody: indexDetails, requestParams: { index_uuid: params['index-id'] } })
+                    .then(() => {
+                        if (close) close();
+                        if (isBrainCreated) isBrainCreated();
+                    });
+            } else {
+                indexApi.createIndex(indexDetails).then(() => {
+                    if (close) close();
+                    if (isBrainCreated) isBrainCreated();
+                });
+            }
         }
     };
 
@@ -273,6 +287,7 @@ const CreateBrain = ({ close }: CreateBrainProps) => {
                                                 type="text"
                                                 fullWidth
                                                 label="Name"
+                                                disabled={params['index-id'] ? true : false}
                                                 placeholder="Enter your brain name"
                                                 required
                                                 error={meta.touched && meta.error && true}
@@ -396,15 +411,6 @@ const CreateBrain = ({ close }: CreateBrainProps) => {
                                                     );
                                                     form.change('promptName', v.label);
                                                     form.change('promptDescription', tempPrompt[0]?.content);
-                                                    // input.onChange(v);
-                                                    // setIndexInfo((prev) => ({
-                                                    //     ...prev,
-                                                    //     promptValue: v.value ?? prev.promptValue,
-                                                    //     promptTitle: v.label ?? prev.promptTitle,
-                                                    //     promptContent:
-                                                    //         promptList?.filter((prompt) => prompt.title === v.label)[0]
-                                                    //             ?.content ?? prev.promptContent,
-                                                    // }));
                                                 }}
                                             />
                                         );
@@ -492,7 +498,10 @@ const CreateBrain = ({ close }: CreateBrainProps) => {
                                     variant="outlined"
                                     type="button"
                                     onClick={() => {
-                                        form.reset();
+                                        if (close) {
+                                            close();
+                                        }
+                                        navigate(`${ROUTE.ROOT}${ROUTE.INDEX_LIST}`);
                                     }}
                                 >
                                     Cancel

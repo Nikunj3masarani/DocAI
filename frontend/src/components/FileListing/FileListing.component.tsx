@@ -27,14 +27,16 @@ import { indexApi } from '@docAi-app/api';
 
 //Import Style
 import Style from './FileListing.module.scss';
+import { ExistingFiles } from '../AddKnowledge/AddKnowledge.component';
 
 const FileListing = ({
     files = [],
+    existingFiles = [],
     deleteFiles,
-    handleSubmit,
 }: {
     files: FilesUpload[] | undefined;
-    deleteFiles: (file: FilesUpload) => void;
+    deleteFiles: (fileToRemove: { files: FilesUpload | ExistingFiles; fromExisting: boolean }) => void;
+    existingFiles: ExistingFiles[] | undefined;
 }) => {
     const [indexName, setIndexName] = useState<string>('');
     const params = useParams();
@@ -54,13 +56,29 @@ const FileListing = ({
     ) : (
         <>
             <ul className={`${Style.fileListContainer}`}>
+                {existingFiles
+                    ? existingFiles.map(({ title, key }: ExistingFiles) => {
+                          return (
+                              <li className={Style.fileListContainer__file} key={key}>
+                                  <p> {title}</p>
+                                  <IconButton
+                                      onClick={() => {
+                                          deleteFiles({ files: { title, key }, fromExisting: true });
+                                      }}
+                                  >
+                                      <Delete />
+                                  </IconButton>
+                              </li>
+                          );
+                      })
+                    : null}
                 {files.map(({ file, key }: FilesUpload) => {
                     return (
                         <li className={Style.fileListContainer__file} key={key}>
                             <p> {file?.name}</p>
                             <IconButton
                                 onClick={() => {
-                                    deleteFiles({ file, key });
+                                    deleteFiles({ files: { file, key }, fromExisting: false });
                                 }}
                             >
                                 <Delete />

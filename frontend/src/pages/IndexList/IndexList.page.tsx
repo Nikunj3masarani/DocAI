@@ -25,7 +25,7 @@ import PsychologyOutlinedIcon from '@mui/icons-material/PsychologyOutlined';
 
 //Import Style
 import Styles from './IndexList.module.scss';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { HeaderAction } from '@docAi-app/types/common.type';
 
 const IndexList = () => {
@@ -43,7 +43,10 @@ const IndexList = () => {
     // Helpers
 
     // JSX Methods
-
+    useEffect(() => {
+        if (isBrainCreated) {
+        }
+    }, [isBrainCreated]);
     // Your component logic here
 
     return (
@@ -58,9 +61,12 @@ const IndexList = () => {
             >
                 {headerAction === 'Create Brain' ? (
                     <CreateBrain
-                        close={(val: boolean) => {
-                            setShowDialogue(val);
-                            setIsBrainCreated(true);
+                        close={() => {
+                            setShowDialogue(false);
+                             setHeaderAction(undefined);
+                        }}
+                        isBrainCreated={() => {
+                            setIsBrainCreated((prev) => !prev);
                         }}
                     />
                 ) : (
@@ -93,7 +99,7 @@ const IndexList = () => {
                     </Button>
                 </div>
             </div>
-            <DataGridComp initialSearchValue={''} />
+            <DataGridComp isBrainChange={isBrainCreated} initialSearchValue={''} />
         </div>
     );
 };

@@ -28,7 +28,6 @@ import { useState } from 'react';
 import { HeaderAction } from '@docAi-app/types/common.type';
 import { AddKnowledge, CreateBrain, MessageTypeField } from '@docAi-app/components';
 import PsychologyOutlinedIcon from '@mui/icons-material/PsychologyOutlined';
-import { chatApi } from '@docAi-app/api/chat.api';
 import { uuidGenerator } from '@docAi-app/utils/helper/common.helper';
 import { useNavigate } from 'react-router-dom';
 import { ROUTE } from '@docAi-app/utils/constants/Route.constant';
@@ -64,26 +63,6 @@ const Search = () => {
                 chatId: chatUuid,
             },
         });
-        // chatApi
-        //     .getChat({
-        //         index_uuid: val['index'].value,
-        //         query: val.message,
-        //         chat_uuid: chatUuid,
-        //         model_uuid: val['model'],
-        //     })
-        //     .then(async (response) => {
-        //         while (true) {
-        //             const res = await response.next();
-        //             const { value, done } = res;
-        //             console.log(value);
-        //             if (done) break;
-        //         }
-
-        //         navigate(`${ROUTE.ROOT}${ROUTE.CHAT}/${chatUuid}`, {});
-        //     })
-        // .catch((err) => {
-        //     console.log(err);
-        // });
     };
     return (
         <div className={Style.container}>
@@ -130,7 +109,7 @@ const Search = () => {
                         <h1>Talk to DocAI</h1>
                     </div>
                     <div className={Style.content__body}>
-                        <MessageTypeField handleSubmit={handleSubmit} disable={false} />
+                        <MessageTypeField handleSubmit={handleSubmit} disable={disableSearchInput} />
                     </div>
                 </div>
             </div>

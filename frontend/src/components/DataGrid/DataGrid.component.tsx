@@ -33,7 +33,6 @@ import { indexApi } from '@docAi-app/api';
 import Styles from './DataGrid.module.scss';
 import { debounce } from 'lodash';
 
-
 // import { copyHandler, highlightSearchedWord } from '@patent-app/utils/helpers/common.helper';
 // import { PromptApi } from '@patent-app/apis';
 
@@ -46,14 +45,15 @@ type IndexListType = {
 };
 
 interface DataGripComp {
-    initialSearchValue : string
+    isBrainChange: boolean;
+    initialSearchValue: string;
 }
 
-const DataGridComp = ({ initialSearchValue }: DataGripComp) => {
+const DataGridComp = ({ isBrainChange, initialSearchValue }: DataGripComp) => {
     // Hooks & Variables
     const [searchData, setSearchData] = useState(initialSearchValue);
     const [data, setData] = useState<IndexListType[]>([]);
-    const [pager, setPager] = useState({ totalRecords: 0, filteredRecords: 0 });
+    const [pager, setPager] = useState({ totalRecords: 0 });
     const [pagination, setPagination] = useState({ page: 1, size: 10 });
     const [selectedData, setSelectedData] = useState<IndexListType>();
     const [isOpenDialog, setIsOpenDialog] = useState(false);
@@ -65,7 +65,7 @@ const DataGridComp = ({ initialSearchValue }: DataGripComp) => {
         () => [
             {
                 field: 'title',
-                headerName: 'Index Name',
+                headerName: 'Brains',
                 sortable: false,
                 width: 300,
                 filterable: false,
@@ -111,7 +111,7 @@ const DataGridComp = ({ initialSearchValue }: DataGripComp) => {
 
     useEffect(() => {
         onApiCall();
-    }, [pagination, searchData]);
+    }, [pagination, searchData, isBrainChange]);
 
     // Api Calls
     const onApiCall = (data = '') => {
@@ -139,8 +139,7 @@ const DataGridComp = ({ initialSearchValue }: DataGripComp) => {
                 setData(res.payload);
                 if (res.pager)
                     setPager({
-                        totalRecords: res.pager.totalRecords,
-                        filteredRecords: res.pager.filteredRecords,
+                        totalRecords: res.pager.total_records,
                     });
             })
             .catch((err) => {

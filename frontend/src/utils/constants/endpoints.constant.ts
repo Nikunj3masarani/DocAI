@@ -45,6 +45,10 @@ export const ENDPOINTS = {
             URL: `${INDEX}/list`,
             METHOD: `${METHOD.POST}`,
         },
+        UPDATE_INDEX: {
+            URL: `${INDEX}/?${INDEX_UUID}`,
+            METHOD: `${METHOD.PUT}`,
+        },
         GET_USERS: {
             URL: `${INDEX}/${USERS}/?${INDEX_UUID}`,
             METHOD: METHOD.GET,
@@ -89,7 +93,11 @@ export const ENDPOINTS = {
         },
         UPLOAD_DOCUMENTS: {
             METHOD: METHOD.POST,
-            URL: `${DOCUMENTS}/upload`,
+            URL: `${DOCUMENTS}/upload/?${INDEX_UUID}`,
+        },
+        DELETE_DOCUMENTS: {
+            METHOD: METHOD.DELETE,
+            URL: `${DOCUMENTS}/?document_uuid`,
         },
     },
     CHAT: {

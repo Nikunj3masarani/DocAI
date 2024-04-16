@@ -41,6 +41,19 @@ interface RemoveIndexUserRequestBody {
     remove_user_uuid: string;
 }
 
+interface UpdateIndexProps {
+    requestBody: {
+        description: string;
+        status: string;
+        tags: string[];
+        prompt_uuid: string;
+        model: string;
+    };
+    requestParams: {
+        index_uuid: string;
+    };
+}
+
 const getIndex = (requestBody: GetIndexParams) => {
     const data: ApiConfig<GetIndexParams> = {
         method: ENDPOINTS.INDEX_MANAGEMENT.GET_INDEX.METHOD as Method,
@@ -74,6 +87,16 @@ const deleteIndex = (requestBody: DeleteIndexRequestBody) => {
         method: ENDPOINTS.INDEX_MANAGEMENT.DELETE_INDEX.METHOD as Method,
         url: parseEndpoint(ENDPOINTS.INDEX_MANAGEMENT.DELETE_INDEX.URL, { ...requestBody }),
     };
+    return apiCall(data);
+};
+
+const updateIndex = ({ requestBody, requestParams }: UpdateIndexProps) => {
+    const data: ApiConfig<UpdateIndexProps['requestBody']> = {
+        method: ENDPOINTS.INDEX_MANAGEMENT.UPDATE_INDEX.METHOD as Method,
+        url: parseEndpoint(ENDPOINTS.INDEX_MANAGEMENT.UPDATE_INDEX.URL, { ...requestParams }),
+        data: requestBody,
+    };
+
     return apiCall(data);
 };
 
@@ -113,6 +136,7 @@ const indexApi = {
     getIndexUsers,
     inviteIndexUser,
     removeIndexUser,
+    updateIndex,
 };
 
 export { indexApi };

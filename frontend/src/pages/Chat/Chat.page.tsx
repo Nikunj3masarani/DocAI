@@ -63,9 +63,11 @@ const Chat = () => {
     const [showLoading, setShowLoading] = useState<boolean>(false);
     const messageContainerRef = useRef<HTMLDivElement | null>(null);
     const systemLastMessageRef = useRef<HTMLDivElement | null>(null);
-    const { state } = useLocation();
+    const location = useLocation();
     const navigate = useNavigate();
     const params = useParams();
+    const { state } = location;
+
     // Variables Dependent upon State
 
     // Api Calls
@@ -79,7 +81,6 @@ const Chat = () => {
     };
     // Event Handlers
     const getChatApi = ({ indexId, userText, chatId, modelId }: GetChatApiProps) => {
-
         chatApi
             .getChat({
                 index_uuid: indexId,
@@ -135,7 +136,7 @@ const Chat = () => {
             const chatUuid = params[ROUTE.CHAT_ID];
             chatApi.getChatMessage({ chat_uuid: chatUuid }).then((res) => {
                 let tempMessageList: Message[] = [];
-                res.payload.forEach((tempMessage) => {
+                res?.payload?.forEach((tempMessage) => {
                     tempMessageList.push({ sender: 'user', message: tempMessage.user_message, key: uuidGenerator() });
 
                     tempMessageList.push({

@@ -52,7 +52,7 @@
 
 .chatList {
     padding-left: 0;
-    height: 30rem;
+    height: 36rem;
     overflow: auto;
 
     ul {
@@ -119,4 +119,17 @@
             visibility: hidden !important;
         }
     }
+}
+
+.messageTitleContainer {
+    &__enable {
+        z-index: 2;
+    }
+    &__disable {
+        z-index: -1;
+    }
+    cursor: pointer;
+    position: absolute;
+    width: 80%;
+    height: 100%;
 }
