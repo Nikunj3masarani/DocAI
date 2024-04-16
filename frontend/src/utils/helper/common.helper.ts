@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid';
 import { Option } from '@docAi-app/types/common.type';
 export const isEmptyValue = (value: unknown) => {
     if (value === null || value === undefined) {
@@ -32,5 +33,5 @@ export const parseEndpoint = (url: string, params: Record<string, string | numbe
 };
 
 export function uuidGenerator(): string {
-    return crypto.randomUUID();
+    return uuidv4();
 }
