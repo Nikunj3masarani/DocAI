@@ -63,7 +63,33 @@ class Index(DBService):
         return index_result.__dict__
 
     async def update_data(self, data: Any, *args, **kwargs) -> Dict:
-        pass
+        update_index_query = select(IndexTable, IndexUserMappingTable.role).join(
+            IndexUserMappingTable, IndexUserMappingTable.index_uuid == IndexTable.index_uuid).where(
+            IndexTable.index_uuid == data.get("index_uuid"), IndexUserMappingTable.user_uuid == data.get("user_uuid"))
+        update_index_result = await self.db_session.execute(update_index_query)
+        update_index_result = update_index_result.first()
+        if not update_index_result:
+            raise CustomException(constants.INDEX_NOT_FOUND)
+        if update_index_result.role != constants.IndexRole.OWNER:
+            raise CustomException(constants.INDEX_CAN_NOT_UPDATED)
+
+        index_query = select(IndexTable).where(IndexTable.index_uuid == data.get('index_uuid'))
+        index_result = await self.db_session.execute(index_query)
+        index_result = index_result.first()
+            
+        index_result =index_result[0]    
+        # Update index attributes
+        index_result.title = data.get("title", index_result.title)
+        index_result.description = data.get("description", index_result.description)
+        index_result.tags = data.get("tags", index_result.tags)
+        index_result.status = data.get("status", index_result.status)
+        index_result.prompt_uuid = data.get("prompt_uuid", index_result.prompt_uuid)
+        # index_result.model = data.get("model", index_result.model)
+        await self.db_session.commit()
+        
+        return index_result.__dict__
+
+        
 
     async def delete_data(self, data: Any, *args, **kwargs) -> None:
         select_index_query = select(IndexTable, IndexUserMappingTable.role).join(
