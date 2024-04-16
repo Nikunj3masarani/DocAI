@@ -58,6 +58,8 @@ class Settings(BaseSettings):
     jwt_secret_key: str = ""
     jwt_algo: str = "HS256"
 
+    openai_api_key: str = ""
+
     @property
     def db_url(self) -> URL:
         """
