@@ -22,6 +22,14 @@ class Inference:
         inference_db_service = InferenceDBService(self.db_client)
 
         tokens = []
+        chat_data = {
+            "user_message": chat_request_data.get("query"),
+            "index_uuid": chat_request_data.get("index_uuid"),
+            "model_uuid": chat_request_data.get("model_uuid"),
+            "chat_uuid": chat_request_data.get("chat_uuid"),
+            "user_uuid": chat_request_data.get('user_uuid')
+        }
+        await inference_db_service.add_chat_data(chat_data)
 
         async def inference_callback(token):
             for choice in token.choices:
@@ -29,17 +37,14 @@ class Inference:
 
                 if choice.finish_reason == "stop":
                     response_text = ''.join(tokens)
-                    chat_data = {
+                    chat_history_data = {
                         "message_uuid": uuid.uuid4(),
                         "user_message": chat_request_data.get("query"),
                         "assistant_message": response_text,
-                        "index_uuid": chat_request_data.get("index_uuid"),
-                        "model_uuid": chat_request_data.get("model_uuid"),
-                        "prompt_uuid": chat_request_data.get("prompt_uuid"),
                         "chat_uuid": chat_request_data.get("chat_uuid"),
-                        "user_uuid": "abcd"
+                        "user_uuid": chat_request_data.get('user_uuid')
                     }
-                    await inference_db_service.add_data(chat_data)
+                    await inference_db_service.add_chat_history_data(chat_history_data)
 
         inference_haystack_service = InferenceHaystackService(index_name,
                                                               self.query_embeddings_function,
