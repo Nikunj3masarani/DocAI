@@ -119,7 +119,7 @@ class Inference(DBService):
         user_index_list = list(user_index_list.all())
         user_index_list = [str(index[0]) for index in user_index_list]
 
-        select_chat_history_query = select(distinct(ChatTable.chat_uuid),
+        select_chat_history_query = select(distinct(ChatTable.chat_uuid).label('chat_uuid'),
                                            ChatTable.chat_title,
                                            ChatTable.prompt_uuid,
                                            ChatTable.created_at,
