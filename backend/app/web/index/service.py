@@ -33,7 +33,7 @@ class Index(BaseService):
         index_db_service = IndexDBService(self.db_session)
         index_result = await index_db_service.delete_data(data)
         index_es_service = IndexESService(self.es_client)
-        await index_es_service.delete_index(index_result.get("title"))
+        await index_es_service.delete_index(index_result[0].title)
 
     async def update(self, data: Any, *args, **kwargs):
         index_db_service = IndexDBService(self.db_session)
