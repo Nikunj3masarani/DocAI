@@ -1,6 +1,6 @@
 from typing import Any, List, Dict
 from sqlalchemy.future import select
-from sqlalchemy import and_, delete
+from sqlalchemy import and_, delete, distinct
 from app import constants
 
 from app.web.base.db_service import DBService
@@ -19,7 +19,7 @@ class Inference(DBService):
     async def insert_data(self, data: Any, *args, **kwargs) -> Dict:
         pass
 
-    async def add_data(self, chat_data):
+    async def add_chat_data(self, chat_data):
         select_chat_query = select(ChatTable).where(ChatTable.chat_uuid == chat_data.get("chat_uuid"))
         chat_result = await self.db_client.execute(select_chat_query)
         chat_obj = chat_result.first()
@@ -31,12 +31,16 @@ class Inference(DBService):
             chat_obj.created_by = chat_data.get("user_uuid")
             chat_obj.model_uuid = chat_data.get("model_uuid")
             self.db_client.add(chat_obj)
+            await self.db_client.commit()
 
+        return chat_obj
+
+    async def add_chat_history_data(self, chat_history_data):
         chat_history_obj = ChatHistoryTable()
-        chat_history_obj.message_uuid = chat_data.get("message_uuid")
-        chat_history_obj.user_message = chat_data.get("user_message")
-        chat_history_obj.assistant_message = chat_data.get("assistant_message")
-        chat_history_obj.chat_uuid = chat_data.get("chat_uuid")
+        chat_history_obj.message_uuid = chat_history_data.get("message_uuid")
+        chat_history_obj.user_message = chat_history_data.get("user_message")
+        chat_history_obj.assistant_message = chat_history_data.get("assistant_message")
+        chat_history_obj.chat_uuid = chat_history_data.get("chat_uuid")
         chat_history_obj.feedback_status = -1
         self.db_client.add(chat_history_obj)
         await self.db_client.commit()
@@ -115,15 +119,14 @@ class Inference(DBService):
         user_index_list = list(user_index_list.all())
         user_index_list = [str(index[0]) for index in user_index_list]
 
-        select_chat_history_query = select(ChatTable.chat_uuid,
+        select_chat_history_query = select(distinct(ChatTable.chat_uuid),
                                            ChatTable.chat_title,
                                            ChatTable.prompt_uuid,
                                            ChatTable.created_at,
                                            ChatTable.model_uuid,
                                            ChatTable.created_by,
-                                           ChatTable.index_uuid).join(ChatHistoryTable).where(ChatTable.index_uuid.in_(
-            user_index_list
-        ))
+                                           ChatTable.index_uuid).join(ChatHistoryTable).where(
+            ChatTable.index_uuid.in_(user_index_list))
         chat_history_response = await self.db_client.execute(select_chat_history_query)
         result = group_and_label_data(list(chat_history_response.all()))
         return result
