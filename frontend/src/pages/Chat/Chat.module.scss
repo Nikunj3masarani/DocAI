@@ -1,0 +1,107 @@
+@import '@docAi-app/styles/abstracts/_abstracts.scss';
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    height: 100vh;
+    margin: auto;
+    width: 100%;
+
+    &__header {
+        height: $headerHeight;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 2px solid $black;
+
+        &__body {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 2rem;
+        }
+    }
+
+    &__body {
+        width: 60%;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        height: calc(100vh - $headerHeight - 10rem);
+        margin-bottom: 10rem;
+        gap: 2rem;
+        margin: auto;
+    }
+    &__footer {
+        width: 100%;
+    }
+}
+
+.messageContainer {
+    height: calc(100vh - $headerHeight - 8rem);
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+    padding-inline: 1rem;
+    border-radius: 10px;
+}
+
+.message {
+    padding: 2rem;
+    font-size: 1.6rem;
+    color: $black;
+    border-radius: 10px;
+    max-width: 80%;
+    position: relative;
+}
+
+.messageSkeleton {
+ width: 80%;   
+}
+
+.user {
+    align-self: flex-end;
+    background-color: $mercury;
+}
+
+.system {
+    background-color: $primary10;
+    align-self: flex-start;
+    position: relative;
+    word-wrap: break-word;
+
+    &:hover {
+        .feedback {
+            visibility: visible;
+        }
+    }
+
+    &__header {
+        position: absolute;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 1rem;
+        top: 0;
+        left: 0;
+        transform: translateY(-100%);
+        z-index: 2;
+        width: 100%;
+
+        span{
+            display:  flex;
+            justify-content: flex-start;
+            align-items: center;
+        }
+    }
+}
+.feedback {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    visibility: hidden;
+}

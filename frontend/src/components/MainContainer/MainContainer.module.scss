@@ -1,0 +1,135 @@
+@import '@docAi-app/styles/abstracts/_abstracts';
+
+.container {
+    display: flex;
+
+    &__body {
+        width: calc(100vw - 28rem);
+    }
+
+    &__children {
+        overflow: auto;
+        height: 100vh;
+        padding-inline: 2rem;
+    }
+}
+
+.menuItem {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+    background-color: transparent;
+}
+.accordion {
+    width: 100%;
+    color: $secondary;
+    background-color: transparent !important;
+    box-shadow: none !important;
+    gap: 10px;
+    font-size: 1.5rem;
+    font-weight: 400;
+    padding: 1.2rem 1.5rem;
+}
+
+.accordionHeader {
+    height: auto;
+    min-height: unset !important;
+    border-radius: 10px !important;
+
+    &__summary {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+}
+
+.accordionDetails {
+    height: auto;
+    min-height: unset !important;
+    padding: 0 1.6rem 1.6rem !important;
+}
+
+.chatList {
+    padding-left: 0;
+    height: 36rem;
+    overflow: auto;
+
+    ul {
+        padding-left: 10px;
+        position: relative;
+
+        &::before {
+            content: '';
+            position: absolute;
+            height: 100%;
+            width: 1px;
+            left: 0;
+            background-color: black;
+        }
+    }
+    li {
+        margin-block: 2rem;
+
+        li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            margin-block: 1rem;
+
+            input {
+                font-family: $fontFamily;
+                color: $secondary;
+                background-color: transparent;
+                text-overflow: ellipsis;
+                border: none;
+                outline: none;
+                width: 80%;
+                font-size: 1.4rem;
+                &:enabled {
+                    background-color: $mercury;
+                }
+            }
+
+            .threeDotMenu {
+                visibility: hidden;
+                button {
+                    padding: 1rem !important;
+                }
+            }
+            &:hover {
+                .threeDotMenu {
+                    visibility: visible;
+                }
+            }
+        }
+    }
+}
+
+.checkButton {
+    display: none;
+    position: absolute;
+    right: 0;
+
+    &.active {
+        display: block;
+
+        & + .threeDotMenu {
+            visibility: hidden !important;
+        }
+    }
+}
+
+.messageTitleContainer {
+    &__enable {
+        z-index: 2;
+    }
+    &__disable {
+        z-index: -1;
+    }
+    cursor: pointer;
+    position: absolute;
+    width: 80%;
+    height: 100%;
+}

@@ -5,6 +5,7 @@ from tempfile import gettempdir
 from typing import Optional
 from pydantic import BaseSettings
 from yarl import URL
+
 TEMP_DIR = Path(gettempdir())
 
 
@@ -52,10 +53,12 @@ class Settings(BaseSettings):
 
     embedding_model_path: str = ""
 
-    azure_api_key: str
-    azure_api_version: str
-    azure_endpoint: str
-    azure_deployment: str
+    rank_model_path: str = ""
+    es_host_url: str = ""
+    jwt_secret_key: str = ""
+    jwt_algo: str = "HS256"
+
+    openai_api_key: str = ""
 
     @property
     def db_url(self) -> URL:

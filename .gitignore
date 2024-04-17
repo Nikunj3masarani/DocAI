@@ -167,3 +167,7 @@ cython_debug/
 
 notes.txt
 demo/
+migration/models.json
+chroma_db_data/
+postgresql_data/
+elasticsearch_data/

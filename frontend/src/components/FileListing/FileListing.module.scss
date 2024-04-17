@@ -1,0 +1,12 @@
+.fileListContainer {
+    overflow: auto;
+    max-height: 15rem;
+    padding-left: 1rem;
+    
+    &__file {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+}
+

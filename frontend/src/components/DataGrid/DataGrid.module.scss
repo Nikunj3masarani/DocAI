@@ -1,0 +1,40 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    &__title {
+        font-size: 3rem;
+        font-weight: 600;
+        margin: 0;
+    }
+
+    &__body {
+        margin-block: 2rem;
+    }
+
+    &__sortby {
+        text-align: center;
+        font-weight: 500;
+        font-size: 1.5rem;
+        width: 14rem;
+    }
+}
+
+.dataGrid {
+    width: 100%;
+    height: calc(100vh - 24rem);
+}
+
+.pagination {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 1rem;
+}
+
+.actionButtons {
+    display: flex;
+    justify-content: flex-start;
+    column-gap: 1.5rem;
+}

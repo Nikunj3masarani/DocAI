@@ -7,16 +7,15 @@ services:
     depends_on:
       database:
         condition: service_healthy
-      chromadb:
+      elasticsearch:
         condition: service_started
 
     environment:
       POSTGRES_HOST: database
       POSTGRES_PORT: 5432
-      CHROMA_DB_HOST: chromadb
-      CHROMA_DB_PORT: 8000
+      ES_HOST_URL: "http://elasticsearch:9200"
       HAYSTACK_TELEMETRY_ENABLED: False
-      ANONYMIZED_TELEMETRY: False
+
     env_file:
       - .env
     ports:
@@ -32,14 +31,17 @@ services:
       - /home/nikunj/models/:/models/
 
   frontend:
-    build: ./frontend
+    build:
+      context: ./frontend
+      args:
+          ENVIRONMENT: development
     ports:
-      - "8053:8053"
+      - "3000:3000"
     depends_on:
       backend:
         condition: service_started
     environment:
-      BACKEND_URL: "http://backend:8080"
+      VITE_BASE_API: "http://backend:8080/api/"
 
   database:
     image: postgres:latest
@@ -56,20 +58,30 @@ services:
     volumes:
       - ./postgresql_data:/var/lib/postgresql/data
 
-  chromadb:
-    image: chromadb/chroma:latest
-    ports:
-      - "8000:8000"
-
-
+  elasticsearch:
+    image: elasticsearch:8.8.0
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m -Des.network.tcp.connect_timeout=180s"
+      - "ES_INDEX_NUMBER_OF_SHARDS=1"
+      - "ES_INDEX_NUMBER_OF_REPLICAS=1"
     volumes:
-      - ./chroma_db_data/:/chroma/chroma/
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    mem_limit: 1g
+    ports:
+      - "9200:9200"
+      - "9300:9300"
     healthcheck:
-      test: [ "CMD", "curl", "-f", "-s", "http://chromadb:8000/api/v1/heatbeat" ]
+      test: [ "CMD-SHELL", "curl --silent --fail localhost:9200/_cluster/health || exit 1" ]
       interval: 10s
       timeout: 10s
       retries: 3
-
 
   migration:
     build:
@@ -84,7 +96,11 @@ services:
       POSTGRES_PORT: 5432
 
 volumes:
-  chroma_db_data:
+  elasticsearch_data:
     driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/nikunj/PycharmProjects/DocAI/elasticsearch_data
   postgresql_data:
     driver: local

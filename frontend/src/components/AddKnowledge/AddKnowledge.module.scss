@@ -1,0 +1,83 @@
+@import '@docAi-app/styles/abstracts/_abstracts.scss';
+
+.fileUploader {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding-top: 2rem;
+    flex-direction: column;
+    width: 70%;
+    min-height: 60rem;
+    max-height: 80rem;
+    overflow: hidden;
+    margin: auto;
+    label[for='file'] {
+        padding: 2rem;
+        height: 24rem;
+        width: 100%;
+        max-width: 100%;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        position: relative;
+        flex-direction: column;
+    }
+}
+
+.dropArea {
+    border: 1px dashed $primary;
+    padding: 2rem;
+    height: 24rem;
+    width: 100%;
+    max-width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+    flex-direction: column;
+    position: relative;
+    top: -2rem;
+}
+
+.fileListContainer {
+    width: 100%;
+    padding-inline: 2rem;
+}
+
+.formContainer {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.field {
+    width: 30%;
+}
+
+.fileList {
+    display: flex;
+    justify-content: start;
+    flex-direction: column;
+    align-self: flex-start;
+    width: 70%;
+    margin-top: 2rem;
+    margin-left: 30%;
+}
+
+.actionButton {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 70%;
+}
+
+.fileError {
+    border: 3px dashed red;
+    p {
+        color: red;
+    }
+}

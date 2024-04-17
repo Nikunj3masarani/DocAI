@@ -7,3 +7,9 @@ class IndexResponse(BaseResponse):
 
 class IndexListResponse(BaseResponse):
     payload: list = []
+    pager: dict = {}
+
+
+class IndexUserResponse(BaseResponse):
+    payload : list = []
+

@@ -11,6 +11,7 @@ from sqlalchemy.ext.asyncio import (
 from sqlalchemy.orm import sessionmaker
 from app.services.db.base import Base
 from app.services.embeddings.lifetime import init_embeddings, remove_embeddings
+from app.services.es.lifetime import init_es_client, shutdown_es_client
 
 
 def _setup_db(app: FastAPI) -> None:  # pragma: no cover
@@ -54,8 +55,9 @@ def register_startup_event(
     @app.on_event("startup")
     async def _startup() -> None:  # noqa: WPS430
         _setup_db(app)
-        init_chroma(app)
+        # init_chroma(app)
         init_embeddings(app)
+        init_es_client(app)
         # noqa: WPS420
 
     return _startup
@@ -74,9 +76,9 @@ def register_shutdown_event(
     @app.on_event("shutdown")
     async def _shutdown() -> None:  # noqa: WPS430
         await app.state.db_engine.dispose()
-        await shutdown_chroma(app)
+        # await shutdown_chroma(app)
         remove_embeddings(app)
-
+        await shutdown_es_client(app)
         # noqa: WPS420
 
     return _shutdown

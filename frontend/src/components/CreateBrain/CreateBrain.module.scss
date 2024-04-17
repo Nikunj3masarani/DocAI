@@ -1,0 +1,23 @@
+@import '@docAi-app/styles/abstracts/abstracts.scss';
+
+.formContainer {
+    width: 100%;
+    padding: 3rem;
+
+    &__field {
+        margin-bottom: 2rem;
+    }
+    &__actionButton {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        column-gap: 2rem;
+    }
+}
+
+.header {
+    padding-inline: 3rem;
+}
+
+.asyncDropDown {
+}

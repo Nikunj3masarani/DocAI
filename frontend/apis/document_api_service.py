@@ -1,7 +1,7 @@
 import os
 import requests
 
-backend_url = os.getenv('BACKEND_URL')
+backend_url = os.getenv('BACKEND_URL', 'http://localhost:8080')
 
 
 def upload_document(uploaded_files, index_uuid):

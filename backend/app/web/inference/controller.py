@@ -1,18 +1,14 @@
 from fastapi import Depends, status
-from starlette.responses import StreamingResponse
-
-from app import constants
 from fastapi_utils.cbv import cbv
 from fastapi_utils.inferring_router import InferringRouter
 from fastapi.responses import StreamingResponse
-from app.web.index.validator import CreateIndex
-from app.web.index.response import IndexResponse, IndexListResponse
+from app import constants
 from app.services.db.dependency import get_db_session
-from app.services.chroma.dependency import get_chroma_client
 from app.web.inference.service import Inference as InferenceService
-from app.services.embeddings.dependency import get_query_embedding_function
-from app.web.inference.validator import ChatRequest
-
+from app.services.embeddings.dependency import get_query_embedding_function, get_rank_function
+from app.web.inference.validator import ChatRequest, UpdateChat
+from app.web.inference.response import ChatHistoryResponse, ChatMessageResponse
+from app.middleware.auth import AuthBearer
 router = InferringRouter()
 
 
@@ -23,10 +19,84 @@ class Inference:
             self,
             chat_request: ChatRequest,
             db=Depends(get_db_session),
-            chroma_client=Depends(get_chroma_client),
-            query_embeddings_function=Depends(get_query_embedding_function)
+            query_embeddings_function=Depends(get_query_embedding_function),
+            rank_function=Depends(get_rank_function),
+            user=Depends(AuthBearer())
     ):
-        inference_service = InferenceService(db, chroma_client, query_embeddings_function)
+        inference_service = InferenceService(db, query_embeddings_function, rank_function)
         chat_request_data = chat_request.__dict__
+        chat_request_data['user_uuid'] = user.get("user_uuid")
         response_generator = await inference_service.query(chat_request_data)
         return StreamingResponse(response_generator(), media_type="text/event-stream")
+
+    @router.get("/list")
+    async def get_chat_list(
+            self,
+            db=Depends(get_db_session),
+            user=Depends(AuthBearer())
+    ):
+        inference_service = InferenceService(db)
+
+        chat_history_response = await inference_service.get_chat_history(user_uuid=user.get('user_uuid'))
+        return ChatHistoryResponse(
+            payload=chat_history_response,
+            message=constants.CHAT_FETCHED,
+            status=status.HTTP_200_OK,
+        )
+
+    @router.put("/")
+    async def update_chat(
+            self,
+            chat_uuid: str,
+            chat_data: UpdateChat,
+            db=Depends(get_db_session),
+            user=Depends(AuthBearer())
+    ):
+        inference_service = InferenceService(db)
+        chat_data = chat_data.__dict__
+        chat_data['chat_uuid'] = chat_uuid
+        chat_data['user_uuid'] = user.get('user_uuid')
+        chat_update_response = await inference_service.update_chat(chat_data)
+        return ChatHistoryResponse(
+            payload=chat_update_response,
+            message=constants.CHAT_UPDATED,
+            status=status.HTTP_200_OK,
+        )
+
+    @router.delete("/")
+    async def delete_chat(
+            self,
+            chat_uuid: str,
+            db=Depends(get_db_session),
+            user=Depends(AuthBearer())
+    ):
+        inference_service = InferenceService(db)
+        chat_data = {
+            "chat_uuid": chat_uuid,
+            "user_uuid": user.get("user_uuid")
+        }
+        chat_delete_response = await inference_service.delete_chat(chat_data)
+        return ChatHistoryResponse(
+            payload=chat_delete_response or {},
+            message=constants.CHAT_DELETED,
+            status=status.HTTP_200_OK,
+        )
+
+    @router.get("/")
+    async def get_chat_messages(
+            self,
+            chat_uuid: str,
+            db=Depends(get_db_session),
+            user=Depends(AuthBearer())
+    ):
+        inference_service = InferenceService(db)
+        chat_data = {
+            "chat_uuid": chat_uuid,
+            "user_uuid": user.get("user_uuid")
+        }
+        chat_message_response = await inference_service.get_chat_messages(chat_data)
+        return ChatMessageResponse(
+            payload=chat_message_response,
+            message=constants.CHAT_MESSAGES_FOUND,
+            status=status.HTTP_200_OK,
+        )
