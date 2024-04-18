@@ -37,6 +37,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { chatApi } from '@docAi-app/api';
 import { ROUTE } from '@docAi-app/utils/constants/Route.constant';
 import { uuidGenerator } from '@docAi-app/utils/helper';
+import { useChatCreate } from '@docAi-app/hooks';
 const SYSTEM = 'system' as const;
 const USER = 'user' as const;
 
@@ -51,6 +52,7 @@ interface GetChatApiProps {
     userText: string;
     chatId: string;
     modelId: string;
+    initialChat?: boolean;
 }
 
 const Chat = () => {
@@ -66,6 +68,7 @@ const Chat = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const params = useParams();
+    const {setIsChatCreated} = useChatCreate();
     const { state } = location;
 
     // Variables Dependent upon State
@@ -80,7 +83,7 @@ const Chat = () => {
         messageContainerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
     };
     // Event Handlers
-    const getChatApi = ({ indexId, userText, chatId, modelId }: GetChatApiProps) => {
+    const getChatApi = ({ indexId, userText, chatId, modelId, initialChat = false }: GetChatApiProps) => {
         chatApi
             .getChat({
                 index_uuid: indexId,
@@ -107,6 +110,11 @@ const Chat = () => {
                     // systemLastMessageRef.current!.innerHTML +=
                     scrollBottom();
                 }
+
+                if (initialChat) {
+                    setIsChatCreated(true);
+                    navigate('.', { replace: true });
+                }
             });
     };
     // Helpers
@@ -130,8 +138,8 @@ const Chat = () => {
                 userText: state.userText,
                 chatId: state.chatId,
                 modelId: state.modelId,
+                initialChat: true,
             });
-            navigate('.', { replace: true });
         } else {
             const chatUuid = params[ROUTE.CHAT_ID];
             chatApi.getChatMessage({ chat_uuid: chatUuid }).then((res) => {

@@ -32,6 +32,7 @@ import { uuidGenerator } from '@docAi-app/utils/helper';
 import { useNavigate } from 'react-router-dom';
 import { ROUTE } from '@docAi-app/utils/constants/Route.constant';
 import { chatApi } from '@docAi-app/api';
+import { useChatCreate } from '@docAi-app/hooks';
 
 const Search = () => {
     // useRef
@@ -41,7 +42,6 @@ const Search = () => {
     const [disableSearchInput, setSearchInput] = useState<boolean>(false);
     const chatList = useRef<string[]>([]);
     const navigate = useNavigate();
-
     useEffect(() => {
         chatApi.getChatList().then(({ payload }) => {
             Object.keys(payload).forEach((key) => {

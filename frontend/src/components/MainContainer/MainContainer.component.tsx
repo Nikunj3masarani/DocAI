@@ -15,6 +15,7 @@ import HistoryIcon from '@mui/icons-material/History';
 import { chatApi } from '@docAi-app/api/chat.api';
 import CheckIcon from '@mui/icons-material/Check';
 import { itemsProps } from '@docAi-app/stories/components/Menu/Menu.component';
+import { useChatCreate } from '@docAi-app/hooks';
 
 const sideNavigationItems = [
     {
@@ -64,9 +65,11 @@ const MainContainer = () => {
         return editTitleId === messageId ? Styles.active : '';
     };
     const [editedMessage, setEditedMessage] = useState<string>();
+    const { isChatCreated, setIsChatCreated } = useChatCreate();
+
     const navigate = useNavigate();
     useEffect(() => {
-        if (params.pathname.includes('chat') || params.pathname.includes('search')) {
+        if (isChatCreated) {
             chatApi.getChatList().then((res) => {
                 const tempList = res.payload;
                 Object.keys(tempList).forEach((key: string) => {
@@ -78,8 +81,9 @@ const MainContainer = () => {
                     });
                 });
             });
+            setIsChatCreated(false);
         }
-    }, [params.pathname]);
+    }, [isChatCreated]);
     const sideNavItem = sideNavigationItems.map((navigationItem, index) => {
         return (
             <>
