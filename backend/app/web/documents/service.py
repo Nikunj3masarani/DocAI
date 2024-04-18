@@ -33,11 +33,12 @@ class Documents:
                 response_messages["failed"].append(f"{doc.filename} already indexed.")
                 continue
 
-            _ = await document_haystack_service.index_document(doc)
+            source_id = await document_haystack_service.index_document(doc)
             # todo store this ${doc_ids} to the database for delete document from chroma
 
             doc_data = {
                 "index_uuid": kwargs.get("index_uuid"),
+                "source_id":source_id,
                 "file_name": doc.filename,
                 "document_uuid": str(uuid.uuid4()),
                 "file_ext": doc.filename.split(".")[-1],
@@ -55,6 +56,19 @@ class Documents:
 
     async def delete_documents(self, document_delete_data):
         document_db_service = DocumentsDBService(self.db_client)
-        is_deleted = await document_db_service.delete_data(document_delete_data)
-        print(is_deleted)
+        data = await document_db_service.delete_data(document_delete_data)
+        
+        document_db_service = DocumentsDBService(self.db_client)
+        index_db_service = IndexDBService(self.db_client)
+        
+        index_data={
+            "index_uuid": data.get("index_uuid"),
+            "user_uuid": document_delete_data.get("user_uuid")
+        }
+        index_name = await index_db_service.get_index_name(index_data)
+        document_haystack_service = DocumentHaystackService(index_name, self.document_embedding_function)
+        if data.get("source_id"):
+            await document_haystack_service.delete_document(data.get("source_id"))
+
+        # print(is_deleted)
         return {}

@@ -32,5 +32,21 @@ class Documents:
             embedded_documents = self.document_embeddings.run(documents=split_documents.get('documents'))
 
             self.document_store.write_documents(embedded_documents.get("documents"))
+            
+        return embedded_documents["documents"][0].meta["source_id"]
+    
+    async def delete_document(self, source_id):
+        docs = self.document_store.filter_documents({
+                    "source_id": source_id
+                })
+        
+        docs_ids = list()
+        for doc in docs:
+            docs_ids.append(doc.id)
+            
+        self.document_store.delete_documents(docs_ids)    
+            
+        
+        
 
 

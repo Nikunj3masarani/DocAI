@@ -38,7 +38,7 @@ class Documents(DBService):
     async def update_data(self, data: Any, *args, **kwargs) -> Dict:
         pass
 
-    async def delete_data(self, data: Any, *args, **kwargs) -> None:
+    async def delete_data(self, data: Any, *args, **kwargs) -> Dict:
         select_document_query = select(DocumentTable).where(DocumentTable.document_uuid == data.get("document_uuid"))
         document_result = await self.db_client.execute(select_document_query)
         document_result = document_result.scalar_one_or_none()
@@ -59,7 +59,7 @@ class Documents(DBService):
 
         delete_document_query = delete(DocumentTable).where(DocumentTable.document_uuid == data.get("document_uuid"))
         _ = await self.db_client.execute(delete_document_query)
-        return
+        return document_result.__dict__
 
     async def get_all_data(self, data: Any, *args, **kwargs) -> List[Dict]:
         index_access_check_query = select(IndexTable).join(IndexUserMappingTable,
