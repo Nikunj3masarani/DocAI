@@ -53,6 +53,7 @@ class Prompts(DBService):
         if existing_prompt and existing_prompt.prompt_uuid != prompt.prompt_uuid:
             raise CustomException(message=constants.PROMPT_ALREADY_EXISTS)
 
+        data["content"] = data.pop("description")
         for key, value in data.items():
             if value:
                 setattr(prompt, key, value)
