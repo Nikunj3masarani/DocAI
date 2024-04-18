@@ -94,3 +94,8 @@ CREATE TABLE IF NOT EXISTS index_user_mapping (
       role INTEGER,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE IF NOT EXISTS document_mappings (
+    document_uuid UUID REFERENCES documents(document_uuid),
+    document_chunk_uuid UUID
+);
