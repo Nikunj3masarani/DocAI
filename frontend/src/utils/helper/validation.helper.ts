@@ -1,7 +1,7 @@
-import { Validation } from '@docAi-app/types/validation.type';
+import { Validation } from '@docAi-app/types';
 import { isEmptyValue } from './common.helper';
 
-export const validation = (validations: Validation, value: unknown): string => {
+const validation = (validations: Validation, value: unknown): string => {
     const { required, between, min, max, custom, regex } = validations;
     if (required && isEmptyValue(value)) {
         return required?.message;
@@ -29,13 +29,15 @@ export const validation = (validations: Validation, value: unknown): string => {
     return '';
 };
 
-export const removeEmptyField = (value: Record<string, string>): object => {
+const removeEmptyField = (value: Record<string, string>): object => {
     const newValue = value;
     if (typeof value === 'object' && value !== null) {
         const keys = Object.keys(value);
-        keys.forEach((key : string) => {
-            if(newValue[key] === '') delete newValue[key];
-        })
+        keys.forEach((key: string) => {
+            if (newValue[key] === '') delete newValue[key];
+        });
     }
     return newValue;
 };
+
+export { validation, removeEmptyField };

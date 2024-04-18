@@ -30,15 +30,15 @@ const AuthRoute = ({ children }: { children: React.ReactNode }) => {
     const { isLogin } = useAuth();
     const navigate = useNavigate();
     const url = useLocation();
-    
+
     const currentPath = url.pathname;
     const isReset = false;
-    
+
     useEffect(() => {
         if (!currentPath.includes(ROUTE.AUTH)) {
             if (!isLogin) {
                 navigate(`/${ROUTE.AUTH}`);
-            } 
+            }
         } else if (currentPath.includes(ROUTE.AUTH)) {
             if (isLogin) {
                 navigate(`${ROUTE.ROOT}${ROUTE.SEARCH}`);
@@ -49,17 +49,6 @@ const AuthRoute = ({ children }: { children: React.ReactNode }) => {
         }
     }, [isLogin, currentPath]);
 
-    // Variables Dependent upon State
-
-    // Api Calls
-
-    // Event Handlers
-
-    // Helpers
-
-    // JSX Methods
-
-    // Your component logic here
 
     return <>{children}</>;
 };

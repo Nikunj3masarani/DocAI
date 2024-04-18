@@ -1,6 +1,6 @@
 import { FormControl, SelectProps as MuiSelectProps } from '@mui/material';
-import { Item } from '@docAi-app/types/common.type';
-import { isEmptyValue } from '@docAi-app/utils/helper/common.helper';
+import { Item } from '@docAi-app/types';
+import { isEmptyValue } from '@docAi-app/utils/helper';
 import { InputLabelStyle, MenuItemStyle, SelectStyle } from './Select.styled';
 
 type SelectProps = MuiSelectProps & {

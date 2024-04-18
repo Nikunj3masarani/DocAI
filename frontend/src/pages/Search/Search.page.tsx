@@ -25,10 +25,10 @@ import Logo from '@docAi-app/../public/assets/images/logo.svg';
 //Import Style
 import Style from './Search.module.scss';
 import { useState } from 'react';
-import { HeaderAction } from '@docAi-app/types/common.type';
+import { HeaderAction } from '@docAi-app/types';
 import { AddKnowledge, CreateBrain, MessageTypeField } from '@docAi-app/components';
 import PsychologyOutlinedIcon from '@mui/icons-material/PsychologyOutlined';
-import { uuidGenerator } from '@docAi-app/utils/helper/common.helper';
+import { uuidGenerator } from '@docAi-app/utils/helper';
 import { useNavigate } from 'react-router-dom';
 import { ROUTE } from '@docAi-app/utils/constants/Route.constant';
 
@@ -78,7 +78,7 @@ const Search = () => {
             </Dialog>
             <div className={Style.container__header}>
                 <div>
-                    <h1>My Brains</h1>
+                    <h1>Home</h1>
                 </div>
                 <div className={Style.container__header__body}>
                     <Button

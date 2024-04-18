@@ -4,6 +4,8 @@ interface Model {
     display_name: string;
 }
 
-export interface ModelListResponse {
+interface ModelListResponse {
     models: Model[];
 }
+
+export type { ModelListResponse };

@@ -31,6 +31,7 @@ interface AsyncSearchSelectCompProps {
     isDisabled?: boolean;
     menuPlacement?: MenuPlacement | undefined;
     value?: AsyncSelectDataType | null;
+    defaultValue?: AsyncSelectDataType | null;
     isCustomOption?: boolean;
     customOptionLabel?: string;
     emptyOptionMessage?: string;

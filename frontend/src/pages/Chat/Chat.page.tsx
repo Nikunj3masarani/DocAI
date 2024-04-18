@@ -1,7 +1,7 @@
 //Import Third Party lib
 
 import { AddKnowledge, CreateBrain, MessageTypeField } from '@docAi-app/components';
-import { HeaderAction } from '@docAi-app/types/common.type';
+import { HeaderAction } from '@docAi-app/types';
 import { useEffect, useRef, useState } from 'react';
 
 //Import Storybook
@@ -36,7 +36,7 @@ import { Skeleton } from '@mui/material';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { chatApi } from '@docAi-app/api';
 import { ROUTE } from '@docAi-app/utils/constants/Route.constant';
-import { uuidGenerator } from '@docAi-app/utils/helper/common.helper';
+import { uuidGenerator } from '@docAi-app/utils/helper';
 const SYSTEM = 'system' as const;
 const USER = 'user' as const;
 
@@ -149,7 +149,7 @@ const Chat = () => {
                 scrollBottom();
             });
         }
-    }, [state, params[ROUTE.CHAT_ID]]);
+    }, [params[ROUTE.CHAT_ID]]);
 
     // JSX Methods
 

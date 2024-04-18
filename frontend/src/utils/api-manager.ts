@@ -1,8 +1,9 @@
 import axios, { AxiosError } from 'axios';
-import { ApiConfig, ApiErrorResponse, ApiResponse, AxiosRequest } from '@docAi-app/types/Api.type';
-import { getFromLocalStorage, removeFromLocalStorage } from '@docAi-app/utils/helper/storage.helper';
+import { ApiConfig, ApiErrorResponse, ApiResponse, AxiosRequest } from '@docAi-app/types';
+import { getFromLocalStorage, removeFromLocalStorage } from '@docAi-app/utils/helper';
 import { ACCESS_TOKEN_KEY } from '@docAi-app/utils/constants/storage.constant';
 import { ERROR_STATUS_CODE } from '@docAi-app/utils/constants/common.constant';
+import { getAlert } from '@docAi-app/hooks';
 
 let loaderCount = 0;
 
@@ -12,8 +13,8 @@ const defaultHeaders = {
 
 const defaultApiConfig = {
     showLoader: true,
-    showSuccessToast: true,
-    showAlertToast: true,
+    showSuccessToast: false,
+    showAlertToast: false,
     scrollToTop: false,
 };
 
@@ -39,24 +40,23 @@ axiosInstance.interceptors.response.use(
     (response) => {
         if (response.data) return response.data;
     },
-    (error: AxiosError<ApiErrorResponse>) => {
-        const { status } = error?.response || {};
+    (error) => {
+        // const { status, message } = error?.response || {};
 
-        if (status === ERROR_STATUS_CODE[401]) {
-            removeFromLocalStorage(ACCESS_TOKEN_KEY);
-            return Promise.reject({ show: false });
-        }
+        // if (status === ERROR_STATUS_CODE[401]) {
+        //     removeFromLocalStorage(ACCESS_TOKEN_KEY);
+        //     return Promise.reject({ show: false });
+        // }
 
-        const parsedJson = JSON.parse(error?.request?.response || false);
-
-        if (!parsedJson) {
-            if (error?.message === 'Network Error') {
-                return Promise.reject({ show: false });
-            }
-            return Promise.reject(error);
-        }
-
-        return Promise.reject(parsedJson);
+        // const parsedJson = JSON.parse(error?.request?.response || false);
+        // if (!parsedJson) {
+        //     if (error?.message === 'Network Error') {
+        //         return Promise.reject({ show: false });
+        //     }
+        //     return Promise.reject(error);
+        // }
+        // console.log(JSON.parse(error.request));
+        return Promise.reject(error.response.data);
     },
 );
 
@@ -74,7 +74,7 @@ export async function* getIterableStream(body: ReadableStream<Uint8Array>): Asyn
     }
 }
 
-export const generateStream = async <ResponsePayload, RequestBody = undefined>(
+export const generateStream = async <RequestBody = undefined>(
     apiConfig: ApiConfig<RequestBody>,
 ): Promise<AsyncIterable<string>> => {
     const { method, url, data } = apiConfig;
@@ -108,9 +108,9 @@ export const apiCall = async <ResponsePayload, RequestBody = undefined>(
     return axiosInstance
         .request<ResponsePayload, ApiResponse<ResponsePayload>, RequestBody>(apiReqConfig)
         .then((response) => {
-            const { show, message } = response;
-            if (show && showSuccessToast && message) {
-                //success toast
+            const { message } = response;
+            if (showSuccessToast && message) {
+                getAlert('success', message);
             }
             if (scrollToTop) {
                 //scroll to top
@@ -121,7 +121,15 @@ export const apiCall = async <ResponsePayload, RequestBody = undefined>(
             // if (error && showAlertToast && error.message) {
             //     console.log({ error });
             // }
-            // throw error;
+
+            const { status , message }  : {status : number , message : string}= error;
+            console.log(error);
+            if (showAlertToast && message) {
+                getAlert('error', message);
+            } else if (status === ERROR_STATUS_CODE['422'] && !message.includes('chat')) {
+                getAlert('error', message);
+            }
+            throw error;
         })
         .finally(() => {
             if (showLoader) {

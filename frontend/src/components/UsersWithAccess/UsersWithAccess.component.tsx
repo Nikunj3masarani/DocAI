@@ -29,8 +29,6 @@ import { FieldArray } from 'react-final-form-arrays';
 import arrayMutators from 'final-form-arrays';
 import Icons from '@docAi-app/icons';
 import { useEffect, useState } from 'react';
-import { Co2Sharp } from '@mui/icons-material';
-import { ValidationErrors } from 'final-form';
 import { indexApi } from '@docAi-app/api';
 import { ROUTE } from '@docAi-app/utils/constants/Route.constant';
 

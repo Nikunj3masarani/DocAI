@@ -9,12 +9,12 @@ export const PROMPT_UUID = 'prompt_uuid';
 export const CHAT = 'chat';
 export const USERS = 'users';
 
-export const METHOD = {
+export const METHOD  = {
     GET: 'get',
     POST: 'post',
     DELETE: 'delete',
     PUT: 'put',
-};
+} ;
 
 export const ENDPOINTS = {
     AUTH: {
@@ -75,11 +75,11 @@ export const ENDPOINTS = {
         },
         GET_PROMPT: {
             METHOD: METHOD.GET,
-            URL: `${PROMPTS}`,
+            URL: `${PROMPTS}/?${PROMPT_UUID}`,
         },
         CREATE_PROMPT: {
             METHOD: METHOD.POST,
-            URL: `${PROMPTS}/?${PROMPT_UUID}`,
+            URL: `${PROMPTS}`,
         },
         UPDATE_PROMPT: {
             METHOD: METHOD.PUT,

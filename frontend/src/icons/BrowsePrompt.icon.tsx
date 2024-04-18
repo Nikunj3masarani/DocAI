@@ -1,5 +1,5 @@
 import { styled } from '@mui/material/styles';
-import { IconType } from '@docAi-app/types/common.type';
+import { IconType } from '@docAi-app/types';
 
 const StyledG = styled('g')<IconType>`
     fill: ${({ theme, fill }) => (fill ? fill : theme.colors.secondary)};

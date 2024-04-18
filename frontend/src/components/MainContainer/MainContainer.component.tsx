@@ -19,12 +19,12 @@ import { itemsProps } from '@docAi-app/stories/components/Menu/Menu.component';
 const sideNavigationItems = [
     {
         to: ROUTE.SEARCH,
-        label: 'Home',
+        label: 'Search',
         icon: Icons.DraftPatent,
     },
     {
         to: ROUTE.INDEX_LIST,
-        label: 'My Brains',
+        label: 'Home',
         icon: Icons.PromptLibrary,
     },
     {
@@ -41,7 +41,14 @@ interface MessageList {
 }
 
 const handleEditMessageTitle = ({ messageId, message }: { messageId: string; message: string }) => {
-    chatApi.editMessageTitle({ chat_uuid: messageId, title: message });
+    chatApi.editMessageTitle({
+        requestBody: {
+            title: message,
+        },
+        requestParams: {
+            chat_uuid: messageId,
+        },
+    });
 };
 const handleDeleteChat = ({ messageId }: { messageId: string }) => {
     chatApi.deleteChat({ chat_uuid: messageId });
@@ -66,7 +73,6 @@ const MainContainer = () => {
                     const tempObj = tempList[key].map((tempMessage) => {
                         return { message: tempMessage.chat_title, messageId: tempMessage.chat_uuid };
                     });
-
                     setMessageList((prev) => {
                         return { ...prev, [key]: tempObj };
                     });

@@ -14,7 +14,7 @@ import { CircularLoader, IconButton, Select, AsyncSearchSelect } from '@docAi-ap
 //Import Context
 
 //Import Model Type
-import { Option } from '@docAi-app/types/common.type';
+import { Option } from '@docAi-app/types';
 
 //Import Util, Helper , Constant
 
@@ -134,7 +134,14 @@ const MessageTypeField = ({ disable, handleSubmit }: MessageTypeFieldProps) => {
                                     name="model"
                                     subscription={{ touched: true, value: true, error: true }}
                                     render={({ input }) => {
-                                        return <Select {...input} options={modelOption} placeholder="Select Model" />;
+                                        return (
+                                            <Select
+                                                {...input}
+                                                disabled={true}
+                                                options={modelOption}
+                                                placeholder="Select Model"
+                                            />
+                                        );
                                     }}
                                 />
                             </div>

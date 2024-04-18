@@ -1,5 +1,5 @@
 //Import Third Party lib
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Form, Field } from 'react-final-form';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -17,10 +17,11 @@ import { AsyncSearchSelect, InputChips, InputField, Select, TextArea, Button } f
 //Import Context
 
 //Import Model Type
-import { Validation } from '@docAi-app/types/validation.type';
+import { Validation } from '@docAi-app/types';
 
 //Import Util, Helper , Constant
-import { removeEmptyField, validation } from '@docAi-app/utils/helper/validation.helper';
+import { removeEmptyField, validation } from '@docAi-app/utils/helper';
+import { ROUTE } from '@docAi-app/utils/constants/Route.constant';
 
 //Import Icon
 
@@ -31,14 +32,14 @@ import { modelApi, indexApi, promptApi } from '@docAi-app/api';
 
 //Import Style
 import Styles from './CreateBrain.module.scss';
-import { ROUTE } from '@docAi-app/utils/constants/Route.constant';
+import { FormApi } from 'final-form';
 
-interface ModelOption {
+interface Model {
     model_uuid: string;
     display_name: string;
 }
 
-export interface PromptListData {
+interface Prompt {
     prompt_uuid: string;
     title: string;
     status: string;
@@ -51,80 +52,75 @@ interface CreateBrainProps {
     isBrainCreated?: () => void;
 }
 
-const statusOptions = [
+interface BrainInfo {
+    title: string;
+    description: string;
+    status: string;
+    tags: string[];
+    model: string;
+    promptUuid: {
+        label: string;
+        value: string;
+    };
+    promptTitle: string;
+    promptContent: string;
+    promptStatus: string;
+}
+
+type FieldValidation = {
+    [P in (typeof FORM_CONTROLS)[number]]: Partial<Validation>;
+};
+
+const STATUS_OPTIONS = [
     { label: 'Private', value: 'Private' },
     { label: 'Public', value: 'Public' },
 ];
+const FORM_CONTROLS = ['title', 'description'] as const;
 
-export const getPromptList = async (searchString: string) => {
-    const res = await promptApi.getPromptsList({
-        search: searchString,
-        page_number: 1,
-        records_per_page: 10,
-        show_all: false,
-        sort_by: '',
-        sort_order: '',
-    });
-
-    const payload = res?.payload ?? [];
-    const options = (payload as unknown as PromptListData[]).map((data) => {
-        return {
-            label: data.title ?? '',
-            value: data.prompt_uuid ?? '',
-        };
-    });
-
-    if (res?.payload) {
-        return { options: options, list: res.payload };
-    } else
-        return {
-            options: options.length === 0 ? [] : options,
-        };
+const FIELD_VALIDATION: FieldValidation = {
+    title: { required: { message: 'Name is required' } },
+    description: { required: { message: 'Description is required' } },
 };
 
-const formControls = ['title', 'description'] as const;
-
-type FieldValidation = {
-    [P in (typeof formControls)[number]]: Partial<Validation>;
+const BRAIN_INITIAL_INFO: BrainInfo = {
+    title: '',
+    description: '',
+    status: '',
+    tags: [],
+    model: '',
+    promptTitle: '',
+    promptContent: '',
+    promptUuid: {
+        label: '',
+        value: '',
+    },
+    promptStatus: '',
 };
 
 const CreateBrain = ({ close, isBrainCreated }: CreateBrainProps) => {
-    const params = useParams<{ 'index-id': string }>();
+    const params = useParams();
     const navigate = useNavigate();
 
-    const [modelOption, setModelOption] = useState<ModelOption[]>([]);
+    const [modelOption, setModelOption] = useState<Model[]>([]);
 
-    const [promptList, setPromptList] = useState<Partial<PromptListData[]>>();
+    const [promptList, setPromptList] = useState<Partial<Prompt[]>>();
 
-    const [indexInfo, setIndexInfo] = useState<{
-        title: string;
-        description: string;
-        status: string;
-        tags: string[];
-        model: string;
-        promptTitle: string;
-        promptContent: string;
-        promptValue: string;
-        promptStatus: string;
-    }>({
-        title: '',
-        description: '',
-        status: '',
-        tags: [],
-        model: '',
-        promptTitle: '',
-        promptContent: '',
-        promptValue: '',
-        promptStatus: '',
-    });
+    const [initialBrainInfo, setInitialBrainInfo] = useState<BrainInfo>(BRAIN_INITIAL_INFO);
+
+    const formRef = useRef<FormApi<BrainInfo, Partial<BrainInfo>>>();
 
     useEffect(() => {
-        const indexUuid = params['index-id'] ?? '';
+        getIndexDetails();
+    }, [params]);
+
+    const getIndexDetails = () => {
+        const indexUuid = params[ROUTE.INDEX_ID] ?? null;
+
         modelApi.getModelsList().then(({ payload }) => {
             setModelOption(payload.models);
         });
 
-        if (indexUuid !== '') {
+        if (indexUuid) {
             indexApi.getIndex({ index_uuid: indexUuid }).then(({ payload }) => {
                 const initPayload = payload;
                 let promptDetails = {
@@ -132,7 +128,6 @@ const CreateBrain = ({ close, isBrainCreated }: CreateBrainProps) => {
                     promptContent: '',
                     promptStatus: '',
                 };
-
                 if (payload.prompt_uuid) {
                     promptApi.getPrompt({ prompt_uuid: payload.prompt_uuid }).then(({ payload }) => {
                         promptDetails = {
@@ -140,117 +135,191 @@ const CreateBrain = ({ close, isBrainCreated }: CreateBrainProps) => {
                             promptContent: payload.Prompt.content,
                             promptStatus: payload.Prompt.status,
                         };
-                        setIndexInfo({
+                        setInitialBrainInfo({
                             title: initPayload.title,
                             description: initPayload.description,
                             tags: initPayload.tags,
                             status: initPayload.status,
-                            promptValue: initPayload.prompt_uuid,
                             model: initPayload.model_uuid,
+                            promptUuid: {
+                                label: promptDetails.promptTitle,
+                                value: initPayload.prompt_uuid,
+                            },
                             ...promptDetails,
                         });
                     });
                 } else {
-                    setIndexInfo({
+                    setInitialBrainInfo({
                         title: initPayload.title,
                         description: initPayload.description,
                         tags: payload.tags,
                         status: payload.status,
-                        promptValue: payload.prompt_uuid,
+                        promptUuid: {
+                            value: payload.prompt_uuid,
+                            label: '',
+                        },
                         model: initPayload.model_uuid,
                         ...promptDetails,
                     });
                 }
             });
         }
-    }, [params]);
-
-    // Event Handlers
-
-    const fieldValidation: FieldValidation = {
-        title: { required: { message: 'Name is required' } },
-        description: { required: { message: 'Description is required' } },
     };
+    const getPromptList = async (searchString: string, loadOptions, { page }) => {
+        const res = await promptApi.getPromptsList({
+            search: searchString,
+            page_number: page,
+            records_per_page: 10,
+            show_all: true,
+            sort_by: '',
+            sort_order: '',
+        });
+        const done = res.pager && res.pager.per_page * page < res.pager.total_records;
 
-    const validate = (val) => {
-        let errors = {
-            title: '',
-            description: '',
-            promptDescription: '',
-            promptName: '',
-        };
-
-        formControls.forEach((controlName) => {
-            errors[controlName] = validation(fieldValidation[controlName], val[controlName]);
+        const payload = res?.payload ?? [];
+        const options = payload.map((data) => {
+            return {
+                label: data.title ?? '',
+                value: data.prompt_uuid ?? '',
+            };
         });
 
-        if (val['promptName']?.length > 0 && !(val['promptDescription'] && val['promptDescription'].length > 0)) {
-            errors.promptDescription = 'Prompt Description is required';
-        } else if (val['promptDescription']?.length > 0 && !(val['promptName'] && val['promptName'].length > 0)) {
-            errors.promptName = 'Prompt Name is required';
+        setPromptList((prev) => {
+            return prev ? [...prev, ...payload] : [...payload];
+        });
+
+        return {
+            options: options.length === 0 ? [] : options,
+            hasMore: done,
+            additional: {
+                page: searchString ? 1 : page + 1,
+            },
+        };
+    };
+
+    const createUpdateIndex = (brainInfo: BrainInfo) => {
+        const indexUuid = params[ROUTE.INDEX_ID];
+        //update index
+        if (indexUuid) {
+            indexApi.updateIndex({
+                requestBody: {
+                    description: brainInfo.description,
+                    model: brainInfo.model,
+                    prompt_uuid: brainInfo.promptUuid.value,
+                    status: brainInfo.status,
+                    tags: brainInfo.tags,
+                },
+                requestParams: { index_uuid: indexUuid },
+            });
+        } else {
+            //create index
+            indexApi
+                .createIndex({
+                    title: brainInfo.title,
+                    description: brainInfo.description,
+                    model: brainInfo.model,
+                    prompt_uuid: brainInfo.promptUuid.value,
+                    status: brainInfo.status,
+                    tags: brainInfo.tags,
+                })
+                .then(() => {
+                    if (close) close();
+                    if (isBrainCreated) isBrainCreated();
+                });
+        }
+    };
+
+    const createUpdatePrompt = async ({
+        promptContent,
+        promptTitle,
+        promptUuid,
+        promptStatus,
+    }: Pick<BrainInfo, 'promptTitle' | 'promptContent' | 'promptUuid' | 'promptStatus'>) => {
+        let isPromptCreated = promptTitle !== '';
+        let isPromptUpdated = false;
+
+        if (promptUuid.value && promptUuid.value !== '') {
+            const availablePrompt = await promptApi.getPrompt({ prompt_uuid: promptUuid.value });
+
+            isPromptCreated = availablePrompt.payload.Prompt.title !== promptTitle;
+            isPromptUpdated =
+                availablePrompt.payload.Prompt.content !== promptContent &&
+                availablePrompt.payload.Prompt.title === promptTitle;
+        }
+        let promptResponse = { prompt_uuid: promptUuid.value };
+        if (isPromptCreated) {
+            promptResponse = await promptApi
+                .createPrompt({
+                    description: promptContent,
+                    title: promptTitle,
+                    status: promptStatus,
+                })
+                .then(({ payload }) => {
+                    return { prompt_uuid: payload.prompt_uuid };
+                });
+        } else if (isPromptUpdated) {
+            promptResponse = await promptApi
+                .updatePrompt({
+                    requestParams: {
+                        prompt_uuid: promptUuid.value,
+                    },
+                    requestBody: {
+                        description: promptContent,
+                        title: promptTitle,
+                        status: promptStatus,
+                    },
+                })
+                .then(({ payload }) => {
+                    return { prompt_uuid: payload.prompt_uuid };
+                });
+        }
+
+        return promptResponse;
+    };
+
+    // Event Handlers
+    const validate = (formValues: BrainInfo) => {
+        const errors = {
+            title: '',
+            description: '',
+            promptContent: '',
+            promptTitle: '',
+        };
+
+        FORM_CONTROLS.forEach((controlName) => {
+            errors[controlName] = validation(FIELD_VALIDATION[controlName], formValues[controlName]);
+        });
+
+        if (
+            formValues['promptTitle']?.length > 0 &&
+            !(formValues['promptContent'] && formValues['promptContent'].length > 0)
+        ) {
+            errors.promptContent = 'Prompt Description is required';
+        } else if (
+            formValues['promptContent']?.length > 0 &&
+            !(formValues['promptTitle'] && formValues['promptTitle'].length > 0)
+        ) {
+            errors.promptTitle = 'Prompt Name is required';
         }
 
         const errorObject = removeEmptyField(errors) as object;
-        return Object.keys(errorObject).length > 0 ? errorObject : {};
+        return Object.keys(errorObject).length > 0 ? errorObject : undefined;
     };
 
-    const handleSubmit = (v) => {
-        const customPrompt = {
-            title: v.promptName,
-            description: v.promptDescription,
-            status: v.promptStatus,
-        };
-
-        const indexDetails = {
-            title: v.title.toLowerCase(),
-            description: v.description,
-            status: v.status,
-            tags: v.tags ?? [],
-            prompt_uuid: v.prompt_uuid.value,
-            model: v.model,
-        };
-
-        const isCustomPrompt = !promptList?.filter((prompt) => {
-            return prompt?.title === customPrompt.title;
-        }).length;
-
-        const isPromptUpdated = promptList?.filter((prompt) => {
-            return prompt?.title === customPrompt.title && prompt?.content !== customPrompt.description;
-        }).length;
-
-        if (isPromptUpdated) {
-            promptApi.updatePrompt({
-                params: {
-                    prompt_uuid: indexDetails.prompt_uuid,
-                },
-                requestBody: {
-                    title: customPrompt.title,
-                    description: customPrompt.description,
-                    status: customPrompt.status,
-                },
-            });
-        } else if (isCustomPrompt) {
-            promptApi.createPrompt(customPrompt).then(({ payload }) => {
-                indexDetails.prompt_uuid = payload.prompt_uuid;
-                indexApi.createIndex(indexDetails).then(() => {
-                    if (close) close();
-                    if (isBrainCreated) isBrainCreated();
-                });
-            });
-        } else {
-            if (params['index-id']) {
-                indexApi
-                    .updateIndex({ requestBody: indexDetails, requestParams: { index_uuid: params['index-id'] } })
-                    .then(() => {
-                        if (close) close();
-                        if (isBrainCreated) isBrainCreated();
-                    });
-            } else {
-                indexApi.createIndex(indexDetails).then(() => {
-                    if (close) close();
-                    if (isBrainCreated) isBrainCreated();
-                });
-            }
+    const handleSubmit = async (formValues: BrainInfo) => {
+        //formvalues ar not being changes
+        console.log(formValues);
+        const createUpdatePromptResponse = await createUpdatePrompt({
+            promptTitle: formValues.promptTitle ?? '',
+            promptContent: formValues.promptContent ?? '',
+            promptStatus: formValues.promptStatus ?? '',
+            promptUuid: formValues.promptUuid ?? { label: '', value: '' },
+        });
+        formValues.promptUuid.value = createUpdatePromptResponse.prompt_uuid;
+        formRef.current?.restart(formValues);
+        const response = await createUpdateIndex(formValues);
+        if (!close) {
+            getIndexDetails();
         }
     };
 
@@ -258,28 +327,28 @@ const CreateBrain = ({ close, isBrainCreated }: CreateBrainProps) => {
     return (
         <div>
             <Form
-                keepDirtyOnReinitialize={true}
-                subscription={{ submitting: true }}
+                subscription={{ submitting: true, dirty: true, dirtySinceLastSubmit: true, modified: true }}
                 initialValues={{
-                    title: indexInfo.title,
-                    description: indexInfo.description,
-                    status: indexInfo.status,
-                    tags: indexInfo.tags,
-                    model: indexInfo.model ?? modelOption.length > 0 ? modelOption[0].model_uuid : '',
-                    prompt_uuid: { label: indexInfo.promptTitle, value: indexInfo.promptValue },
-                    promptName: indexInfo.promptTitle,
-                    promptDescription: indexInfo.promptContent,
-                    promptStatus: indexInfo.promptStatus,
+                    title: initialBrainInfo.title,
+                    description: initialBrainInfo.description,
+                    status: initialBrainInfo.status,
+                    tags: initialBrainInfo.tags,
+                    model: initialBrainInfo.model ?? modelOption.length > 0 ? modelOption[0].model_uuid : '',
+                    promptUuid: initialBrainInfo.promptUuid,
+                    promptTitle: initialBrainInfo.promptTitle,
+                    promptContent: initialBrainInfo.promptContent,
+                    promptStatus: initialBrainInfo.promptStatus,
                 }}
                 validate={validate}
                 onSubmit={handleSubmit}
-                render={({ handleSubmit, form, values }) => {
+                render={({ handleSubmit, form, dirty, submitting }) => {
+                    formRef.current = form;
                     return (
                         <form onSubmit={handleSubmit} className={Styles.formContainer}>
                             <div className={Styles['formContainer__field']}>
                                 <Field
                                     name="title"
-                                    subscription={{ touched: true, value: true, error: true }}
+                                    // subscription={{ touched: true, value: true, error: true }}
                                     render={({ input, meta }) => {
                                         return (
                                             <InputField
@@ -304,7 +373,7 @@ const CreateBrain = ({ close, isBrainCreated }: CreateBrainProps) => {
                             <div className={Styles['formContainer__field']}>
                                 <Field
                                     name="description"
-                                    subscription={{ touched: true, value: true, error: true }}
+                                    // subscription={{ touched: true, value: true, error: true }}
                                     render={({ input, meta }) => {
                                         return (
                                             <TextArea
@@ -330,7 +399,7 @@ const CreateBrain = ({ close, isBrainCreated }: CreateBrainProps) => {
                             <div className={Styles['formContainer__field']}>
                                 <Field
                                     name="model"
-                                    subscription={{ touched: true, value: true, error: true }}
+                                    // subscription={{ touched: true, value: true, error: true }}
                                     render={({ input }) => {
                                         return (
                                             <Select
@@ -349,12 +418,12 @@ const CreateBrain = ({ close, isBrainCreated }: CreateBrainProps) => {
                             <div className={Styles['formContainer__field']}>
                                 <Field
                                     name="status"
-                                    subscription={{ touched: true, value: true, error: true }}
+                                    // subscription={{ touched: true, value: true, error: true }}
                                     render={({ input }) => {
                                         return (
                                             <Select
                                                 {...input}
-                                                options={statusOptions}
+                                                options={STATUS_OPTIONS}
                                                 label="Select Status"
                                                 placeholder="Select Status"
                                             />
@@ -362,11 +431,12 @@ const CreateBrain = ({ close, isBrainCreated }: CreateBrainProps) => {
                                     }}
                                 />
                             </div>
+
                             <div className={Styles['formContainer__field']}>
                                 <label>Tags</label>
                                 <Field
                                     name="tags"
-                                    subscription={{ touched: true, value: true, error: true }}
+                                    // subscription={{ touched: true, value: true, error: true }}
                                     render={({ input, meta }) => (
                                         <InputChips
                                             {...input}
@@ -386,31 +456,30 @@ const CreateBrain = ({ close, isBrainCreated }: CreateBrainProps) => {
 
                             <div className={Styles['formContainer__field']}>
                                 <Field
-                                    name="prompt_uuid"
-                                    subscription={{ touched: true, value: true, error: true }}
+                                    name="promptUuid"
+                                    // subscription={{ touched: true, value: true, error: true }}
                                     render={({ input }) => {
-                                        const label = indexInfo.promptTitle;
                                         return (
                                             <AsyncSearchSelect
                                                 {...input}
+                                                additional={{
+                                                    page: 1,
+                                                }}
                                                 label="Select Prompt"
                                                 placeholder="Select Prompt"
                                                 menuPlacement="bottom"
-                                                // value={{ label: label, value: input.value }}
-                                                loadOptions={async (searchString: string) => {
-                                                    const res = await getPromptList(searchString);
-                                                    setPromptList(res?.list);
-                                                    return { options: [], hasMore: false };
-                                                }}
+                                                loadOptions={getPromptList}
                                                 debounceTimeout={1000}
                                                 onChange={(v) => {
-                                                    const promptUuid = v.value;
-                                                    form.change('prompt_uuid', v);
+                                                    const newPromptValue: BrainInfo['promptUuid'] =
+                                                        v as BrainInfo['promptUuid'];
+                                                    form.change('promptUuid', newPromptValue);
                                                     const tempPrompt = promptList?.filter(
-                                                        (prompt) => prompt?.prompt_uuid === promptUuid,
+                                                        (prompt) => prompt?.prompt_uuid === newPromptValue.value,
                                                     );
-                                                    form.change('promptName', v.label);
-                                                    form.change('promptDescription', tempPrompt[0]?.content);
+                                                    form.change('promptTitle', newPromptValue.label);
+                                                    if (tempPrompt)
+                                                        form.change('promptContent', tempPrompt[0]?.content);
                                                 }}
                                             />
                                         );
@@ -420,13 +489,12 @@ const CreateBrain = ({ close, isBrainCreated }: CreateBrainProps) => {
 
                             <div className={Styles['formContainer__field']}>
                                 <Field
-                                    name="promptName"
-                                    subscription={{ touched: true, value: true, error: true }}
+                                    name="promptTitle"
+                                    // subscription={{ touched: true, value: true, error: true }}
                                     render={({ input, meta }) => {
                                         return (
                                             <InputField
                                                 {...input}
-                                                // value={indexInfo.promptTitle}
                                                 type="text"
                                                 fullWidth
                                                 label="Prompt Name"
@@ -436,10 +504,6 @@ const CreateBrain = ({ close, isBrainCreated }: CreateBrainProps) => {
                                                     meta.touched &&
                                                     meta.error && <span style={{ width: '100%' }}>{meta.error}</span>
                                                 }
-                                                // onChange={(v) => {
-                                                //     input.onChange(v);
-                                                //     setIndexInfo((prev) => ({ ...prev, promptTitle: v.target.value }));
-                                                // }}
                                             />
                                         );
                                     }}
@@ -448,8 +512,8 @@ const CreateBrain = ({ close, isBrainCreated }: CreateBrainProps) => {
 
                             <div className={Styles['formContainer__field']}>
                                 <Field
-                                    name="promptDescription"
-                                    subscription={{ touched: true, value: true, error: true }}
+                                    name="promptContent"
+                                    // subscription={{ touched: true, value: true, error: true }}
                                     render={({ input, meta }) => {
                                         return (
                                             <TextArea
@@ -461,12 +525,6 @@ const CreateBrain = ({ close, isBrainCreated }: CreateBrainProps) => {
                                                 label="Prompt Description"
                                                 placeholder="Enter your prompt description"
                                                 error={meta.touched && meta.error && true}
-                                                // onChange={(v) => {
-                                                //     setIndexInfo((prev) => ({
-                                                //         ...prev,
-                                                //         promptContent: v.target.value,
-                                                //     }));
-                                                // }}
                                                 helperText={
                                                     meta.touched &&
                                                     meta.error && <span style={{ width: '100%' }}>{meta.error}</span>
@@ -484,7 +542,7 @@ const CreateBrain = ({ close, isBrainCreated }: CreateBrainProps) => {
                                         return (
                                             <Select
                                                 {...input}
-                                                options={statusOptions}
+                                                options={STATUS_OPTIONS}
                                                 label="Select Prompt Status"
                                                 placeholder="Select Prompt Status"
                                             />
@@ -507,14 +565,8 @@ const CreateBrain = ({ close, isBrainCreated }: CreateBrainProps) => {
                                     Cancel
                                 </Button>
 
-                                <Button
-                                    type="submit"
-                                    variant="contained"
-                                    onClick={() => {
-                                        form.submit();
-                                    }}
-                                >
-                                    {params['index-id'] ? 'Update' : 'Create'}
+                                <Button type="submit" variant="contained" disabled={!dirty || submitting}>
+                                    {params[ROUTE.INDEX_ID] ? 'Update' : 'Create'}
                                 </Button>
                             </div>
                         </form>

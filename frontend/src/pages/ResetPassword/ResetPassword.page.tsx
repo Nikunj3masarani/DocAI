@@ -13,10 +13,10 @@ import { Button, InputField } from '@docAi-app/stories';
 //Import Context
 
 //Import Model Type
-import { Validation } from '@docAi-app/types/validation.type';
+import { Validation } from '@docAi-app/types';
 
 //Import Util, Helper , Constant
-import { removeEmptyField, validation } from '@docAi-app/utils/helper/validation.helper';
+import { removeEmptyField, validation } from '@docAi-app/utils/helper';
 import { CONFIRM_PASSWORD_VALIDATION, PASSWORD_VALIDATION } from '@docAi-app/utils/constants/validation.constant';
 
 //Import Style

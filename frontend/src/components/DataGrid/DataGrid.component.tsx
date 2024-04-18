@@ -32,6 +32,7 @@ import { indexApi } from '@docAi-app/api';
 //Import Style
 import Styles from './DataGrid.module.scss';
 import { debounce } from 'lodash';
+import { ROUTE } from '@docAi-app/utils/constants/Route.constant';
 
 // import { copyHandler, highlightSearchedWord } from '@patent-app/utils/helpers/common.helper';
 // import { PromptApi } from '@patent-app/apis';
@@ -194,7 +195,7 @@ const DataGridComp = ({ isBrainChange, initialSearchValue }: DataGripComp) => {
     const updateDataHandler = (data) => {
         // setSelectedData(data);
         // setIsOpenDialog(true);
-        navigate(`${data['index_uuid']}`, { state: { title: data.title } });
+        navigate(`${ROUTE.ROOT}${ROUTE.INDEX_LIST}/${data['index_uuid']}`, { state: { title: data.title } });
     };
 
     const handleDeleteClick = (id: string) => {

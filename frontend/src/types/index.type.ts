@@ -9,7 +9,7 @@ interface CreateIndexRequestBody {
     title: string;
     description: string;
     status: string;
-    tags: [];
+    tags: string[];
     prompt_uuid: string;
     model: string;
 }

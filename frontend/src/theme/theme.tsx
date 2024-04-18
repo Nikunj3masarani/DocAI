@@ -23,7 +23,7 @@ const COLORS = {
     error: '#FF3434',
     black: '#000000',
     black10: 'rgba(#000000, 0.1)',
-    black20 : 'rgba(#000000 , 0.2)',
+    black20: 'rgba(#000000 , 0.2)',
     white: '#FFFFFF',
 
     mercury: '#E8E6DE',
@@ -40,8 +40,11 @@ const COLORS = {
     cinder10: 'rgba(#151515, 0.1)',
     seashell: '#F1F1F1',
     transparent: 'transparent',
-    red : '#red',
-
+    red: 'red',
+    teal: '#20c997',
+    limeGreen: '#a7ff00',
+    coral: '#FF7F50',
+    
     zIndex: {
         linearLoader: 1400,
     },

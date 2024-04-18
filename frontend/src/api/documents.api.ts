@@ -1,26 +1,14 @@
-import { ENDPOINTS } from '../utils/constants/endpoints.constant';
 import { Method } from 'axios';
-import { parseEndpoint } from '@docAi-app/utils/helper/common.helper';
 import { apiCall } from '@docAi-app/utils/api-manager';
-import { ApiConfig } from '@docAi-app/types/Api.type';
-interface GetDocumentsRequestBody {
-    index_uuid: string;
-}
+import { ENDPOINTS } from '@docAi-app/utils/constants/endpoints.constant';
+import { parseEndpoint } from '@docAi-app/utils/helper';
+import { ApiConfig } from '@docAi-app/types';
+import { GetDocumentsRequestBody, UploadDocumentsProps, DeleteDocumentRequestParams } from '@docAi-app/models';
 
-interface UploadDocumentsProps {
-    requestParams: { index_uuid: string };
-    requestBody: FormData;
-}
-
-interface DeleteDocumentRequestParams {
-    document_uuid: string;
-}
-
-const getDocuments = (requestBody: GetDocumentsRequestBody) => {
+const getDocuments = (requestParams: GetDocumentsRequestBody) => {
     const data: ApiConfig<undefined> = {
         method: ENDPOINTS.DOCUMENTS.GET_DOCUMENTS.METHOD as Method,
-      
-        url: parseEndpoint(ENDPOINTS.DOCUMENTS.GET_DOCUMENTS.URL, { ...requestBody }),
+        url: parseEndpoint(ENDPOINTS.DOCUMENTS.GET_DOCUMENTS.URL, { ...requestParams }),
     };
     return apiCall(data);
 };
@@ -30,15 +18,18 @@ const uploadDocuments = ({ requestBody, requestParams }: UploadDocumentsProps) =
         method: ENDPOINTS.DOCUMENTS.UPLOAD_DOCUMENTS.METHOD as Method,
         url: parseEndpoint(ENDPOINTS.DOCUMENTS.UPLOAD_DOCUMENTS.URL, { index_uuid: requestParams.index_uuid }),
         data: requestBody,
+        showSuccessToast: true,
+        showLoader: true,
     };
 
     return apiCall(data);
 };
 
-const deleteDocument = (requestBody: DeleteDocumentRequestParams) => {
+const deleteDocument = (requestParams: DeleteDocumentRequestParams) => {
     const data: ApiConfig<undefined> = {
-        method: ENDPOINTS.DOCUMENTS.GET_DOCUMENTS.METHOD as Method,
-        url: parseEndpoint(ENDPOINTS.DOCUMENTS.DELETE_DOCUMENTS.URL, { ...requestBody }),
+        method: ENDPOINTS.DOCUMENTS.DELETE_DOCUMENTS.METHOD as Method,
+        url: parseEndpoint(ENDPOINTS.DOCUMENTS.DELETE_DOCUMENTS.URL, { ...requestParams }),
+        showSuccessToast: true,
     };
 
     return apiCall(data);
