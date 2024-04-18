@@ -24,13 +24,14 @@ import Logo from '@docAi-app/../public/assets/images/logo.svg';
 
 //Import Style
 import Style from './Search.module.scss';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { HeaderAction } from '@docAi-app/types';
 import { AddKnowledge, CreateBrain, MessageTypeField } from '@docAi-app/components';
 import PsychologyOutlinedIcon from '@mui/icons-material/PsychologyOutlined';
 import { uuidGenerator } from '@docAi-app/utils/helper';
 import { useNavigate } from 'react-router-dom';
 import { ROUTE } from '@docAi-app/utils/constants/Route.constant';
+import { chatApi } from '@docAi-app/api';
 
 const Search = () => {
     // useRef
@@ -38,7 +39,18 @@ const Search = () => {
     const [headerAction, setHeaderAction] = useState<HeaderAction | undefined>();
     const [showDialogue, setShowDialogue] = useState<boolean>(false);
     const [disableSearchInput, setSearchInput] = useState<boolean>(false);
+    const chatList = useRef<string[]>([]);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        chatApi.getChatList().then(({ payload }) => {
+            Object.keys(payload).forEach((key) => {
+                payload[key].forEach(({ chat_uuid }) => {
+                    chatList.current.push(chat_uuid);
+                });
+            });
+        });
+    }, []);
     // Variables Dependent upon State
 
     // Api Calls
@@ -53,7 +65,12 @@ const Search = () => {
     const handleSubmit = (val) => {
         setSearchInput((prev) => !prev);
 
-        const chatUuid = uuidGenerator();
+        let chatUuid = uuidGenerator();
+
+        while (chatList.current.includes(chatUuid)) {
+            chatUuid = uuidGenerator();
+        }
+
         navigate(`${ROUTE.ROOT}${ROUTE.CHAT}/${chatUuid}`, {
             state: {
                 needToCreate: true,
@@ -64,6 +81,7 @@ const Search = () => {
             },
         });
     };
+
     return (
         <div className={Style.container}>
             <Dialog
