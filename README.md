@@ -14,6 +14,12 @@ RAG application powered by Haystack AI, designed to revolutionize question-answe
 - **OS Compatible**: Ubuntu 22 or newer.
 - **File Compatibility**: PDF
 
+### Server Specifications
+Below are the specifications for the server environment
+- RAM: 8 GB
+- CPU: 4 core
+- Storage: 50 GB
+
 ### Prerequisites 📋
 
 Ensure you have the following installed:
@@ -46,4 +52,9 @@ Ensure you have the following installed:
     docker-compose pull
     docker-compose up
      ```
+
+
+## License 📄
+
+This project is licensed under the Apache 2.0 License - see the [LICENSE](LICENSE) file for details
 
