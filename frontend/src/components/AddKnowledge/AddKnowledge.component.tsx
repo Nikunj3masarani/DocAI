@@ -33,6 +33,7 @@ import Styles from './AddKnowledge.module.scss';
 import { ROUTE } from '@docAi-app/utils/constants/Route.constant';
 import { getAlert } from '@docAi-app/hooks';
 import { ALLOW_FILE_TYPES, MAX_FILE_SIZE } from '@docAi-app/utils/constants/common.constant';
+import { FormApi } from 'final-form';
 
 const indexList = async (searchString: string, loadOptions, { page }) => {
     const res = await indexApi.getAllIndex({
@@ -72,6 +73,7 @@ const AddKnowledge = () => {
     const [existingFiles, setExistingFiles] = useState<ExistingFiles[]>([]);
     const [index, setIndex] = useState<Option>();
     const existingFilesToRemove = useRef<string[]>([]);
+    const fileUploadRef = useRef<HTMLDivElement | null>(null);
     const [fileError, setFileError] = useState<keyof typeof FILE_ERROR>();
     const params = useParams();
     const navigate = useNavigate();
@@ -119,31 +121,58 @@ const AddKnowledge = () => {
         }
     };
 
-    const handleSubmit = (v) => {
+    const handleSubmit = async (v) => {
+        if (fileUploadRef.current) {
+            fileUploadRef.current.className = `${Styles.fileUploader} disable`;
+        }
+
         const formData = new FormData();
-        existingFilesToRemove.current.forEach((fileToRemove) => {
-            documentApi.deleteDocument({ document_uuid: fileToRemove });
+        existingFilesToRemove.current.forEach(async (fileToRemove) => {
+            await documentApi.deleteDocument({ document_uuid: fileToRemove });
         });
         existingFilesToRemove.current = [];
-        if (!params[ROUTE.INDEX_ID]) navigate(`${ROUTE.ROOT}${ROUTE.INDEX_LIST}`);
 
         if (files.length) {
             files?.forEach((file) => {
                 formData.append('documents', file.file);
             });
 
-            documentApi
+            await documentApi
                 .uploadDocuments({ requestBody: formData, requestParams: { index_uuid: v.index.value } })
                 .then((res) => {
-                    setFiles([]);
                     getAlert('info', res.message);
+                })
+                .then(() => {
+                    if (!params[ROUTE.INDEX_ID]) navigate(`${ROUTE.ROOT}${ROUTE.INDEX_LIST}`);
+                    const indexUuid = index?.value;
+                    if (indexUuid) {
+                        documentApi
+                            .getDocuments({ index_uuid: indexUuid as string })
+                            .then(({ payload }: { payload: any }) => {
+                                setExistingFiles(() => {
+                                    return payload.documents.map((document) => {
+                                        return { title: document.file_name, key: document.document_uuid };
+                                    });
+                                });
+                            })
+                            .finally(() => {
+                                setFiles([]);
+                            });
+                    }
+                    if (fileUploadRef.current) {
+                        fileUploadRef.current.className = `${Styles.fileUploader}`;
+                    }
                 });
+        } else {
+            if (fileUploadRef.current) {
+                fileUploadRef.current.className = `${Styles.fileUploader}`;
+            }
         }
     };
 
     // component logic
     return (
-        <div className={Styles.fileUploader}>
+        <div ref={fileUploadRef} className={`${Styles.fileUploader}`}>
             <FileUploader
                 name="file"
                 multiple={true}
@@ -184,7 +213,7 @@ const AddKnowledge = () => {
                             index: index ?? undefined,
                         }}
                         onSubmit={handleSubmit}
-                        render={({ handleSubmit, form }) => {
+                        render={({ handleSubmit, form, submitting }) => {
                             return (
                                 <form onSubmit={handleSubmit} className={Styles.formContainer}>
                                     <div className={Styles.field}>
@@ -257,7 +286,11 @@ const AddKnowledge = () => {
                                         <Button
                                             type="submit"
                                             variant="contained"
-                                            disabled={files.length === 0 && existingFilesToRemove.current.length === 0}
+                                            disabled={
+                                                index?.value === '' || 
+                                                submitting ||
+                                                (files.length === 0 && existingFilesToRemove.current.length === 0)
+                                            }
                                         >
                                             Update knowledge
                                         </Button>
