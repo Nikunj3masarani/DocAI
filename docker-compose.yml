@@ -100,4 +100,7 @@ volumes:
     driver: local
   postgresql_data:
     driver: local
+  backend_models:
+    driver: local
+
 
