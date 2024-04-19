@@ -59,6 +59,6 @@ volumes:
     driver_opts:
       type: none
       o: bind
-      device: /home/nikunj/PycharmProjects/DocAI/elasticsearch_data
+      device: elasticsearch_data
   postgresql_data:
     driver: local

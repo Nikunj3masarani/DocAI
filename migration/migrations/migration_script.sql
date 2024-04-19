@@ -42,6 +42,7 @@ CREATE TABLE IF NOT EXISTS documents (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     upload_status INTEGER,
     url VARCHAR(255),
+    source_id VARCHAR(255),
     created_by VARCHAR(255) DEFAULT 'Admin'
 );
 
