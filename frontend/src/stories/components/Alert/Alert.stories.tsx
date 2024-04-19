@@ -1,12 +1,12 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import Component from './Alert.component';
+import {Alert} from './Alert.component';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction
 const meta = {
     title: 'Alert',
-    component: Component,
+    component: Alert,
     tags: ['autodocs'],
-} satisfies Meta<typeof Component>;
+} satisfies Meta<typeof Alert>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;

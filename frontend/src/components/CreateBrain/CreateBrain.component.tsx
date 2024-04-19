@@ -308,7 +308,6 @@ const CreateBrain = ({ close, isBrainCreated }: CreateBrainProps) => {
 
     const handleSubmit = async (formValues: BrainInfo) => {
         //formvalues ar not being changes
-        console.log(formValues);
         const createUpdatePromptResponse = await createUpdatePrompt({
             promptTitle: formValues.promptTitle ?? '',
             promptContent: formValues.promptContent ?? '',
@@ -401,7 +400,6 @@ const CreateBrain = ({ close, isBrainCreated }: CreateBrainProps) => {
                                     name="model"
                                     // subscription={{ touched: true, value: true, error: true }}
                                     render={({ input }) => {
-                                        console.log(input.value);
                                         return (
                                             <Select
                                                 variant="outlined"
