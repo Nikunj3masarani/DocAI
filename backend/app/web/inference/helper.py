@@ -48,5 +48,5 @@ def group_and_label_data(dataset):
         df = pd.DataFrame(dataset)
         df['label'] = df.created_at.apply(custom_label)
         grouped = df.groupby('label').apply(lambda x: x.drop('label', axis=1).to_dict(orient='records')).to_dict()
-        return grouped
+        return order_dictionary(grouped)
     return {}
