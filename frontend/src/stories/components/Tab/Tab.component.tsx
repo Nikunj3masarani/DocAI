@@ -16,24 +16,33 @@ type TabProps = {
 };
 
 const getBackgroundSelectedType = (tabType: string): string => {
-    if (tabType === 'square') {
-        return 'customSelected';
-    } else if (tabType === 'circle') {
-        return 'customSelectedCircle';
-    } else {
-        return 'customNormal';
+    switch (tabType) {
+        case 'square': {
+            return 'customSelected';
+        }
+        case 'circle': {
+            return 'customSelectedCircle';
+        }
+        default: {
+            return 'customNormal';
+        }
     }
 };
 
 const getBackgroundRootType = (tabType: string): string => {
-    if (tabType === 'square') {
-        return 'customRoot';
-    } else if (tabType === 'circle') {
-        return 'customRootCircle';
-    } else {
-        return 'customRootNormal';
+    switch (tabType) {
+        case 'square': {
+            return 'customRoot';
+        }
+        case 'circle': {
+            return 'customRootCircle';
+        }
+        default: {
+            return 'customRootNormal';
+        }
     }
 };
+
 function TabComponent({ selectedTabValue, handleTabChange, items, type = 'square' }: TabProps): JSX.Element {
     return (
         <StyledTabs

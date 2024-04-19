@@ -1,10 +1,31 @@
-import { StyledMuiChipsInput, MuiChipsInputProps } from './InputChips.styled'
+//Import Third Party lib
 
-type InputChipsPros = MuiChipsInputProps & { tooltip?: string }
+//Import Storybook
 
-export const InputChips = (props: InputChipsPros) => {
-  return (
-    // @ts-ignore
-      <StyledMuiChipsInput {...props} />
-  )
-}
+//Import Component
+import { StyledMuiChipsInput, MuiChipsInputProps } from './InputChips.styled';
+
+//Import Page
+
+//Import Hook
+
+//Import Context
+
+//Import Model Type
+
+//Import Util, Helper , Constant
+
+//Import Icon
+
+//Import Api
+
+//Import Assets
+
+//Import Style
+
+type InputChipsPros = MuiChipsInputProps & { tooltip?: string };
+
+const InputChips = (props: InputChipsPros) => {
+    return <StyledMuiChipsInput {...props} />;
+};
+export { InputChips };

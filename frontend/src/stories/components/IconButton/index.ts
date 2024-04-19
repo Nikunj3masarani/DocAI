@@ -1,1 +1,1 @@
-export { IconButton } from './IconButton.component';
+export { IconButton, type CustomIconsProps } from './IconButton.component';

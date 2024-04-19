@@ -1,5 +1,8 @@
 //Import Third Party lib
 
+//Import Storybook
+
+//Import Component
 import {
     StyledAccordion,
     StyledAccordionDetails,
@@ -8,10 +11,6 @@ import {
     StyledAccordionSummary,
     StyledAccordionSummaryProps,
 } from './Accordion.styled';
-import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
-//Import Storybook
-
-//Import Component
 
 //Import Page
 
@@ -24,12 +23,14 @@ import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 //Import Util, Helper , Constant
 
 //Import Icon
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 
 //Import Api
 
 //Import Assets
 
 //Import Style
+
 
 const AccordionSummary = (props: StyledAccordionSummaryProps) => {
     const { expandIcon, className, children } = props;
@@ -51,17 +52,6 @@ const AccordionDetails = ({ children, className }: StyledAccordionDetailsProps) 
 };
 
 const Accordion = ({ children, className }: StyledAccordionProps) => {
-    // useRef
-    // useState
-    // Variables Dependent upon State
-
-    // Api Calls
-
-    // Event Handlers
-
-    // Helpers
-
-    // JSX Methods
 
     // Your component logic here
     return <StyledAccordion className={className}>{children}</StyledAccordion>;

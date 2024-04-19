@@ -1,11 +1,31 @@
+//Import Third Party lib
 import * as React from 'react';
+
+//Import Storybook
+
+//Import Component
 import IconButton from '@mui/material/IconButton';
 import MenuItem from '@mui/material/MenuItem';
-import { Button } from '../Button';
+import { StyledMenuMain, StyledMenu } from './Menu.styled';
+
+//Import Page
+
+//Import Hook
+
+//Import Context
+
+//Import Model Type
+
+//Import Util, Helper , Constant
+
+//Import Icon
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 
-// import { DOWNLOAD_MENU_OPTIONS } from '@foster/util/constants';
-import { StyledMenuMain, StyledMenu, StyledMenuChild, StyledMenuItem, StyledMenuItemBtn } from './Menu.styled';
+//Import Api
+
+//Import Assets
+
+//Import Style
 
 const ITEM_HEIGHT = 48;
 
@@ -19,42 +39,24 @@ export type itemsProps = {
 type MenuItemsProps = {
     menuItems: itemsProps[];
     handleItemClick: (item: itemsProps) => void;
-    header: string;
-    subTitle: string;
 };
 
-const ThreeDotItemMenu = ({ menuItems, handleItemClick, header, subTitle }: MenuItemsProps): JSX.Element => {
+const ThreeDotItemMenu = ({ menuItems, handleItemClick }: MenuItemsProps): JSX.Element => {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-    const [anchorElMenu, setAnchorElMenu] = React.useState<HTMLLIElement | null>(null);
-    const [exportType, setExportType] = React.useState('CSV');
-
-    // const topMenuItems = DOWNLOAD_MENU_OPTIONS.filter((menuItem) => menuItem.Top);
 
     const open = Boolean(anchorEl);
-    const openMenu = Boolean(anchorElMenu);
 
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
     };
 
     const onItemClick = (event: React.MouseEvent<HTMLLIElement>, item: itemsProps) => {
-        if (item && item.value === 'DOWNLOAD') {
-            setAnchorElMenu(event.currentTarget);
-        } else {
-            handleItemClick(item);
-            handleClose();
-        }
-    };
-
-    const handleDownload = () => {
-        setAnchorEl(null);
-        setAnchorElMenu(null);
-        handleItemClick({ export_type: exportType });
+        handleItemClick(item);
+        handleClose();
     };
 
     const handleClose = () => {
         setAnchorEl(null);
-        setAnchorElMenu(null);
     };
 
     return (
