@@ -28,7 +28,7 @@ services:
       retries: 3
 
     volumes:
-      - ./backend_models:/models
+      - backend_models:/models
 
   frontend:
     build:
@@ -68,7 +68,7 @@ services:
       - "ES_INDEX_NUMBER_OF_SHARDS=1"
       - "ES_INDEX_NUMBER_OF_REPLICAS=1"
     volumes:
-      - ./elasticsearch_data:/usr/share/elasticsearch/data
+      - elasticsearch_data:/usr/share/elasticsearch/data
     ulimits:
       memlock:
         soft: -1
@@ -101,9 +101,18 @@ volumes:
     driver_opts:
       type: none
       o: bind
-      device: elasticsearch_data
+      device: ./elasticsearch_data
+
   postgresql_data:
     driver: local
+
+  backend_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./backend_data
+
 
 
 
