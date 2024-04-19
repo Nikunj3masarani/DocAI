@@ -3,6 +3,12 @@ import numpy as np
 from datetime import datetime, timedelta
 
 
+def order_dictionary(input_data):
+    sort_order = ['Today', 'Yesterday', 'Previous 7 Days', 'Previous 30 Days', 'Previous 180 Days',
+                  'More than 180 Days Ago']
+    return {key: input_data[key] for key in sort_order if key in input_data}
+
+
 def custom_label(input_date):
     # Get today's date
     today = datetime.now().date()
