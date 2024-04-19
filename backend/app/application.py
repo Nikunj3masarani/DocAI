@@ -11,6 +11,7 @@ from app.helper.response_helper import BaseResponse
 from app.lifetime import register_startup_event, register_shutdown_event
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
+from app.middleware.cors_middleware import CustomCORSMiddleware
 
 from pathlib import Path
 import logging.config
@@ -38,12 +39,6 @@ def get_app() -> FastAPI:
     )
     app.openapi_version = "3.0.0"
 
-    # Custom request exception handler
-    @app.exception_handler(RequestValidationError)
-    async def custom_validation_exception_handler(
-            request: Request, exc: RequestValidationError
-    ):
-        return await BaseResponse.request_exception_response(exc)
 
     # Adds startup and shutdown events.
     register_startup_event(app)
@@ -59,6 +54,7 @@ def get_app() -> FastAPI:
     )
 
     app.add_middleware(middleware_class=profiler.ProfilerMiddleware)
+    app.add_middleware(CustomCORSMiddleware)
 
     # Main router for the API.
     app.include_router(router=api_router, prefix="/api")
@@ -67,5 +63,12 @@ def get_app() -> FastAPI:
     # Adds static directory.
     # This directory is used to access swagger files.
     app.mount("/static", StaticFiles(directory=APP_ROOT / "static"), name="static")
+
+    # Custom request exception handler
+    @app.exception_handler(RequestValidationError)
+    async def custom_validation_exception_handler(
+            request: Request, exc: RequestValidationError
+    ):
+        return await BaseResponse.request_exception_response(exc)
 
     return app

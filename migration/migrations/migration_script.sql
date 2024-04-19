@@ -94,3 +94,4 @@ CREATE TABLE IF NOT EXISTS index_user_mapping (
       role INTEGER,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+

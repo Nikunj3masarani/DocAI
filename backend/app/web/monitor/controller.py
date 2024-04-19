@@ -27,7 +27,6 @@ class Monitor:
         await db.connection()
         await es_client.ping()
 
-        logger.info("This is sample log")
         return HealthResponse(
             status=status.HTTP_200_OK, message=constants.HEALTH_SUCCESS, payload={}
         )

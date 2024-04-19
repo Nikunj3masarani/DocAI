@@ -36,6 +36,7 @@ class Documents(Base):
 
     document_uuid = Column(UUID(as_uuid=True), primary_key=True)
     index_uuid = Column(UUID(as_uuid=True), ForeignKey('indexes.index_uuid'))
+    source_id = Column(String(255))
     file_name = Column(String(255))
     file_ext = Column(String(255))
     created_at = Column(DateTime, default=datetime.utcnow)
