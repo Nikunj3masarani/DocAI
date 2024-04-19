@@ -11,16 +11,18 @@
     max-height: 80rem;
     overflow: hidden;
     margin: auto;
+    
     label[for='file'] {
-        padding: 2rem;
-        height: 24rem;
-        width: 100%;
-        max-width: 100%;
         align-items: center;
         justify-content: center;
         text-align: center;
         position: relative;
         flex-direction: column;
+        cursor: pointer;
+        padding: 2rem;
+        height: 24rem;
+        width: 100%;
+        max-width: 100%;
     }
 }
 
