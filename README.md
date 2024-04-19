@@ -47,7 +47,32 @@ Ensure you have the following installed:
   ```bash
   vim .env # or emacs or vscode or nano
   ```
-- **Step 4** Start the application with docker 
+- **Step 4** Create a volume dictionary for elastic search
+  
+  ```bash 
+  mkdir elasticsearch_data
+   ```
+  
+- **Step 5** Create a volume dictionary for backend and download models
+
+  ```bash
+  mkdir backend_models && cd backend_models
+  ```
+
+- Download Sentence Transformer Model from huggingface
+
+  ```bash
+  git lsf clone https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2
+  ```
+
+- Download Rank Model from huggingface
+
+  ```bash
+  git lsf clone https://huggingface.co/cross-encoder/ms-marco-MiniLM-L-12-v2
+  ```
+
+
+- **Step 6** Start the application with docker 
     ```bash
     docker-compose pull
     docker-compose up

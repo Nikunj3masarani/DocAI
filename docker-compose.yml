@@ -101,7 +101,7 @@ volumes:
     driver_opts:
       type: none
       o: bind
-      device: elasticsearch_data
+      device: ./elasticsearch_data
   postgresql_data:
     driver: local
   backend_models:
