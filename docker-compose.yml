@@ -28,7 +28,7 @@ services:
       retries: 3
 
     volumes:
-      - backend_models/:/models/
+      - ./backend_models/:/models/
 
   frontend:
     build:
