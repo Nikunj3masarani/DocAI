@@ -111,7 +111,7 @@ const CreateBrain = ({ close, isBrainCreated }: CreateBrainProps) => {
 
     useEffect(() => {
         getIndexDetails();
-    }, [params]);
+    }, []);
 
     const getIndexDetails = () => {
         const indexUuid = params[ROUTE.INDEX_ID] ?? null;
@@ -333,7 +333,7 @@ const CreateBrain = ({ close, isBrainCreated }: CreateBrainProps) => {
                     description: initialBrainInfo.description,
                     status: initialBrainInfo.status,
                     tags: initialBrainInfo.tags,
-                    model: initialBrainInfo.model ?? modelOption.length > 0 ? modelOption[0].model_uuid : '',
+                    model: initialBrainInfo.model && initialBrainInfo.model !== '' ? initialBrainInfo.model : modelOption.length > 0 ? modelOption[0].model_uuid : '',
                     promptUuid: initialBrainInfo.promptUuid,
                     promptTitle: initialBrainInfo.promptTitle,
                     promptContent: initialBrainInfo.promptContent,
@@ -401,6 +401,7 @@ const CreateBrain = ({ close, isBrainCreated }: CreateBrainProps) => {
                                     name="model"
                                     // subscription={{ touched: true, value: true, error: true }}
                                     render={({ input }) => {
+                                        console.log(input.value);
                                         return (
                                             <Select
                                                 variant="outlined"
