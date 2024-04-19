@@ -65,7 +65,7 @@ services:
       - xpack.security.enabled=false
       - bootstrap.memory_lock=true
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m -Des.network.tcp.connect_timeout=180s"
-      - "ES_INDEX_NUMBER_OF_SHARDS=1"
+      - "ES_INDEX_NUMBER_OF_SHARDS=2"
       - "ES_INDEX_NUMBER_OF_REPLICAS=1"
     volumes:
       - elasticsearch_data:/usr/share/elasticsearch/data
@@ -73,13 +73,13 @@ services:
       memlock:
         soft: -1
         hard: -1
-    mem_limit: 1g
+    mem_limit: 2g
     ports:
       - "9200:9200"
       - "9300:9300"
     healthcheck:
       test: [ "CMD-SHELL", "curl --silent --fail localhost:9200/_cluster/health || exit 1" ]
-      interval: 10s
+      interval: 60s
       timeout: 10s
       retries: 3
 
