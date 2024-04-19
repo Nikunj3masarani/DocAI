@@ -37,7 +37,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { chatApi } from '@docAi-app/api';
 import { ROUTE } from '@docAi-app/utils/constants/Route.constant';
 import { uuidGenerator } from '@docAi-app/utils/helper';
-import { useChatCreate } from '@docAi-app/hooks';
+import { getAlert, useChatCreate } from '@docAi-app/hooks';
 const SYSTEM = 'system' as const;
 const USER = 'user' as const;
 
@@ -233,7 +233,10 @@ const Chat = () => {
                                     {chat.message}
                                     {chat.sender === 'system' ? (
                                         <div className={Style.feedback}>
-                                            <IconButton>
+                                            <IconButton onClick={() => {
+                                                navigator.clipboard.writeText(chat.message);
+                                                getAlert('success' , 'Copied text successfully')
+                                            }}>
                                                 <ContentCopyIcon />
                                             </IconButton>
                                             <IconButton>
