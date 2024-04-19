@@ -17,7 +17,6 @@ COPY requirements.txt /app/
 # Install all dependencies.
 RUN pip install -r /app/requirements.txt
 
-VOLUME /models
 # Copy current directory into working directory.
 
 COPY . /app
