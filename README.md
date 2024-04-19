@@ -78,6 +78,15 @@ Ensure you have the following installed:
     docker-compose up
      ```
 
+### Application will be accessible with  
+
+ - http://localhost:3000/login
+
+### Default Admin Login Detail:
+
+  - username: **admin.docai@gmail.com**
+  - password: **admin**
+
 
 ## License 📄
 
