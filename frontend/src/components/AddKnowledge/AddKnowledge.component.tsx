@@ -1,5 +1,5 @@
 //Import Third Party lib
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Form, Field } from 'react-final-form';
 import { useNavigate, useParams } from 'react-router-dom';
 import { FileUploader } from 'react-drag-drop-files';
@@ -17,10 +17,10 @@ import { FileListing } from '@docAi-app/components/FileListing';
 //Import Context
 
 //Import Model Type
-import { FilesUpload, Option } from '@docAi-app/types/common.type';
+import { FilesUpload, Option } from '@docAi-app/types';
 
 //Import Util, Helper , Constant
-import { uuidGenerator } from '@docAi-app/utils/helper/common.helper';
+import { uuidGenerator } from '@docAi-app/utils/helper';
 
 //Import Icon
 //Import Api
@@ -32,36 +32,27 @@ import { indexApi, documentApi } from '@docAi-app/api';
 import Styles from './AddKnowledge.module.scss';
 import { ROUTE } from '@docAi-app/utils/constants/Route.constant';
 import { getAlert } from '@docAi-app/hooks';
+import { ALLOW_FILE_TYPES, MAX_FILE_SIZE } from '@docAi-app/utils/constants/common.constant';
 
-const fileTypes = ['PDF', 'TXT', 'HTML'];
-const MAX_SIZE = 10;
+const indexList = async (searchString: string, loadOptions, { page }) => {
+    const res = await indexApi.getAllIndex({
+        search: searchString,
+        page_number: page,
+        records_per_page: 10,
+        show_all: true,
+    });
 
-export const indexList = async (searchString: string, loadOptions, { page }) => {
-    const res = await indexApi
-        .getAllIndex({
-            search: searchString,
-            page_number: page,
-            records_per_page: 10,
-            show_all: true,
-        })
-        .then((response) => {
-            return response;
-        })
-        .catch(() => {
-            return {
-                payload: [],
-            };
-        });
-    const done = res?.pager?.per_page * page < res?.pager?.total_records;
+    const done = res.pager && res.pager.per_page * page < res.pager.total_records;
     const options = res?.payload.map((data) => {
         return {
             label: data.title,
             value: data.index_uuid,
         };
     });
+
     return {
         options: options.length === 0 ? [] : options,
-        hasMore: done ?? false,
+        hasMore: done,
         additional: {
             page: searchString ? 1 : page + 1,
         },
@@ -77,16 +68,17 @@ const FILE_ERROR = {
     size: 1,
 } as const;
 const AddKnowledge = () => {
-    const [files, setFiles] = useState<FilesUpload[]>();
+    const [files, setFiles] = useState<FilesUpload[]>([]);
     const [existingFiles, setExistingFiles] = useState<ExistingFiles[]>([]);
     const [index, setIndex] = useState<Option>();
+    const existingFilesToRemove = useRef<string[]>([]);
     const [fileError, setFileError] = useState<keyof typeof FILE_ERROR>();
     const params = useParams();
     const navigate = useNavigate();
 
     useEffect(() => {
-        const indexUuid = params['index-id'] ?? '';
-        if (indexUuid) {
+        const indexUuid = params['index-id'] ?? null;
+        if (indexUuid && indexUuid !== '') {
             documentApi.getDocuments({ index_uuid: indexUuid }).then(({ payload }: { payload: any }) => {
                 setExistingFiles(() => {
                     return payload.documents.map((document) => {
@@ -119,8 +111,8 @@ const AddKnowledge = () => {
     const deleteFiles = ({ files, fromExisting }: { files: FilesUpload | ExistingFiles; fromExisting: boolean }) => {
         if (fromExisting) {
             const { key } = files;
-            documentApi.deleteDocument({ document_uuid: key });
             const fileToRemove = key;
+            existingFilesToRemove.current.push(fileToRemove);
             setExistingFiles((prevFiles) => prevFiles.filter(({ key }) => key !== fileToRemove));
         } else if (files) {
             setFiles((prevFiles) => prevFiles?.filter((prevFile) => prevFile.key !== files.key));
@@ -129,18 +121,24 @@ const AddKnowledge = () => {
 
     const handleSubmit = (v) => {
         const formData = new FormData();
-
-        files?.forEach((file) => {
-            formData.append('documents', file.file);
+        existingFilesToRemove.current.forEach((fileToRemove) => {
+            documentApi.deleteDocument({ document_uuid: fileToRemove });
         });
+        existingFilesToRemove.current = [];
+        if (!params[ROUTE.INDEX_ID]) navigate(`${ROUTE.ROOT}${ROUTE.INDEX_LIST}`);
 
-        documentApi
-            .uploadDocuments({ requestBody: formData, requestParams: { index_uuid: v.index.value } })
-            .then((res) => {
-                console.log(res.message);
-                getAlert('info', res.message);
-                navigate(`${ROUTE.ROOT}${ROUTE.INDEX_LIST}`);
+        if (files.length) {
+            files?.forEach((file) => {
+                formData.append('documents', file.file);
             });
+
+            documentApi
+                .uploadDocuments({ requestBody: formData, requestParams: { index_uuid: v.index.value } })
+                .then((res) => {
+                    setFiles([]);
+                    getAlert('info', res.message);
+                });
+        }
     };
 
     // component logic
@@ -158,8 +156,8 @@ const AddKnowledge = () => {
                     transition: 'all 2s ease-out',
                 }}
                 handleChange={handleChange}
-                types={fileTypes}
-                maxSize={MAX_SIZE}
+                types={ALLOW_FILE_TYPES}
+                maxSize={MAX_FILE_SIZE}
                 onTypeError={() => {
                     setFileError('type');
                 }}
@@ -186,8 +184,7 @@ const AddKnowledge = () => {
                             index: index ?? undefined,
                         }}
                         onSubmit={handleSubmit}
-                        keepDirtyOnReinitialize={true}
-                        render={({ handleSubmit, pristine, form }) => {
+                        render={({ handleSubmit, form }) => {
                             return (
                                 <form onSubmit={handleSubmit} className={Styles.formContainer}>
                                     <div className={Styles.field}>
@@ -201,7 +198,32 @@ const AddKnowledge = () => {
                                                         menuPlacement="auto"
                                                         debounceTimeout={1000}
                                                         isDisabled={params && params['index-id'] ? true : false}
-                                                        loadOptions={indexList}
+                                                        loadOptions={(searchString, loadOptions, { page }) => {
+                                                            return indexList(searchString, loadOptions, { page }).then(
+                                                                (res) => {
+                                                                    if (input.value === '' && !params[ROUTE.INDEX_ID]) {
+                                                                        form.change('index', res.options[0]);
+                                                                        documentApi
+                                                                            .getDocuments({
+                                                                                index_uuid: res.options[0].value,
+                                                                            })
+                                                                            .then(({ payload }: { payload: any }) => {
+                                                                                setExistingFiles(() => {
+                                                                                    return payload.documents.map(
+                                                                                        (document) => {
+                                                                                            return {
+                                                                                                title: document.file_name,
+                                                                                                key: document.document_uuid,
+                                                                                            };
+                                                                                        },
+                                                                                    );
+                                                                                });
+                                                                            });
+                                                                    }
+                                                                    return res;
+                                                                },
+                                                            );
+                                                        }}
                                                         additional={{ page: 1 }}
                                                         onChange={(v) => {
                                                             form.change('index', v);
@@ -222,6 +244,8 @@ const AddKnowledge = () => {
                                                                         });
                                                                     });
                                                             }
+                                                            existingFilesToRemove.current = [];
+                                                            setFiles([]);
                                                         }}
                                                     />
                                                 );
@@ -233,9 +257,9 @@ const AddKnowledge = () => {
                                         <Button
                                             type="submit"
                                             variant="contained"
-                                            disabled={pristine || files?.length === 0}
+                                            disabled={files.length === 0 && existingFilesToRemove.current.length === 0}
                                         >
-                                            Upload
+                                            Update knowledge
                                         </Button>
                                     </div>
                                 </form>

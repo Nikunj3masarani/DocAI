@@ -14,7 +14,7 @@ import { IconButton } from '@docAi-app/stories';
 //Import Context
 
 //Import Model Type
-import { FilesUpload } from '@docAi-app/types/common.type';
+import { FilesUpload } from '@docAi-app/types';
 
 //Import Util, Helper , Constant
 
@@ -38,17 +38,6 @@ const FileListing = ({
     deleteFiles: (fileToRemove: { files: FilesUpload | ExistingFiles; fromExisting: boolean }) => void;
     existingFiles: ExistingFiles[] | undefined;
 }) => {
-    const [indexName, setIndexName] = useState<string>('');
-    const params = useParams();
-    const navigate = useNavigate();
-
-    useEffect(() => {
-        const indexUuid = params['index-id'] ?? '';
-        indexApi.getIndex({ index_uuid: indexUuid }).then(({ payload }: { payload: any }) => {
-            setIndexName(payload['title']);
-        });
-    }, [params['index-id']]);
-
     // Your component logic here
 
     return !files ? (

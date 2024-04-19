@@ -26,7 +26,7 @@ import PsychologyOutlinedIcon from '@mui/icons-material/PsychologyOutlined';
 //Import Style
 import Styles from './IndexList.module.scss';
 import { useEffect, useState } from 'react';
-import { HeaderAction } from '@docAi-app/types/common.type';
+import { HeaderAction } from '@docAi-app/types';
 
 const IndexList = () => {
     // useRef
@@ -75,7 +75,7 @@ const IndexList = () => {
             </Dialog>
             <div className={Styles.header}>
                 <div>
-                    <h1>My Brains</h1>
+                    <h1>Home</h1>
                 </div>
                 <div className={Styles.header__body}>
                     <Button

@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
-import { Option } from '@docAi-app/types/common.type';
-export const isEmptyValue = (value: unknown) => {
+
+const isEmptyValue = (value: unknown) => {
     if (value === null || value === undefined) {
         return true;
     } else if (typeof value === 'string' && value === '') {
@@ -13,25 +13,15 @@ export const isEmptyValue = (value: unknown) => {
     return false;
 };
 
-export const onLoadReaders = async (
-    searchString: string,
-    readersList: Option[] = [],
-): Promise<{ options: Option[] }> => {
-    return {
-        options:
-            readersList.length === 0
-                ? []
-                : readersList.filter((reader) => reader.label.toLowerCase().indexOf(searchString.toLowerCase()) > -1),
-    };
-};
-
-export const parseEndpoint = (url: string, params: Record<string, string | number | boolean>) => {
+const parseEndpoint = (url: string, params: Record<string, string | number | boolean>) => {
     Object.keys(params).forEach((key) => {
         url = url.replace(key, `${key}=${params[key]}`);
     });
     return url;
 };
 
-export function uuidGenerator(): string {
+function uuidGenerator(): string {
     return uuidv4();
 }
+
+export { isEmptyValue, parseEndpoint, uuidGenerator };

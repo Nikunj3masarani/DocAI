@@ -1,65 +1,26 @@
 import { apiCall } from '@docAi-app/utils/api-manager';
-import { ApiConfig } from '@docAi-app/types/Api.type';
+import { ApiConfig } from '@docAi-app/types';
 import { ENDPOINTS } from '@docAi-app/utils/constants/endpoints.constant';
 import { Method } from 'axios';
-import { CreateIndexRequestBody, GetAllIndexResponse } from '@docAi-app/types/index.type';
-import { parseEndpoint } from '@docAi-app/utils/helper/common.helper';
+import { CreateIndexRequestBody, GetAllIndexResponse } from '@docAi-app/types';
+import { parseEndpoint } from '@docAi-app/utils/helper';
+import {
+    DeleteIndexParams,
+    GetAllIndexRequestBody,
+    GetIndexRequestParams,
+    GetIndexResponse,
+    GetIndexUsersRequestParams,
+    InviteIndexUserRequestBody,
+    RemoveIndexUserRequestBody,
+    UpdateIndexProps,
+} from '@docAi-app/models';
 
-interface GetIndexParams {
-    index_uuid: string;
-}
-
-interface DeleteIndexRequestBody extends GetIndexParams {}
-
-type GetAllIndexRequestBody = Partial<{
-    search: string;
-    page_number: number;
-    records_per_page: number;
-    show_all: boolean;
-}>;
-
-interface GetIndexResponse {
-    description: string;
-    index_uuid: string;
-    model_uuid: string;
-    prompt_uuid: string;
-    status: string;
-    tags: string[];
-    title: string;
-}
-
-interface GetIndexUsersRequestParams extends GetIndexParams {}
-
-interface InviteIndexUserRequestBody {
-    index_uuid: string;
-    email: string;
-    role: number;
-}
-
-interface RemoveIndexUserRequestBody {
-    index_uuid: string;
-    remove_user_uuid: string;
-}
-
-interface UpdateIndexProps {
-    requestBody: {
-        description: string;
-        status: string;
-        tags: string[];
-        prompt_uuid: string;
-        model: string;
-    };
-    requestParams: {
-        index_uuid: string;
-    };
-}
-
-const getIndex = (requestBody: GetIndexParams) => {
-    const data: ApiConfig<GetIndexParams> = {
+const getIndex = (requestParams: GetIndexRequestParams) => {
+    const data: ApiConfig<GetIndexRequestParams> = {
         method: ENDPOINTS.INDEX_MANAGEMENT.GET_INDEX.METHOD as Method,
-        url: parseEndpoint(ENDPOINTS.INDEX_MANAGEMENT.GET_INDEX.URL, { ...requestBody }),
+        url: parseEndpoint(ENDPOINTS.INDEX_MANAGEMENT.GET_INDEX.URL, { ...requestParams }),
     };
-    return apiCall<GetIndexResponse, GetIndexParams>(data);
+    return apiCall<GetIndexResponse, GetIndexRequestParams>(data);
 };
 
 const getAllIndex = (requestBody: GetAllIndexRequestBody) => {
@@ -77,15 +38,17 @@ const createIndex = (requestBody: CreateIndexRequestBody) => {
         method: ENDPOINTS.INDEX_MANAGEMENT.CREATE_INDEX.METHOD as Method,
         url: ENDPOINTS.INDEX_MANAGEMENT.CREATE_INDEX.URL,
         data: requestBody,
+        showAlertToast: true,
+        showSuccessToast: true,
     };
 
     return apiCall(data);
 };
 
-const deleteIndex = (requestBody: DeleteIndexRequestBody) => {
-    const data: ApiConfig<DeleteIndexRequestBody> = {
+const deleteIndex = (requestParams: DeleteIndexParams) => {
+    const data: ApiConfig<undefined> = {
         method: ENDPOINTS.INDEX_MANAGEMENT.DELETE_INDEX.METHOD as Method,
-        url: parseEndpoint(ENDPOINTS.INDEX_MANAGEMENT.DELETE_INDEX.URL, { ...requestBody }),
+        url: parseEndpoint(ENDPOINTS.INDEX_MANAGEMENT.DELETE_INDEX.URL, { ...requestParams }),
     };
     return apiCall(data);
 };
@@ -95,15 +58,17 @@ const updateIndex = ({ requestBody, requestParams }: UpdateIndexProps) => {
         method: ENDPOINTS.INDEX_MANAGEMENT.UPDATE_INDEX.METHOD as Method,
         url: parseEndpoint(ENDPOINTS.INDEX_MANAGEMENT.UPDATE_INDEX.URL, { ...requestParams }),
         data: requestBody,
+        showAlertToast: true,
+        showSuccessToast: true,
     };
 
     return apiCall(data);
 };
 
-const getIndexUsers = (requestBody: GetIndexUsersRequestParams) => {
+const getIndexUsers = (requestParams: GetIndexUsersRequestParams) => {
     const data: ApiConfig<GetIndexUsersRequestParams> = {
         method: ENDPOINTS.INDEX_MANAGEMENT.GET_USERS.METHOD as Method,
-        url: parseEndpoint(ENDPOINTS.INDEX_MANAGEMENT.GET_USERS.URL, { ...requestBody }),
+        url: parseEndpoint(ENDPOINTS.INDEX_MANAGEMENT.GET_USERS.URL, { ...requestParams }),
     };
 
     return apiCall(data);

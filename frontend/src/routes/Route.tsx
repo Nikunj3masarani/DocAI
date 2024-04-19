@@ -3,6 +3,7 @@ import { ROUTE } from '@docAi-app/utils/constants/Route.constant';
 import { Chat, ForgotPassword, IndexList, Login, PageNotFound, ResetPassword } from '@docAi-app/pages';
 import { AuthContainer, AuthRoute, ErrorComponent, MainContainer, UpdateIndex } from '@docAi-app/components';
 import { Search } from '@docAi-app/pages/Search';
+import { ChatCreateContextProvider } from '@docAi-app/context/ChatCreateContext/ChatCreateContext';
 
 const errorElement = {
     errorElement: <ErrorComponent />,
@@ -63,7 +64,9 @@ const ROUTES: RouteObject[] = [
         path: ROUTE.ROOT,
         element: (
             <AuthRoute>
-                <MainContainer />
+                <ChatCreateContextProvider>
+                    <MainContainer />
+                </ChatCreateContextProvider>
             </AuthRoute>
         ),
         ...errorElement,

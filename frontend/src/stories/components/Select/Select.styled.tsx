@@ -3,7 +3,7 @@ import { Select, styled, MenuItem, InputLabel } from '@mui/material';
 export const SelectStyle = styled(Select)`
     .MuiSelect-select {
         font-size: 1.4rem;
-        line-height: 1.35;
+        line-height: normal;
         text-align : left;
     }
 

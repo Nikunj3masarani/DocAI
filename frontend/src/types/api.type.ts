@@ -1,14 +1,14 @@
 import { AxiosRequestConfig, AxiosHeaders, Method } from 'axios';
 
-export type PagerType = {
+type PagerType = {
     pageNumber?: number;
-    recordsPerPage: number;
+    per_page: number;
     sortBy: string;
     sortOrder: string;
     total_records: number;
 };
 
-export type ApiResponse<T> = {
+type ApiResponse<T> = {
     message: string;
     payload: T;
     show: boolean;
@@ -16,18 +16,20 @@ export type ApiResponse<T> = {
     pager?: PagerType;
 };
 
-export type ApiErrorResponse = {
+type ApiErrorResponse = {
     payload: Record<string, string | boolean> | null;
 };
 
-export type AxiosRequest = AxiosRequestConfig & {
+type AxiosRequest = AxiosRequestConfig & {
     headers: AxiosHeaders;
 };
 
-export type ApiConfig<D> = AxiosRequestConfig<D> & {
+type ApiConfig<D> = AxiosRequestConfig<D> & {
     method: Method;
     showLoader?: boolean;
     showSuccessToast?: boolean;
     showAlertToast?: boolean;
     scrollToTop?: boolean;
 };
+
+export type { ApiResponse, ApiErrorResponse, AxiosRequest, ApiConfig };

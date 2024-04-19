@@ -17,9 +17,9 @@ import { Button, InputField } from '@docAi-app/stories';
 
 //Import Util, Helper , Constant
 import { ROUTE } from '@docAi-app/utils/constants/Route.constant';
-import { removeEmptyField, validation } from '@docAi-app/utils/helper/validation.helper';
+import { removeEmptyField, validation } from '@docAi-app/utils/helper';
 import { EMAIL_VALIDATION, PASSWORD_VALIDATION } from '@docAi-app/utils/constants/validation.constant';
-import { Validation } from '@docAi-app/types/validation.type';
+import { Validation } from '@docAi-app/types';
 
 //Import Icon
 
@@ -30,7 +30,7 @@ import { Validation } from '@docAi-app/types/validation.type';
 //Import Style
 import Styles from './Login.module.scss';
 import { authApi } from '@docAi-app/api';
-import { setToLocalStorage } from '@docAi-app/utils/helper/storage.helper';
+import { setToLocalStorage } from '@docAi-app/utils/helper';
 import { ACCESS_TOKEN_KEY, CURRENT_USER_EMAIL } from '@docAi-app/utils/constants/storage.constant';
 import { useAuth } from '@docAi-app/hooks';
 

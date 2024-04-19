@@ -6,7 +6,7 @@ export const ROUTE = {
     RESET_PASSWORD: 'reset-password',
     SEARCH: 'search',
     CHAT: 'chat',
-    INDEX_LIST: 'index-list',
+    INDEX_LIST: 'home',
     INDEX_ID: 'index-id',
     CHAT_ID: 'chat_uuid',
     BRAINS: 'brains',

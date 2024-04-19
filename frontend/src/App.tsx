@@ -1,11 +1,12 @@
 import { Suspense } from 'react';
 import { CssBaseline, ThemeProvider } from '@mui/material';
-import { CircularLoader } from '@docAi-app/stories';
+import { CircularLoader, StyledToastContainer } from '@docAi-app/stories';
 import theme from '@docAi-app/theme';
 import { ApiLoader } from '@docAi-app/components';
 import { RouterProvider } from 'react-router-dom';
 import { routes } from '@docAi-app/routes/Route';
 import { AuthContextProvider } from '@docAi-app/context/AuthContext';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
     return (
@@ -14,6 +15,7 @@ function App() {
                 <AuthContextProvider>
                     <CssBaseline />
                     <ApiLoader />
+                    <StyledToastContainer />
                     <RouterProvider router={routes} />{' '}
                 </AuthContextProvider>
             </ThemeProvider>

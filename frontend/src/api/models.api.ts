@@ -1,5 +1,5 @@
-import { ApiConfig } from '@docAi-app/types/Api.type';
-import { ModelListResponse } from '@docAi-app/types/models.type';
+import { ModelListResponse } from '@docAi-app/models';
+import { ApiConfig } from '@docAi-app/types';
 import { apiCall } from '@docAi-app/utils/api-manager';
 import { ENDPOINTS } from '@docAi-app/utils/constants/endpoints.constant';
 import { Method } from 'axios';

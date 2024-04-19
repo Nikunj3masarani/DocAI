@@ -1,6 +1,6 @@
 import { ACCESS_TOKEN_KEY } from '@docAi-app/utils/constants/storage.constant';
-import { getFromLocalStorage } from '@docAi-app/utils/helper/storage.helper';
-import { createContext, useEffect, useState } from 'react';
+import { getFromLocalStorage } from '@docAi-app/utils/helper';
+import { createContext, useState } from 'react';
 interface AuthContextType {
     isLogin: boolean;
     setIsLogin: (newLoginState: boolean) => void;

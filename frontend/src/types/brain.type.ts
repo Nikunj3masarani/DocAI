@@ -1,4 +1,4 @@
-export interface CreateBrainProps {
+interface CreateBrainProps {
     title: string;
     description: string;
     model: string;
@@ -9,3 +9,5 @@ export interface CreateBrainProps {
     promptDescription: string;
     promptStatus: string;
 }
+
+export type { CreateBrainProps };

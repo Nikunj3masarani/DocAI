@@ -14,12 +14,12 @@ import { Button, InputField } from '@docAi-app/stories';
 //Import Context
 
 //Import Model Type
-import { Validation } from '@docAi-app/types/validation.type';
+import { Validation } from '@docAi-app/types';
 
 //Import Util, Helper , Constant
 import { ROUTE } from '@docAi-app/utils/constants/Route.constant';
 import { EMAIL_VALIDATION } from '@docAi-app/utils/constants/validation.constant';
-import { removeEmptyField, validation } from '@docAi-app/utils/helper/validation.helper';
+import { removeEmptyField, validation } from '@docAi-app/utils/helper';
 
 //Import Icon
 

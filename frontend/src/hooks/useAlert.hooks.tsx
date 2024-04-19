@@ -1,7 +1,6 @@
 import { Slide, ToastContentProps, ToastPosition, toast } from 'react-toastify';
 import { ToastBody, ToastCloseIcon } from '@docAi-app/stories';
 import { TIMEOUT } from '@docAi-app/utils/constants/common.constant';
-
 type AlertType = 'info' | 'error' | 'success' | 'warning';
 
 const useAlert = (
@@ -19,7 +18,7 @@ const useAlert = (
         transition: Slide,
         pauseOnFocusLoss: isFocusLoss,
         className: 'Toastify__toast--main',
-        closeButton: ToastCloseIcon,
+        // closeButton: ToastCloseIcon,
         hideProgressBar: true,
     });
 };

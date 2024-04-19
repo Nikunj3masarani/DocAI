@@ -26,18 +26,18 @@
 
 .dropArea {
     border: 1px dashed $primary;
-    padding: 2rem;
-    height: 24rem;
-    width: 100%;
-    max-width: 100%;
     display: flex;
-    align-items: center;
+    align-items: stretch;
     justify-content: center;
     text-align: center;
     position: relative;
     flex-direction: column;
     position: relative;
     top: -2rem;
+    padding: 2rem;
+    height: 100%;
+    width: 100%;
+    max-width: 100%;
 }
 
 .fileListContainer {
