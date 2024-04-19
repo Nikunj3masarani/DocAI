@@ -59,17 +59,17 @@ Ensure you have the following installed:
   mkdir backend_models && cd backend_models
   ```
 
-- Download Sentence Transformer Model from huggingface
+  - Download Sentence Transformer Model from huggingface
 
-  ```bash
-  git lfs clone https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2
-  ```
+    ```bash
+    git lfs clone https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2
+    ```
 
-- Download Rank Model from huggingface
+  - Download Rank Model from huggingface
 
-  ```bash
-  git lfs clone https://huggingface.co/cross-encoder/ms-marco-MiniLM-L-12-v2
-  ```
+    ```bash
+    git lfs clone https://huggingface.co/cross-encoder/ms-marco-MiniLM-L-12-v2
+    ```
 
 
 - **Step 6** Start the application with docker 
@@ -77,6 +77,15 @@ Ensure you have the following installed:
     docker-compose pull
     docker-compose up
      ```
+
+### Application will be accessible with  
+
+ - http://localhost:3000/login
+
+### Default Admin Login Detail:
+
+  - username: **admin.docai@gmail.com**
+  - password: **admin**
 
 
 ## License 📄
