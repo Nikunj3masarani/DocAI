@@ -126,7 +126,7 @@ export const apiCall = async <ResponsePayload, RequestBody = undefined>(
             console.log(error);
             if (showAlertToast && message) {
                 getAlert('error', message);
-            } else if (status === ERROR_STATUS_CODE['422'] && !message.includes('chat')) {
+            } else if (status === ERROR_STATUS_CODE['422']) {
                 getAlert('error', message);
             }
             throw error;
