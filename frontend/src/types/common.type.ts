@@ -1,9 +1,9 @@
-export type Item = {
+type Item = {
     label: string | number;
     value: string | number;
 };
 
-export type IconType = {
+type IconType = {
     width: number;
     height: number;
     fill?: string;
@@ -14,19 +14,21 @@ export type IconType = {
     props?: any;
 };
 
-export interface FilesUpload {
+interface FilesUpload {
     file: File;
     key: string;
 }
 
-export type OptionType = {
+type OptionType = {
     value: number | string;
     label: string;
 };
 
-export interface Option {
+interface Option {
     label: string;
     value: string | number;
 }
 
-export type HeaderAction = 'Create Brain' | 'Add Knowledge';
+type HeaderAction = 'Create Brain' | 'Add Knowledge';
+
+export type { Item, IconType, FilesUpload, OptionType, Option, HeaderAction };

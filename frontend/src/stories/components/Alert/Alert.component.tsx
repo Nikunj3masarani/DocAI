@@ -80,7 +80,7 @@ const ToastCloseIcon = ({ closeToast }: ComponentProps<typeof CloseButton>): JSX
     return (
         <StyleCloseIconContainer>
             <button className="closeIcon" onClick={(e) => closeToast(e)}>
-                <Icons.Close stroke={theme.colors.black}  />
+                <Icons.Close stroke={theme.colors.black} />
             </button>
         </StyleCloseIconContainer>
     );
@@ -110,6 +110,5 @@ const Alert = ({
     );
 };
 
-export default Alert;
-export { toast, ToastBody, Slide, ToastCloseIcon, StyledToastContainer };
+export { Alert, toast, ToastBody, Slide, ToastCloseIcon, StyledToastContainer };
 export type { ToastPosition };

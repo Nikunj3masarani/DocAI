@@ -1,5 +1,5 @@
 import React, { MouseEvent, useState } from 'react';
-import { Item } from '@docAi-app/types/common.type';
+import { Item } from '@docAi-app/types';
 import Icons from '@docAi-app/icons';
 import { StyledMenu, StyledMenuItem, StyledStatus } from './SortBy.styled';
 

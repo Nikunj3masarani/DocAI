@@ -1,46 +1,21 @@
-import { ApiConfig } from '@docAi-app/types/Api.type';
-import { apiCall } from '@docAi-app/utils/api-manager';
-import { ENDPOINTS } from '@docAi-app/utils/constants/endpoints.constant';
-import { parseEndpoint } from '@docAi-app/utils/helper/common.helper';
 import { Method } from 'axios';
 
-interface PromptsListRequestBody {
-    search: string;
-    page_number: number;
-    records_per_page: number;
-    sort_order: string;
-    sort_by: string;
-    show_all: boolean;
-}
+import {
+    CreatePromptRequestBody,
+    CreatePromptResponseBody,
+    GetPromptListResponseBody,
+    GetPromptRequestParams,
+    GetPromptResponseBody,
+    PromptsListRequestBody,
+    UpdatePromptProps,
+    UpdatePromptResponseBody,
+} from '@docAi-app/models';
 
-interface CreatePromptRequestBody {
-    title: string;
-    description: string;
-    status: string;
-}
+import { apiCall } from '@docAi-app/utils/api-manager';
 
-interface GetPromptRequestBody {
-    prompt_uuid: string;
-}
-
-interface GetPromptResponse {
-    Prompt: {
-        title: string;
-        content: string;
-        status: string;
-    };
-}
-
-interface updatePrompt {
-    params: {
-        prompt_uuid: string;
-    };
-    requestBody: {
-        title: string;
-        description: string;
-        status: string;
-    };
-}
+import { ApiConfig } from '@docAi-app/types';
+import { ENDPOINTS } from '@docAi-app/utils/constants/endpoints.constant';
+import { parseEndpoint } from '@docAi-app/utils/helper';
 
 const createPrompt = async (requestBody: CreatePromptRequestBody) => {
     const data: ApiConfig<CreatePromptRequestBody> = {
@@ -49,16 +24,16 @@ const createPrompt = async (requestBody: CreatePromptRequestBody) => {
         data: requestBody,
     };
 
-    return apiCall(data);
+    return apiCall<CreatePromptResponseBody, CreatePromptRequestBody>(data);
 };
 
-const getPrompt = async (requestBody: GetPromptRequestBody) => {
-    const data: ApiConfig<GetPromptRequestBody> = {
+const getPrompt = async (requestParams: GetPromptRequestParams) => {
+    const data: ApiConfig<undefined> = {
         method: ENDPOINTS.PROMPT.GET_PROMPT.METHOD as Method,
-        url: parseEndpoint(ENDPOINTS.PROMPT.CREATE_PROMPT.URL, { ...requestBody }),
+        url: parseEndpoint(ENDPOINTS.PROMPT.GET_PROMPT.URL, { ...requestParams }),
     };
 
-    return apiCall<GetPromptResponse, GetPromptRequestBody>(data);
+    return apiCall<GetPromptResponseBody, undefined>(data);
 };
 
 const getPromptsList = async (requestBody: PromptsListRequestBody) => {
@@ -66,19 +41,19 @@ const getPromptsList = async (requestBody: PromptsListRequestBody) => {
         method: ENDPOINTS.PROMPT.GET_LIST.METHOD as Method,
         url: ENDPOINTS.PROMPT.GET_LIST.URL,
         data: requestBody,
-        signal: AbortSignal.timeout(500),
     };
-    return apiCall(data);
+    return apiCall<GetPromptListResponseBody, PromptsListRequestBody>(data);
 };
 
-const updatePrompt = async ({ requestBody, params }: updatePrompt) => {
-    const data: ApiConfig<updatePrompt['requestBody']> = {
+const updatePrompt = async ({ requestBody, requestParams }: UpdatePromptProps) => {
+    const data: ApiConfig<UpdatePromptProps['requestBody']> = {
         method: ENDPOINTS.PROMPT.UPDATE_PROMPT.METHOD as Method,
-        url: parseEndpoint(ENDPOINTS.PROMPT.UPDATE_PROMPT.URL, params),
+        url: parseEndpoint(ENDPOINTS.PROMPT.UPDATE_PROMPT.URL, requestParams),
         data: requestBody,
+        showSuccessToast: true,
     };
 
-    return apiCall(data);
+    return apiCall<UpdatePromptResponseBody, UpdatePromptProps['requestBody']>(data);
 };
 
 const promptApi = { getPromptsList, createPrompt, getPrompt, updatePrompt };

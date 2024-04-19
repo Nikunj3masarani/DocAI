@@ -1,5 +1,5 @@
 import { styled } from '@mui/material/styles';
-import { IconType } from '@docAi-app/types/common.type';
+import { IconType } from '@docAi-app/types';
 
 const StyledPath = styled('path')<Partial<IconType>>`
     stroke: ${({ theme, stroke }) => (stroke ? stroke : theme.palette.primary.main)};

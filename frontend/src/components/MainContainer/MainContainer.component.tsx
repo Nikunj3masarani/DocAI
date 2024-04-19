@@ -15,16 +15,17 @@ import HistoryIcon from '@mui/icons-material/History';
 import { chatApi } from '@docAi-app/api/chat.api';
 import CheckIcon from '@mui/icons-material/Check';
 import { itemsProps } from '@docAi-app/stories/components/Menu/Menu.component';
+import { useChatCreate } from '@docAi-app/hooks';
 
 const sideNavigationItems = [
     {
         to: ROUTE.SEARCH,
-        label: 'Home',
+        label: 'Search',
         icon: Icons.DraftPatent,
     },
     {
         to: ROUTE.INDEX_LIST,
-        label: 'My Brains',
+        label: 'Home',
         icon: Icons.PromptLibrary,
     },
     {
@@ -41,7 +42,14 @@ interface MessageList {
 }
 
 const handleEditMessageTitle = ({ messageId, message }: { messageId: string; message: string }) => {
-    chatApi.editMessageTitle({ chat_uuid: messageId, title: message });
+    chatApi.editMessageTitle({
+        requestBody: {
+            title: message,
+        },
+        requestParams: {
+            chat_uuid: messageId,
+        },
+    });
 };
 const handleDeleteChat = ({ messageId }: { messageId: string }) => {
     chatApi.deleteChat({ chat_uuid: messageId });
@@ -57,23 +65,25 @@ const MainContainer = () => {
         return editTitleId === messageId ? Styles.active : '';
     };
     const [editedMessage, setEditedMessage] = useState<string>();
+    const { isChatCreated, setIsChatCreated } = useChatCreate();
+
     const navigate = useNavigate();
     useEffect(() => {
-        if (params.pathname.includes('chat') || params.pathname.includes('search')) {
+        if (isChatCreated) {
             chatApi.getChatList().then((res) => {
                 const tempList = res.payload;
                 Object.keys(tempList).forEach((key: string) => {
                     const tempObj = tempList[key].map((tempMessage) => {
                         return { message: tempMessage.chat_title, messageId: tempMessage.chat_uuid };
                     });
-
                     setMessageList((prev) => {
                         return { ...prev, [key]: tempObj };
                     });
                 });
             });
+            setIsChatCreated(false);
         }
-    }, [params.pathname]);
+    }, [isChatCreated]);
     const sideNavItem = sideNavigationItems.map((navigationItem, index) => {
         return (
             <>

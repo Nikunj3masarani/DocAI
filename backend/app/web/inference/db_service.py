@@ -1,6 +1,6 @@
 from typing import Any, List, Dict
 from sqlalchemy.future import select
-from sqlalchemy import and_, delete, distinct
+from sqlalchemy import and_, delete, distinct, desc
 from app import constants
 
 from app.web.base.db_service import DBService
@@ -126,7 +126,7 @@ class Inference(DBService):
                                            ChatTable.model_uuid,
                                            ChatTable.created_by,
                                            ChatTable.index_uuid).join(ChatHistoryTable).where(
-            ChatTable.index_uuid.in_(user_index_list))
+            ChatTable.index_uuid.in_(user_index_list)).order_by(desc(ChatTable.created_at))
         chat_history_response = await self.db_client.execute(select_chat_history_query)
         result = group_and_label_data(list(chat_history_response.all()))
         return result

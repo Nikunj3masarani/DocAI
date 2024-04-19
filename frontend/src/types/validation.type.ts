@@ -23,7 +23,7 @@ type Custom = {
     condition: boolean;
 };
 
-export type Validation = Partial<{
+type Validation = Partial<{
     required: Required;
     min: MinMax;
     max: MinMax;
@@ -31,3 +31,5 @@ export type Validation = Partial<{
     regex: Regex;
     custom: Custom;
 }>;
+
+export type { Validation };

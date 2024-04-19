@@ -1,21 +1,13 @@
-import { Option } from '@docAi-app/types/common.type';
+import { Option } from '@docAi-app/types';
 export const ERROR_STATUS_CODE = {
-    401: 401,
-    403: 403,
+    422: 422,
 };
 
 export const TIMEOUT = {
     STANDARD: 500,
     TOKEN_COUNT: 1000,
-    TOAST: 5000,
+    TOAST: 3000,
 };
-
-export const PROMPT_SORT_BY_OPTIONS = [
-    { label: 'Latest First', value: 'latestFirst' },
-    { label: 'Oldest First', value: 'oldestFirst' },
-    { label: 'Low to high ratings', value: 'lowToHighRatings' },
-    { label: 'High to low ratings', value: 'highToLowRatings' },
-];
 
 export const PAGINATION_OPTIONS = [
     { label: 10, value: 10 },
@@ -46,3 +38,6 @@ export const USER_ROLE: Readonly<Record<string, Option>> = {
         value: 1,
     },
 } as const;
+
+export const ALLOW_FILE_TYPES = ['PDF', 'TXT', 'HTML'];
+export const MAX_FILE_SIZE = 10;

@@ -1,16 +1,8 @@
-import { ApiConfig } from '@docAi-app/types/Api.type';
+import { Method } from 'axios';
+import { ApiConfig } from '@docAi-app/types';
 import { apiCall } from '@docAi-app/utils/api-manager';
 import { ENDPOINTS } from '@docAi-app/utils/constants/endpoints.constant';
-import { Method } from 'axios';
-
-interface LoginRequestBody {
-    email: string;
-    password: string;
-}
-
-interface ForgotPasswordRequestBody {
-    email: string;
-}
+import { ForgotPasswordRequestBody, LoginRequestBody, LoginResponsePayload } from '@docAi-app/models';
 
 const login = (requestBody: LoginRequestBody) => {
     const data: ApiConfig<LoginRequestBody> = {
@@ -19,7 +11,7 @@ const login = (requestBody: LoginRequestBody) => {
         data: requestBody,
     };
 
-    return apiCall(data);
+    return apiCall<LoginResponsePayload, LoginRequestBody>(data);
 };
 
 const forgotPassword = (requestBody: ForgotPasswordRequestBody) => {

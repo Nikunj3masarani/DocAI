@@ -52,8 +52,7 @@ const AsyncCreatableStyled = styled<React.ComponentType<AsyncCreatableStyledProp
 `;
 
 const AsyncSearchSelectStyled = styled(AsyncPaginate)`
-   
-     & > div {
+    & > div {
         width: 100%;
         font-size: 1.4rem;
         line-height: 1.2;
@@ -65,6 +64,17 @@ const AsyncSearchSelectStyled = styled(AsyncPaginate)`
         .css-1dmcmre-C7,
         .css-art2ul-ValueContainer2 {
             padding: 0px;
+            .css-olqui2-singleValue {
+                color : rgba(0,0,0,0.38);
+            }
+            > div {
+                font-family: ${({ theme }) => theme.typography.fontFamily};
+                color: ${({ theme }) => theme.colors.black};
+                font-weight: 400;
+                font-size: 1.4rem;
+                line-height: normal;
+                text-align : left;
+            }
         }
     }
 

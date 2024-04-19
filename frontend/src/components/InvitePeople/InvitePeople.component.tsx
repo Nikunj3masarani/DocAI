@@ -18,7 +18,7 @@ import { Users } from '../UsersWithAccess/UsersWithAccess.component';
 //Import Model Type
 
 //Import Util, Helper , Constant
-import { validation } from '@docAi-app/utils/helper/validation.helper';
+import { validation } from '@docAi-app/utils/helper';
 import { EMAIL_VALIDATION } from '@docAi-app/utils/constants/validation.constant';
 import { USER_ROLE } from '@docAi-app/utils/constants/common.constant';
 import { ROUTE } from '@docAi-app/utils/constants/Route.constant';

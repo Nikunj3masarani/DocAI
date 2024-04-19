@@ -29,7 +29,7 @@ import Styles from './People.module.scss';
 import { useParams } from 'react-router-dom';
 import { indexApi } from '@docAi-app/api';
 import { Users } from '../UsersWithAccess/UsersWithAccess.component';
-import { getFromLocalStorage } from '@docAi-app/utils/helper/storage.helper';
+import { getFromLocalStorage } from '@docAi-app/utils/helper';
 import { CURRENT_USER_EMAIL } from '@docAi-app/utils/constants/storage.constant';
 import { USER_ROLE } from '@docAi-app/utils/constants/common.constant';
 

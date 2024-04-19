@@ -1,4 +1,4 @@
-import { Validation } from '@docAi-app/types/validation.type';
+import { Validation } from '@docAi-app/types';
 import { REGEX } from './regex.constant';
 
 export const PASSWORD = {
