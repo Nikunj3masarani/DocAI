@@ -98,20 +98,10 @@ services:
 volumes:
   elasticsearch_data:
     driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: ./elasticsearch_data
-
   postgresql_data:
     driver: local
-
-  backend_data:
+  backend_models:
     driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: ./backend_data
 
 
 
