@@ -68,7 +68,7 @@ services:
       - "ES_INDEX_NUMBER_OF_SHARDS=1"
       - "ES_INDEX_NUMBER_OF_REPLICAS=1"
     volumes:
-      - elasticsearch_data:/usr/share/elasticsearch/data
+      - ./elasticsearch_data:/usr/share/elasticsearch/data
     ulimits:
       memlock:
         soft: -1
@@ -98,10 +98,6 @@ services:
 volumes:
   elasticsearch_data:
     driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: ./elasticsearch_data
   postgresql_data:
     driver: local
 
