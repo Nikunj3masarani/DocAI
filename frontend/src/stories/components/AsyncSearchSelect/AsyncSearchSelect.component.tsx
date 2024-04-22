@@ -12,6 +12,7 @@ import {
     AsyncSearchSelectContainerStyled,
     AsyncSearchSelectLabelStyled,
     AsyncSearchSelectStyled,
+    CustomOptionStyled,
 } from './AsyncSearchSelect.styled';
 
 //Import Page

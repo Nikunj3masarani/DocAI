@@ -11,7 +11,6 @@ type IconType = {
     fill2?: string;
     stroke?: string;
     opacity?: number | string;
-    props?: any;
 };
 
 interface FilesUpload {
