@@ -11,6 +11,5 @@ export const ROUTE = {
     CHAT_ID: 'chat_uuid',
     BRAINS: 'brains',
     INVITE: 'invite',
-    STREAM_LIT_APP: 'http://13.202.8.105:8053/',
     WILDCARD: '*',
 };
