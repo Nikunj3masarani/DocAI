@@ -42,6 +42,14 @@ services:
         condition: service_started
     environment:
       VITE_BASE_API: "http://backend:8080/api/"
+      VITE_STREAM_APP_URL: "http://structured_data:8053"
+
+  structured_data:
+    build: ./structured_data_poc
+    ports:
+      - "8053:8053"
+    env_file:
+      - .env
 
   structured_data:
     build: ./structured_data_poc

@@ -1,4 +1,4 @@
-import { NavLink, Outlet, useLocation, useNavigate, useNavigation } from 'react-router-dom';
+import { NavLink, Outlet, useNavigate, useParams } from 'react-router-dom';
 import {
     Accordion,
     AccordionDetails,
@@ -11,26 +11,29 @@ import { ROUTE } from '@docAi-app/utils/constants/Route.constant';
 import Icons from '@docAi-app/icons';
 import Styles from './MainContainer.module.scss';
 import { useEffect, useState } from 'react';
-import HistoryIcon from '@mui/icons-material/History';
 import { chatApi } from '@docAi-app/api/chat.api';
 import CheckIcon from '@mui/icons-material/Check';
 import { itemsProps } from '@docAi-app/stories/components/Menu/Menu.component';
 import { useChatCreate } from '@docAi-app/hooks';
-
 const sideNavigationItems = [
     {
         to: ROUTE.SEARCH,
-        label: 'Search',
+        label: 'Home',
         icon: Icons.DraftPatent,
     },
     {
         to: ROUTE.INDEX_LIST,
-        label: 'Home',
+        label: 'Brains',
         icon: Icons.PromptLibrary,
     },
     {
+        to: import.meta.env.VITE_STREAM_APP_URL,
+        label: 'Stream Lit Assistants',
+        icon: Icons.SmartToyOutlined,
+    },
+    {
         label: 'Chat',
-        icon: HistoryIcon,
+        icon: Icons.History,
     },
 ];
 const getAccordionClasses = (activeAccordion: boolean) => {
@@ -56,8 +59,6 @@ const handleDeleteChat = ({ messageId }: { messageId: string }) => {
 };
 
 const MainContainer = () => {
-    const params = useLocation();
-
     const [activeAccordion, setActiveAccordion] = useState(false);
     const [messageList, setMessageList] = useState<Record<string, MessageList[]>>({});
     const [editTitleId, setEditTitleId] = useState<string>('');
@@ -66,8 +67,9 @@ const MainContainer = () => {
     };
     const [editedMessage, setEditedMessage] = useState<string>();
     const { isChatCreated, setIsChatCreated } = useChatCreate();
-
+    const params = useParams();
     const navigate = useNavigate();
+
     useEffect(() => {
         if (isChatCreated) {
             chatApi.getChatList().then((res) => {
@@ -84,12 +86,14 @@ const MainContainer = () => {
             setIsChatCreated(false);
         }
     }, [isChatCreated]);
+
     const sideNavItem = sideNavigationItems.map((navigationItem, index) => {
         return (
             <>
-                {index < 2 ? (
+                {navigationItem.label !== 'Chat' ? (
                     <li className="navItem" key={index}>
                         <NavLink
+                            target={navigationItem.label === 'Stream Lit Assistants' ? '_blank' : undefined}
                             to={navigationItem.to || ''}
                             className={({ isActive }) =>
                                 isActive ? `navLink active ${Styles.menuItem}` : `navLink ${Styles.menuItem}`
@@ -109,14 +113,6 @@ const MainContainer = () => {
                                     setActiveAccordion(!activeAccordion);
                                 }}
                             >
-                                {/* <NavLink
-                                    to={params.pathname}
-                                    className={({ isActive }) => {
-                                        return isActive
-                                            ? `${Styles.menuItem} active navLink`
-                                            : `${Styles.menuItem}  navLink`;
-                                    }}
-                                ></NavLink> */}
                                 <AccordionSummary className={Styles.accordionHeader}>
                                     <div className={Styles['accordionHeader__summary']}>
                                         <navigationItem.icon />
@@ -131,10 +127,14 @@ const MainContainer = () => {
                                                     {key}
                                                     <ul>
                                                         {messageList[key].map(({ message, messageId }: MessageList) => {
+                                                            const currentChat = params[ROUTE.CHAT_ID];
                                                             return (
                                                                 <li key={messageId}>
                                                                     <div
-                                                                        className={`${Styles.messageTitleContainer} ${messageId !== editTitleId ? Styles['messageTitleContainer__enable'] : Styles['messageTitleContainer__disable']}`}
+                                                                        className={`${Styles.messageTitleContainerNavLink} ${currentChat === messageId ? Styles['messageTitleContainerNavLink__active'] : ''}`}
+                                                                    />
+                                                                    <div
+                                                                        className={`${Styles.messageTitleContainer}  ${messageId !== editTitleId ? Styles['messageTitleContainer__enable'] : Styles['messageTitleContainer__disable']}`}
                                                                         onClick={() => {
                                                                             navigate(
                                                                                 `${ROUTE.ROOT}${ROUTE.CHAT}/${messageId}`,
@@ -261,90 +261,6 @@ const MainContainer = () => {
                                                 </li>
                                             );
                                         })}
-                                        {/* <li>
-                                            Yesterday
-                                            <ul>
-                                                {messageList.map(({ message, messageId }: MessageList) => {
-                                                    return (
-                                                        <li>
-                                                            <input
-                                                                value={
-                                                                    messageId === editTitleId ? editedMessage : message
-                                                                }
-                                                                disabled={messageId !== editTitleId}
-                                                                onChange={(v) => {
-                                                                    setEditedMessage(v.target.value);
-                                                                }}
-                                                            />
-                                                            <div
-                                                                className={`${Styles.checkButton} ${isTitleEditing(messageId)}`}
-                                                            >
-                                                                <IconButton
-                                                                    onClick={() => {
-                                                                        handleEditMessageTitle({
-                                                                            message: editedMessage!,
-                                                                            messageId: messageId + '',
-                                                                        });
-                                                                        setMessageList((prevMessageList) => {
-                                                                            return prevMessageList.map(
-                                                                                ({
-                                                                                    message,
-                                                                                    messageId,
-                                                                                }: MessageList) => {
-                                                                                    if (
-                                                                                        messageId === editTitleId &&
-                                                                                        editedMessage
-                                                                                    )
-                                                                                        message = editedMessage;
-                                                                                    return { message, messageId };
-                                                                                },
-                                                                            );
-                                                                        });
-
-                                                                        setEditTitleId(-1);
-                                                                    }}
-                                                                >
-                                                                    <CheckIcon />
-                                                                </IconButton>
-                                                            </div>
-                                                            <div className={Styles.threeDotMenu}>
-                                                                <ThreeDotItemMenu
-                                                                    menuItems={[
-                                                                        { label: 'edit', value: 0, id: 0 },
-                                                                        { label: 'delete', value: 0, id: 1 },
-                                                                    ]}
-                                                                    handleItemClick={(v: itemsProps) => {
-                                                                        if (v.id === 0) {
-                                                                            setEditTitleId(messageId);
-                                                                            setEditedMessage(message);
-                                                                        } else {
-                                                                            handleDeleteChat({
-                                                                                messageId: messageId + '',
-                                                                            });
-                                                                            const messageToDeleteId = messageId;
-
-                                                                            setMessageList((prevMessageList) => {
-                                                                                return prevMessageList.filter(
-                                                                                    ({ messageId }: MessageList) => {
-                                                                                        return (
-                                                                                            messageToDeleteId !==
-                                                                                            messageId
-                                                                                        );
-                                                                                    },
-                                                                                );
-                                                                            });
-                                                                        }
-                                                                    }}
-                                                                    header={''}
-                                                                    subTitle={''}
-                                                                />
-                                                            </div>
-                                                        </li>
-                                                    );
-                                                })}
-                                            </ul>
-                                        </li>
-                                        <li>Previous 7 days</li> */}
                                     </ul>
                                 </AccordionDetails>
                             </Accordion>

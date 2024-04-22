@@ -3,7 +3,7 @@
 import { TabComponent } from '@docAi-app/stories';
 import { useState } from 'react';
 import { BrainSettings } from '../BrainSettings/BrainSettings.component';
-import { AddKnowledge, People } from '..';
+import { AddUpdateKnowledge, People } from '..';
 
 //Import Storybook
 
@@ -29,6 +29,12 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 //Import Assets
 
 //Import Style
+
+interface TabPanelProps {
+    children?: React.ReactNode;
+    index: number;
+    value: number;
+}
 
 function CustomTabPanel(props: TabPanelProps) {
     const { children, value, index, ...other } = props;
@@ -90,7 +96,7 @@ const UpdateIndex = () => {
             </CustomTabPanel>
             <CustomTabPanel value={1} index={activeTab}>
                 <>
-                    <AddKnowledge />
+                    <AddUpdateKnowledge />
                 </>
             </CustomTabPanel>
             <CustomTabPanel value={2} index={activeTab}>

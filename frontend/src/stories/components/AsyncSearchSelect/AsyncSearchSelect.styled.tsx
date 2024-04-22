@@ -9,12 +9,13 @@ interface AsyncCreatableStyledProps extends AsyncPaginateProps<unknown, GroupBas
 }
 const AsyncCreatableStyled = styled<React.ComponentType<AsyncCreatableStyledProps>>(AsyncCreatable)`
     & > div {
-        box-shadow: 0 0 0 0px ${({ theme }) => theme.colors.secondary5};
-        border: 0;
-        &:hover {
-            border: 0;
-            border-bottom: 2px solid ${({ theme }) => theme.colors.primary};
-        }
+        width: 100%;
+        font-size: 1.4rem;
+        line-height: 1.2;
+        letter-spacing: -0.02em;
+        box-shadow: none;
+        padding: 12.5px 12px 0;
+    
 
         &:hover + div {
             border-bottom: 0px;
