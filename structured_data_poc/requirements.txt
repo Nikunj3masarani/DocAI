@@ -1,0 +1,4 @@
+pandasai
+streamlit
+pandas
+PyYAML
