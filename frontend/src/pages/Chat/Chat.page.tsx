@@ -68,7 +68,7 @@ const Chat = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const params = useParams();
-    const {setIsChatCreated} = useChatCreate();
+    const { setIsChatCreated } = useChatCreate();
     const { state } = location;
 
     // Variables Dependent upon State
@@ -142,20 +142,29 @@ const Chat = () => {
             });
         } else {
             const chatUuid = params[ROUTE.CHAT_ID];
-            chatApi.getChatMessage({ chat_uuid: chatUuid }).then((res) => {
-                let tempMessageList: Message[] = [];
-                res?.payload?.forEach((tempMessage) => {
-                    tempMessageList.push({ sender: 'user', message: tempMessage.user_message, key: uuidGenerator() });
+            chatApi
+                .getChatMessage({ chat_uuid: chatUuid })
+                .then((res) => {
+                    let tempMessageList: Message[] = [];
+                    res?.payload?.forEach((tempMessage) => {
+                        tempMessageList.push({
+                            sender: 'user',
+                            message: tempMessage.user_message,
+                            key: uuidGenerator(),
+                        });
 
-                    tempMessageList.push({
-                        sender: 'system',
-                        message: tempMessage.assistant_message,
-                        key: uuidGenerator(),
+                        tempMessageList.push({
+                            sender: 'system',
+                            message: tempMessage.assistant_message,
+                            key: uuidGenerator(),
+                        });
                     });
+                    if (tempMessageList && tempMessageList.length > 0) setMessageList(tempMessageList);
+                    scrollBottom();
+                })
+                .catch(() => {
+                    navigate(`${ROUTE.ROOT}${ROUTE.SEARCH}`);
                 });
-                if (tempMessageList && tempMessageList.length > 0) setMessageList(tempMessageList);
-                scrollBottom();
-            });
         }
     }, [params[ROUTE.CHAT_ID]]);
 

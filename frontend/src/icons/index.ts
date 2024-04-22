@@ -19,7 +19,8 @@ import AddToPrompt from './AddToPrompt.icon';
 import MoveTo from './MoveTo.icon';
 import Download from './Download.icon';
 import DownArrow from './DownArrow.icon';
-
+import { SmartToyOutlined } from './SmartToyOutlined.icon';
+import { History } from './History.icon';
 const Icons = {
     BrowsePrompt,
     Close,
@@ -42,6 +43,8 @@ const Icons = {
     MoveTo,
     Download,
     DownArrow,
+    SmartToyOutlined,
+    History,
 };
 
 export default Icons;

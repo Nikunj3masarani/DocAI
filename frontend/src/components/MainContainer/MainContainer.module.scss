@@ -21,6 +21,7 @@
     width: 100%;
     background-color: transparent;
 }
+
 .accordion {
     width: 100%;
     color: $secondary;
@@ -87,6 +88,7 @@
                 outline: none;
                 width: 80%;
                 font-size: 1.4rem;
+                z-index: 1  ;
                 &:enabled {
                     background-color: $mercury;
                 }
@@ -132,4 +134,16 @@
     position: absolute;
     width: 80%;
     height: 100%;
+}
+
+.messageTitleContainerNavLink {
+    cursor: pointer;
+    position: absolute;
+    width: 80%;
+    height: 100%;
+    z-index: 1;
+    &__active {
+        background: #e8e6de !important;
+        border-radius: 0.8rem !important;
+    }
 }

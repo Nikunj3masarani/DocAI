@@ -23,8 +23,7 @@ import {
 //Import Util, Helper , Constant
 
 //Import Icon
-import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
-
+import Icons from '@docAi-app/icons';
 //Import Api
 
 //Import Assets
@@ -38,7 +37,7 @@ const AccordionSummary = (props: StyledAccordionSummaryProps) => {
     return (
         <StyledAccordionSummary
             className={className}
-            expandIcon={expandIcon ?? <ArrowDownwardIcon />}
+            expandIcon={expandIcon ?? <Icons.DownArrow />}
             aria-controls="panel1-content"
             id="panel1-header"
         >
