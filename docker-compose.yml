@@ -51,13 +51,6 @@ services:
     env_file:
       - .env
 
-  structured_data:
-    build: ./structured_data_poc
-    ports:
-      - "8053:8053"
-    env_file:
-      - .env
-
   database:
     image: postgres:latest
     env_file:
