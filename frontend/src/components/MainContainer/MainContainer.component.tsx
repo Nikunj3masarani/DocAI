@@ -27,7 +27,7 @@ const sideNavigationItems = [
         icon: Icons.PromptLibrary,
     },
     {
-        to: ROUTE.STREAM_LIT_APP,
+        to: import.meta.env.VITE_STREAM_APP_URL,
         label: 'Stream Lit Assistants',
         icon: Icons.SmartToyOutlined,
     },
