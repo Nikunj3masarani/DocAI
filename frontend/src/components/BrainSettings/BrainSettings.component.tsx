@@ -3,7 +3,7 @@
 //Import Storybook
 
 //Import Component
-import { CreateBrain } from '@docAi-app/components';
+import { CreateUpdateBrain } from '@docAi-app/components';
 
 //Import Page
 
@@ -28,7 +28,7 @@ const BrainSettings = () => {
     // Your component logic here
     return (
         <>
-            <CreateBrain />
+            <CreateUpdateBrain />
         </>
     );
 };

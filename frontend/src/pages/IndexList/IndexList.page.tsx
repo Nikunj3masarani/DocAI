@@ -1,6 +1,6 @@
 //Import Third Party lib
 
-import { AddKnowledge, CreateBrain, DataGridComp } from '@docAi-app/components';
+import { AddUpdateKnowledge, CreateUpdateBrain, DataGridComp } from '@docAi-app/components';
 import { Button, Dialog } from '@docAi-app/stories';
 
 //Import Storybook
@@ -60,17 +60,17 @@ const IndexList = () => {
                 title={headerAction === 'Create Brain' ? 'Add New Brain' : 'Add Knowledge to Brain'}
             >
                 {headerAction === 'Create Brain' ? (
-                    <CreateBrain
+                    <CreateUpdateBrain
                         close={() => {
                             setShowDialogue(false);
-                             setHeaderAction(undefined);
+                            setHeaderAction(undefined);
                         }}
                         isBrainCreated={() => {
                             setIsBrainCreated((prev) => !prev);
                         }}
                     />
                 ) : (
-                    <AddKnowledge />
+                    <AddUpdateKnowledge />
                 )}
             </Dialog>
             <div className={Styles.header}>

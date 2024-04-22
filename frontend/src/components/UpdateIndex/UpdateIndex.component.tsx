@@ -3,7 +3,7 @@
 import { TabComponent } from '@docAi-app/stories';
 import { useState } from 'react';
 import { BrainSettings } from '../BrainSettings/BrainSettings.component';
-import { AddKnowledge, People } from '..';
+import { AddUpdateKnowledge, People } from '..';
 
 //Import Storybook
 
@@ -90,7 +90,7 @@ const UpdateIndex = () => {
             </CustomTabPanel>
             <CustomTabPanel value={1} index={activeTab}>
                 <>
-                    <AddKnowledge />
+                    <AddUpdateKnowledge />
                 </>
             </CustomTabPanel>
             <CustomTabPanel value={2} index={activeTab}>

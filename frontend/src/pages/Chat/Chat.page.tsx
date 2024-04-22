@@ -1,6 +1,6 @@
 //Import Third Party lib
 
-import { AddKnowledge, CreateBrain, MessageTypeField } from '@docAi-app/components';
+import { AddUpdateKnowledge, CreateUpdateBrain, MessageTypeField } from '@docAi-app/components';
 import { HeaderAction } from '@docAi-app/types';
 import { useEffect, useRef, useState } from 'react';
 
@@ -175,7 +175,7 @@ const Chat = () => {
                 }}
                 title={headerAction === 'Create Brain' ? 'Add New Brain' : 'Add Knowledge to Brain'}
             >
-                {headerAction === 'Create Brain' ? <CreateBrain /> : <AddKnowledge />}
+                {headerAction === 'Create Brain' ? <CreateUpdateBrain /> : <AddUpdateKnowledge />}
             </Dialog>
             <div className={Style.container__header}>
                 <div>
@@ -233,10 +233,12 @@ const Chat = () => {
                                     {chat.message}
                                     {chat.sender === 'system' ? (
                                         <div className={Style.feedback}>
-                                            <IconButton onClick={() => {
-                                                navigator.clipboard.writeText(chat.message);
-                                                getAlert('success' , 'Copied text successfully')
-                                            }}>
+                                            <IconButton
+                                                onClick={() => {
+                                                    navigator.clipboard.writeText(chat.message);
+                                                    getAlert('success', 'Copied text successfully');
+                                                }}
+                                            >
                                                 <ContentCopyIcon />
                                             </IconButton>
                                             <IconButton>

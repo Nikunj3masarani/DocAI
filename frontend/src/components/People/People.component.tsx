@@ -32,6 +32,7 @@ import { Users } from '../UsersWithAccess/UsersWithAccess.component';
 import { getFromLocalStorage } from '@docAi-app/utils/helper';
 import { CURRENT_USER_EMAIL } from '@docAi-app/utils/constants/storage.constant';
 import { USER_ROLE } from '@docAi-app/utils/constants/common.constant';
+import { ROUTE } from '@docAi-app/utils/constants/Route.constant';
 
 const People = () => {
     // useRef
@@ -53,7 +54,7 @@ const People = () => {
 
     const params = useParams();
     useEffect(() => {
-        const indexUuid = params['index-id'];
+        const indexUuid = params[ROUTE.INDEX_ID];
         if (indexUuid) {
             indexApi.getIndexUsers({ index_uuid: indexUuid }).then((res) => {
                 const payload = res.payload;

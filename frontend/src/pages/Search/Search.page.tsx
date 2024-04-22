@@ -26,7 +26,7 @@ import Logo from '@docAi-app/../public/assets/images/logo.svg';
 import Style from './Search.module.scss';
 import { useEffect, useRef, useState } from 'react';
 import { HeaderAction } from '@docAi-app/types';
-import { AddKnowledge, CreateBrain, MessageTypeField } from '@docAi-app/components';
+import { AddUpdateKnowledge, CreateUpdateBrain, MessageTypeField } from '@docAi-app/components';
 import PsychologyOutlinedIcon from '@mui/icons-material/PsychologyOutlined';
 import { uuidGenerator } from '@docAi-app/utils/helper';
 import { useNavigate } from 'react-router-dom';
@@ -92,7 +92,7 @@ const Search = () => {
                 }}
                 title={headerAction === 'Create Brain' ? 'Add New Brain' : 'Add Knowledge to Brain'}
             >
-                {headerAction === 'Create Brain' ? <CreateBrain /> : <AddKnowledge />}
+                {headerAction === 'Create Brain' ? <CreateUpdateBrain /> : <AddUpdateKnowledge />}
             </Dialog>
             <div className={Style.container__header}>
                 <div>
