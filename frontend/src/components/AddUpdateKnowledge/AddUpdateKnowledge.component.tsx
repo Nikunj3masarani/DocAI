@@ -13,6 +13,7 @@ import { FileListing } from '@docAi-app/components/FileListing';
 //Import Page
 
 //Import Hook
+import { getAlert } from '@docAi-app/hooks';
 
 //Import Context
 
@@ -21,6 +22,8 @@ import { FilesUpload, Option } from '@docAi-app/types';
 
 //Import Util, Helper , Constant
 import { uuidGenerator } from '@docAi-app/utils/helper';
+import { ROUTE } from '@docAi-app/utils/constants/Route.constant';
+import { ALLOW_FILE_TYPES, MAX_FILE_SIZE } from '@docAi-app/utils/constants/common.constant';
 
 //Import Icon
 //Import Api
@@ -29,11 +32,7 @@ import { indexApi, documentApi } from '@docAi-app/api';
 //Import Assets
 
 //Import Style
-import Styles from './AddKnowledge.module.scss';
-import { ROUTE } from '@docAi-app/utils/constants/Route.constant';
-import { getAlert } from '@docAi-app/hooks';
-import { ALLOW_FILE_TYPES, MAX_FILE_SIZE } from '@docAi-app/utils/constants/common.constant';
-import { FormApi } from 'final-form';
+import Styles from './AddUpdateKnowledge.module.scss';
 
 const indexList = async (searchString: string, loadOptions, { page }) => {
     const res = await indexApi.getAllIndex({
@@ -68,7 +67,8 @@ const FILE_ERROR = {
     type: 0,
     size: 1,
 } as const;
-const AddKnowledge = () => {
+
+const AddUpdateKnowledge = () => {
     const [files, setFiles] = useState<FilesUpload[]>([]);
     const [existingFiles, setExistingFiles] = useState<ExistingFiles[]>([]);
     const [index, setIndex] = useState<Option>();
@@ -79,7 +79,7 @@ const AddKnowledge = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const indexUuid = params['index-id'] ?? null;
+        const indexUuid = params[ROUTE.INDEX_ID] ?? null;
         if (indexUuid && indexUuid !== '') {
             documentApi.getDocuments({ index_uuid: indexUuid }).then(({ payload }: { payload: any }) => {
                 setExistingFiles(() => {
@@ -95,7 +95,7 @@ const AddKnowledge = () => {
                 });
             });
         }
-    }, [params['index-id']]);
+    }, []);
 
     // event handlers
     const handleChange = (files: FileList) => {
@@ -226,7 +226,7 @@ const AddKnowledge = () => {
                                                         placeholder="Select Brain"
                                                         menuPlacement="auto"
                                                         debounceTimeout={1000}
-                                                        isDisabled={params && params['index-id'] ? true : false}
+                                                        isDisabled={params && params[ROUTE.INDEX_ID] ? true : false}
                                                         loadOptions={(searchString, loadOptions, { page }) => {
                                                             return indexList(searchString, loadOptions, { page }).then(
                                                                 (res) => {
@@ -287,7 +287,7 @@ const AddKnowledge = () => {
                                             type="submit"
                                             variant="contained"
                                             disabled={
-                                                index?.value === '' || 
+                                                index?.value === '' ||
                                                 submitting ||
                                                 (files.length === 0 && existingFilesToRemove.current.length === 0)
                                             }
@@ -309,4 +309,4 @@ const AddKnowledge = () => {
     );
 };
 
-export { AddKnowledge };
+export { AddUpdateKnowledge };

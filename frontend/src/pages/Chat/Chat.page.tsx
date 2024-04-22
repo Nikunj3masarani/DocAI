@@ -1,6 +1,6 @@
 //Import Third Party lib
 
-import { AddKnowledge, CreateBrain, MessageTypeField } from '@docAi-app/components';
+import { AddUpdateKnowledge, CreateUpdateBrain, MessageTypeField } from '@docAi-app/components';
 import { HeaderAction } from '@docAi-app/types';
 import { useEffect, useRef, useState } from 'react';
 
@@ -68,7 +68,7 @@ const Chat = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const params = useParams();
-    const {setIsChatCreated} = useChatCreate();
+    const { setIsChatCreated } = useChatCreate();
     const { state } = location;
 
     // Variables Dependent upon State
@@ -142,20 +142,29 @@ const Chat = () => {
             });
         } else {
             const chatUuid = params[ROUTE.CHAT_ID];
-            chatApi.getChatMessage({ chat_uuid: chatUuid }).then((res) => {
-                let tempMessageList: Message[] = [];
-                res?.payload?.forEach((tempMessage) => {
-                    tempMessageList.push({ sender: 'user', message: tempMessage.user_message, key: uuidGenerator() });
+            chatApi
+                .getChatMessage({ chat_uuid: chatUuid })
+                .then((res) => {
+                    let tempMessageList: Message[] = [];
+                    res?.payload?.forEach((tempMessage) => {
+                        tempMessageList.push({
+                            sender: 'user',
+                            message: tempMessage.user_message,
+                            key: uuidGenerator(),
+                        });
 
-                    tempMessageList.push({
-                        sender: 'system',
-                        message: tempMessage.assistant_message,
-                        key: uuidGenerator(),
+                        tempMessageList.push({
+                            sender: 'system',
+                            message: tempMessage.assistant_message,
+                            key: uuidGenerator(),
+                        });
                     });
+                    if (tempMessageList && tempMessageList.length > 0) setMessageList(tempMessageList);
+                    scrollBottom();
+                })
+                .catch(() => {
+                    navigate(`${ROUTE.ROOT}${ROUTE.SEARCH}`);
                 });
-                if (tempMessageList && tempMessageList.length > 0) setMessageList(tempMessageList);
-                scrollBottom();
-            });
         }
     }, [params[ROUTE.CHAT_ID]]);
 
@@ -175,7 +184,7 @@ const Chat = () => {
                 }}
                 title={headerAction === 'Create Brain' ? 'Add New Brain' : 'Add Knowledge to Brain'}
             >
-                {headerAction === 'Create Brain' ? <CreateBrain /> : <AddKnowledge />}
+                {headerAction === 'Create Brain' ? <CreateUpdateBrain /> : <AddUpdateKnowledge />}
             </Dialog>
             <div className={Style.container__header}>
                 <div>
@@ -233,10 +242,12 @@ const Chat = () => {
                                     {chat.message}
                                     {chat.sender === 'system' ? (
                                         <div className={Style.feedback}>
-                                            <IconButton onClick={() => {
-                                                navigator.clipboard.writeText(chat.message);
-                                                getAlert('success' , 'Copied text successfully')
-                                            }}>
+                                            <IconButton
+                                                onClick={() => {
+                                                    navigator.clipboard.writeText(chat.message);
+                                                    getAlert('success', 'Copied text successfully');
+                                                }}
+                                            >
                                                 <ContentCopyIcon />
                                             </IconButton>
                                             <IconButton>

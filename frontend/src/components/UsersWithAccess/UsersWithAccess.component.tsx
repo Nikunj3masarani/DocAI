@@ -57,7 +57,7 @@ const UsersWithAccess = ({ initialUserList, currentUser }: UsersWithAccessProps)
     // Helpers
     // const params = useParams();
     // useEffect(() => {
-    //     const indexUuid = params['index-id'];
+    //     const indexUuid = params[ROUTE.INDEX_ID];
     //     if (indexUuid) {
     //         indexApi.getIndexUsers({ index_uuid: indexUuid }).then((res) => {
     //             const payload = res.payload;

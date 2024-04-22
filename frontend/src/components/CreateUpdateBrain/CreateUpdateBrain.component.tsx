@@ -1,9 +1,9 @@
 //Import Third Party lib
 import { useEffect, useRef, useState } from 'react';
 import { Form, Field } from 'react-final-form';
+import { FormApi } from 'final-form';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { CHIPS_OPTIONS } from '@docAi-app/utils/constants/common.constant';
 
 //Import Storybook
 import { AsyncSearchSelect, InputChips, InputField, Select, TextArea, Button } from '@docAi-app/stories';
@@ -22,6 +22,7 @@ import { Validation } from '@docAi-app/types';
 //Import Util, Helper , Constant
 import { removeEmptyField, validation } from '@docAi-app/utils/helper';
 import { ROUTE } from '@docAi-app/utils/constants/Route.constant';
+import { CHIPS_OPTIONS } from '@docAi-app/utils/constants/common.constant';
 
 //Import Icon
 
@@ -31,8 +32,7 @@ import { modelApi, indexApi, promptApi } from '@docAi-app/api';
 //Import Assets
 
 //Import Style
-import Styles from './CreateBrain.module.scss';
-import { FormApi } from 'final-form';
+import Styles from './CreateUpdateBrain.module.scss';
 
 interface Model {
     model_uuid: string;
@@ -47,7 +47,7 @@ interface Prompt {
     created_at: string;
 }
 
-interface CreateBrainProps {
+interface CreateUpdateBrainProps {
     close?: () => void;
     isBrainCreated?: () => void;
 }
@@ -75,6 +75,7 @@ const STATUS_OPTIONS = [
     { label: 'Private', value: 'Private' },
     { label: 'Public', value: 'Public' },
 ];
+
 const FORM_CONTROLS = ['title', 'description'] as const;
 
 const FIELD_VALIDATION: FieldValidation = {
@@ -97,7 +98,7 @@ const BRAIN_INITIAL_INFO: BrainInfo = {
     promptStatus: '',
 };
 
-const CreateBrain = ({ close, isBrainCreated }: CreateBrainProps) => {
+const CreateUpdateBrain = ({ close, isBrainCreated }: CreateUpdateBrainProps) => {
     const params = useParams();
     const navigate = useNavigate();
 
@@ -308,7 +309,6 @@ const CreateBrain = ({ close, isBrainCreated }: CreateBrainProps) => {
 
     const handleSubmit = async (formValues: BrainInfo) => {
         //formvalues ar not being changes
-        console.log(formValues);
         const createUpdatePromptResponse = await createUpdatePrompt({
             promptTitle: formValues.promptTitle ?? '',
             promptContent: formValues.promptContent ?? '',
@@ -356,7 +356,7 @@ const CreateBrain = ({ close, isBrainCreated }: CreateBrainProps) => {
                                                 type="text"
                                                 fullWidth
                                                 label="Name"
-                                                disabled={params['index-id'] ? true : false}
+                                                disabled={params[ROUTE.INDEX_ID] ? true : false}
                                                 placeholder="Enter your brain name"
                                                 required
                                                 error={meta.touched && meta.error && true}
@@ -401,7 +401,6 @@ const CreateBrain = ({ close, isBrainCreated }: CreateBrainProps) => {
                                     name="model"
                                     // subscription={{ touched: true, value: true, error: true }}
                                     render={({ input }) => {
-                                        console.log(input.value);
                                         return (
                                             <Select
                                                 variant="outlined"
@@ -578,4 +577,4 @@ const CreateBrain = ({ close, isBrainCreated }: CreateBrainProps) => {
     );
 };
 
-export { CreateBrain };
+export { CreateUpdateBrain };

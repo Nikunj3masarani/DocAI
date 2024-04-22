@@ -27,7 +27,7 @@ import { indexApi } from '@docAi-app/api';
 
 //Import Style
 import Style from './FileListing.module.scss';
-import { ExistingFiles } from '../AddKnowledge/AddKnowledge.component';
+import { ExistingFiles } from '../AddUpdateKnowledge/AddUpdateKnowledge.component';
 
 const FileListing = ({
     files = [],

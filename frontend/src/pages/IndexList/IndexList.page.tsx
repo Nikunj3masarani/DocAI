@@ -1,11 +1,12 @@
 //Import Third Party lib
+import { useState } from 'react';
 
-import { AddKnowledge, CreateBrain, DataGridComp } from '@docAi-app/components';
-import { Button, Dialog } from '@docAi-app/stories';
 
 //Import Storybook
+import { Button, Dialog } from '@docAi-app/stories';
 
 //Import Component
+import { AddUpdateKnowledge, CreateUpdateBrain, DataGridComp } from '@docAi-app/components';
 
 //Import Page
 
@@ -14,6 +15,7 @@ import { Button, Dialog } from '@docAi-app/stories';
 //Import Context
 
 //Import Model Type
+import { HeaderAction } from '@docAi-app/types';
 
 //Import Util, Helper , Constant
 
@@ -25,28 +27,13 @@ import PsychologyOutlinedIcon from '@mui/icons-material/PsychologyOutlined';
 
 //Import Style
 import Styles from './IndexList.module.scss';
-import { useEffect, useState } from 'react';
-import { HeaderAction } from '@docAi-app/types';
 
 const IndexList = () => {
-    // useRef
     // useState
     const [headerAction, setHeaderAction] = useState<HeaderAction | undefined>();
     const [showDialogue, setShowDialogue] = useState<boolean>(false);
     const [isBrainCreated, setIsBrainCreated] = useState<boolean>(false);
-    // Variables Dependent upon State
 
-    // Api Calls
-
-    // Event Handlers
-
-    // Helpers
-
-    // JSX Methods
-    useEffect(() => {
-        if (isBrainCreated) {
-        }
-    }, [isBrainCreated]);
     // Your component logic here
 
     return (
@@ -60,22 +47,22 @@ const IndexList = () => {
                 title={headerAction === 'Create Brain' ? 'Add New Brain' : 'Add Knowledge to Brain'}
             >
                 {headerAction === 'Create Brain' ? (
-                    <CreateBrain
+                    <CreateUpdateBrain
                         close={() => {
                             setShowDialogue(false);
-                             setHeaderAction(undefined);
+                            setHeaderAction(undefined);
                         }}
                         isBrainCreated={() => {
                             setIsBrainCreated((prev) => !prev);
                         }}
                     />
                 ) : (
-                    <AddKnowledge />
+                    <AddUpdateKnowledge />
                 )}
             </Dialog>
             <div className={Styles.header}>
                 <div>
-                    <h1>Home</h1>
+                    <h1>My Brains</h1>
                 </div>
                 <div className={Styles.header__body}>
                     <Button

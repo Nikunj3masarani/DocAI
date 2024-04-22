@@ -1,18 +1,43 @@
+
+//Import Third Party lib
 import { MenuPlacement, components } from 'react-select';
-import AddCircleIcon from '@mui/icons-material/AddCircle';
+
+//Import Storybook
 import { Tooltip } from '../Tooltip';
+import { CheckboxComp } from '../Checkbox';
+
+//Import Component
 import {
     AsyncCreatableStyled,
     AsyncSearchSelectContainerStyled,
     AsyncSearchSelectLabelStyled,
     AsyncSearchSelectStyled,
-    CustomDropDownIcon,
     CustomOptionStyled,
 } from './AsyncSearchSelect.styled';
-import { CheckboxComp } from '../Checkbox';
+
+//Import Page
+
+//Import Hook
+
+//Import Context
+
+//Import Model Type
+
+//Import Util, Helper , Constant
 import theme from '@docAi-app/theme';
-import SearchIcon from '@docAi-app/icons/Search.icon';
+
+//Import Icon
+import AddCircleIcon from '@mui/icons-material/AddCircle';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import SearchIcon from '@docAi-app/icons/Search.icon';
+
+//Import Api
+
+//Import Assets
+
+//Import Style
+
+
 export interface AsyncSelectDataType {
     value: string;
     label: string;
@@ -128,9 +153,8 @@ const AsyncSearchSelect = ({
                             container: (defaultStyles) => {
                                 return {
                                     ...defaultStyles,
-                                    height: '12.4rem',
-                                    fontSize: '4rem',
-                                    lineHeight: '4rem',
+                                    fontSize: '1.4rem',
+                                    lineHeight: '1.2',
                                     letterSpacing: '-0.02em',
                                 };
                             },
@@ -149,8 +173,8 @@ const AsyncSearchSelect = ({
                                 return {
                                     ...defaultStyles,
                                     overflow: 'scroll',
-                                    fontSize: '4rem',
-                                    lineHeight: '4rem',
+                                    fontSize: '1.4rem',
+                                    lineHeight: '1.2',
                                     letterSpacing: '-0.02em',
                                     marginBottom: '4rem',
                                     zIndex: '1000000',
@@ -189,7 +213,8 @@ const AsyncSearchSelect = ({
                             valueContainer: (defaultStyles) => {
                                 return {
                                     ...defaultStyles,
-                                    // padding: '4rem 3rem',
+                                    marginTop: '-1rem',
+                                    paddingInline: '0.2rem',
                                     // display: 'inline-block',
                                 };
                             },
@@ -197,14 +222,15 @@ const AsyncSearchSelect = ({
                                 return {
                                     ...defaultStyles,
                                     color: `${theme.colors.davyGrey}`,
-                                    padding: '0rem',
+                                    padding: '0.2rem 0',
+                                    margin: '0.2rem',
                                 };
                             },
                             placeholder: (defaultStyles) => {
                                 return {
                                     ...defaultStyles,
-                                    fontSize: '4rem',
-                                    lineHeight: '4.4rem',
+                                    fontSize: '1.4rem',
+                                    lineHeight: '1.2',
                                     color: theme.colors.black10,
                                 };
                             },
@@ -213,8 +239,8 @@ const AsyncSearchSelect = ({
                                     ...defaultStyles,
                                     padding: '2.6rem 3rem',
                                     display: 'block',
-                                    fontSize: '4rem',
-                                    lineHeight: '4rem',
+                                    fontSize: '1.4rem',
+                                    lineHeight: '1.2',
                                     letterSpacing: '-0.02em',
                                     backgroundColor: 'transparent',
                                     cursor: 'pointer',
