@@ -1,22 +1,28 @@
 //Import Third Party lib
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
-import { AddUpdateKnowledge, CreateUpdateBrain, MessageTypeField } from '@docAi-app/components';
-import { HeaderAction } from '@docAi-app/types';
 import { useEffect, useRef, useState } from 'react';
 
 //Import Storybook
+import { Button, Dialog } from '@docAi-app/stories';
 
 //Import Component
+import { AddUpdateKnowledge, CreateUpdateBrain, MessageTypeField } from '@docAi-app/components';
+import { Skeleton } from '@mui/material';
 
 //Import Page
 
 //Import Hook
+import { getAlert, useChatCreate } from '@docAi-app/hooks';
 
 //Import Context
 import { IconButton } from '@docAi-app/stories';
 //Import Model Type
+import { HeaderAction } from '@docAi-app/types';
 
 //Import Util, Helper , Constant
+import { uuidGenerator } from '@docAi-app/utils/helper';
+import { ROUTE } from '@docAi-app/utils/constants/Route.constant';
 
 //Import Icon
 import PsychologyOutlinedIcon from '@mui/icons-material/PsychologyOutlined';
@@ -24,20 +30,16 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import TextSnippetIcon from '@mui/icons-material/TextSnippet';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
-import DescriptionIcon from '@mui/icons-material/Description';
+
 //Import Api
+import { chatApi } from '@docAi-app/api';
 
 //Import Assets
 
 //Import Style
 import Style from './Chat.module.scss';
-import { Button, Dialog } from '@docAi-app/stories';
-import { Skeleton } from '@mui/material';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { chatApi } from '@docAi-app/api';
-import { ROUTE } from '@docAi-app/utils/constants/Route.constant';
-import { uuidGenerator } from '@docAi-app/utils/helper';
-import { getAlert, useChatCreate } from '@docAi-app/hooks';
+
+
 const SYSTEM = 'system' as const;
 const USER = 'user' as const;
 
@@ -76,10 +78,6 @@ const Chat = () => {
     // Api Calls
 
     const scrollBottom = () => {
-        // console.log(messageContainerRef.current?.offsetHeight);
-        // console.log(messageContainerRef.current?.scrollHeight);
-
-        // messageContainerRef.current?.scrollTo(0, messageContainerRef.current.scrollHeight);
         messageContainerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
     };
     // Event Handlers
@@ -92,7 +90,7 @@ const Chat = () => {
                 model_uuid: modelId,
             })
             .then(async (response) => {
-                while (true) {
+                while (systemLastMessageRef.current) {
                     const res = await response.next();
                     const { value, done } = res;
                     if (done) {
@@ -103,11 +101,8 @@ const Chat = () => {
                     if (value) {
                         setShowLoading(false);
                     }
-                    // for (let i = 0; i < value.length; i++) {
-                    //     systemLastMessageRef.current!.innerHTML += value.at(i);
-                    // }
+
                     systemLastMessageRef.current!.innerHTML += value;
-                    // systemLastMessageRef.current!.innerHTML +=
                     scrollBottom();
                 }
 
@@ -229,16 +224,6 @@ const Chat = () => {
                                             : null
                                     }
                                 >
-                                    {/* {chat.sender === 'system' ? (
-                                        <div className={Style.system__header}>
-                                            <span>
-                                                <DescriptionIcon />
-                                                indexName
-                                            </span>
-                                            <span>modelName</span>
-                                        </div>
-                                    ) : null} */}
-
                                     {chat.message}
                                     {chat.sender === 'system' ? (
                                         <div className={Style.feedback}>
