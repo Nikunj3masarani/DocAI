@@ -1,10 +1,14 @@
+import io
 import uuid
+
+from fastapi import UploadFile
 from app import constants
 from app.web.documents.db_service import Documents as DocumentsDBService
 from app.constants import DocumentUploadStatus
 from app.web.index.db_service import Index as IndexDBService
 from app.web.documents.haystack_service import Documents as DocumentHaystackService
 from app.exception.custom import CustomException
+from app.web.documents.crawler import CrawlWebsite
 
 
 class Documents:
@@ -49,6 +53,25 @@ class Documents:
             response_messages["success"].append(f"{doc.filename} indexed successfully.")
 
         return {"status": response_messages}
+
+    async def crawl_and_index_documents(self, **kwargs):
+        
+        crawl_website = CrawlWebsite(url=kwargs.get("url"))
+        file_path, file_name = crawl_website.process()
+
+        with open(file_path, "rb") as f:
+            file_content = f.read()
+
+        # Create a file-like object in memory using BytesIO
+        file_object = io.BytesIO(file_content)
+        upload_file = UploadFile(
+            file=file_object, filename=file_name, size=len(file_content)
+        )
+        # file_instance = File(file=upload_file)
+        response = await self.index_documents([upload_file], **kwargs)
+        
+        return response
+        
 
     async def get_all_documents(self, data):
         document_db_service = DocumentsDBService(self.db_client)
