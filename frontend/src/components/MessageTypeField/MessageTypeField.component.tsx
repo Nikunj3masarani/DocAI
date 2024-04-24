@@ -62,10 +62,10 @@ type MessageTypeFieldProps = {
 const MessageTypeField = ({ disable, handleSubmit, initialIndex }: MessageTypeFieldProps) => {
     // useRef
     // useState
+    
     const [index, setIndex] = useState<Option>(initialIndex ?? { label: '', value: '' });
     const [modelOption, setModelOption] = useState<Option[]>([]);
     useEffect(() => {
-        console.log(index);
         if (index.value === '') {
             indexList('', undefined, { page: 1 }).then((res) => {
                 setIndex(res.options[0]);

@@ -19,7 +19,6 @@ import { getAlert, useChatCreate } from '@docAi-app/hooks';
 import { IconButton } from '@docAi-app/stories';
 //Import Model Type
 import { HeaderAction } from '@docAi-app/types';
-import { Option } from '@docAi-app/types';
 
 //Import Util, Helper , Constant
 import { uuidGenerator } from '@docAi-app/utils/helper';
@@ -58,19 +57,20 @@ interface GetChatApiProps {
 }
 
 const Chat = () => {
+    const location = useLocation();
+    const { state } = location;
     const [headerAction, setHeaderAction] = useState<HeaderAction | undefined>();
     const [showDialogue, setShowDialogue] = useState<boolean>(false);
     const [messageList, setMessageList] = useState<Message[]>([]);
     const [canUserType, setCanUserType] = useState<boolean>(true);
     const [showLoading, setShowLoading] = useState<boolean>(false);
-    const [initialIndex, setInitialIndex] = useState<Option>();
     const messageContainerRef = useRef<HTMLDivElement | null>(null);
     const systemLastMessageRef = useRef<HTMLDivElement | null>(null);
     const navigate = useNavigate();
     const params = useParams();
-    const location = useLocation();
-    const { state } = location;
     const { setIsChatCreated } = useChatCreate();
+
+    const initialIndex = state?.indexInfo ?? { label: '', value: '' };
 
     // Variables Dependent upon State
     useEffect(() => {
@@ -88,7 +88,6 @@ const Chat = () => {
             });
 
             setShowLoading(true);
-            if (state.indexInfo) setInitialIndex(state.indexInfo);
 
             getChatApi({
                 indexId: state.indexInfo.value,
@@ -123,7 +122,7 @@ const Chat = () => {
                     navigate(`${ROUTE.ROOT}${ROUTE.SEARCH}`);
                 });
         }
-    }, [params]);
+    }, [state, params]);
 
     // Api Calls
     const getChatApi = ({ indexId, userText, chatId, modelId, initialChat = false }: GetChatApiProps) => {
@@ -266,6 +265,7 @@ const Chat = () => {
 
                 <div className={Style.container__footer}>
                     <MessageTypeField
+                        key={params[ROUTE.CHAT_ID]}
                         initialIndex={initialIndex}
                         disable={!canUserType}
                         handleSubmit={(v) => {
