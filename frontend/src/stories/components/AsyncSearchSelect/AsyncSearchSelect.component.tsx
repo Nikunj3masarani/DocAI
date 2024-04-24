@@ -342,6 +342,7 @@ const AsyncSearchSelect = ({
                                 return {
                                     ...defaultStyles,
                                     height: 'auto',
+                                    borderRadius : "1rem",
                                     background: `${theme.colors.white}`,
                                     color: `${theme.colors.davyGrey}`,
                                     ...(isMulti

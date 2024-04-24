@@ -1,10 +1,12 @@
 import { Select, styled, MenuItem, InputLabel } from '@mui/material';
 
 export const SelectStyle = styled(Select)`
+    border-radius: 1rem;
+
     .MuiSelect-select {
         font-size: 1.4rem;
         line-height: normal;
-        text-align : left;
+        text-align: left;
     }
 
     .MuiOutlinedInput-notchedOutline {
@@ -15,7 +17,8 @@ export const SelectStyle = styled(Select)`
 `;
 
 export const MenuItemStyle = styled(MenuItem)`
-    &.MuiButtonBase-root.MuiMenuItem-root {
+  
+     &.MuiButtonBase-root.MuiMenuItem-root {
         font-size: 1.4rem;
     }
 `;

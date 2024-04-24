@@ -23,6 +23,7 @@ const StyledMuiChipsInput = styled(MuiChipsInput)`
             }
         }
         .MuiInputBase-root {
+            border-radius: 1rem;
             padding: 7px 0px 7px 10px;
 
             input {

@@ -58,8 +58,6 @@ interface GetChatApiProps {
 }
 
 const Chat = () => {
-    // useRef
-    // useState
     const [headerAction, setHeaderAction] = useState<HeaderAction | undefined>();
     const [showDialogue, setShowDialogue] = useState<boolean>(false);
     const [messageList, setMessageList] = useState<Message[]>([]);
@@ -68,11 +66,11 @@ const Chat = () => {
     const [initialIndex, setInitialIndex] = useState<Option>();
     const messageContainerRef = useRef<HTMLDivElement | null>(null);
     const systemLastMessageRef = useRef<HTMLDivElement | null>(null);
-    const location = useLocation();
     const navigate = useNavigate();
     const params = useParams();
-    const { setIsChatCreated } = useChatCreate();
+    const location = useLocation();
     const { state } = location;
+    const { setIsChatCreated } = useChatCreate();
 
     // Variables Dependent upon State
     useEffect(() => {
@@ -93,7 +91,7 @@ const Chat = () => {
             if (state.indexInfo) setInitialIndex(state.indexInfo);
 
             getChatApi({
-                indexId: state.indexId,
+                indexId: state.indexInfo.value,
                 userText: state.userText,
                 chatId: state.chatId,
                 modelId: state.modelId,
@@ -153,7 +151,6 @@ const Chat = () => {
                     scrollBottom();
                 }
 
-                console.log('Power of Async');
                 if (initialChat) {
                     setIsChatCreated(true);
                     navigate('.', { replace: true });
