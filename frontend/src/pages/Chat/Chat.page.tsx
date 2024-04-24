@@ -19,6 +19,7 @@ import { getAlert, useChatCreate } from '@docAi-app/hooks';
 import { IconButton } from '@docAi-app/stories';
 //Import Model Type
 import { HeaderAction } from '@docAi-app/types';
+import { Option } from '@docAi-app/types';
 
 //Import Util, Helper , Constant
 import { uuidGenerator } from '@docAi-app/utils/helper';
@@ -38,7 +39,6 @@ import { chatApi } from '@docAi-app/api';
 
 //Import Style
 import Style from './Chat.module.scss';
-
 
 const SYSTEM = 'system' as const;
 const USER = 'user' as const;
@@ -65,6 +65,7 @@ const Chat = () => {
     const [messageList, setMessageList] = useState<Message[]>([]);
     const [canUserType, setCanUserType] = useState<boolean>(true);
     const [showLoading, setShowLoading] = useState<boolean>(false);
+    const [initialIndex, setInitialIndex] = useState<Option>();
     const messageContainerRef = useRef<HTMLDivElement | null>(null);
     const systemLastMessageRef = useRef<HTMLDivElement | null>(null);
     const location = useLocation();
@@ -74,13 +75,59 @@ const Chat = () => {
     const { state } = location;
 
     // Variables Dependent upon State
+    useEffect(() => {
+        if (state && state.needToCreate) {
+            setCanUserType(false);
+            setMessageList(() => {
+                return [
+                    {
+                        sender: 'user',
+                        message: `${state.userText}`,
+                        key: uuidGenerator(),
+                    },
+                    { sender: 'system', message: '', key: uuidGenerator() },
+                ];
+            });
+
+            setShowLoading(true);
+            if (state.indexInfo) setInitialIndex(state.indexInfo);
+
+            getChatApi({
+                indexId: state.indexId,
+                userText: state.userText,
+                chatId: state.chatId,
+                modelId: state.modelId,
+                initialChat: true,
+            });
+        } else {
+            const chatUuid = params[ROUTE.CHAT_ID];
+            chatApi
+                .getChatMessage({ chat_uuid: chatUuid ?? '' })
+                .then((res) => {
+                    const tempMessageList: Message[] = [];
+                    res.payload.forEach((tempMessage) => {
+                        tempMessageList.push({
+                            sender: 'user',
+                            message: tempMessage.user_message,
+                            key: uuidGenerator(),
+                        });
+
+                        tempMessageList.push({
+                            sender: 'system',
+                            message: tempMessage.assistant_message,
+                            key: uuidGenerator(),
+                        });
+                    });
+                    if (tempMessageList && tempMessageList.length > 0) setMessageList(tempMessageList);
+                    scrollBottom();
+                })
+                .catch(() => {
+                    navigate(`${ROUTE.ROOT}${ROUTE.SEARCH}`);
+                });
+        }
+    }, [params]);
 
     // Api Calls
-
-    const scrollBottom = () => {
-        messageContainerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
-    };
-    // Event Handlers
     const getChatApi = ({ indexId, userText, chatId, modelId, initialChat = false }: GetChatApiProps) => {
         chatApi
             .getChat({
@@ -106,69 +153,29 @@ const Chat = () => {
                     scrollBottom();
                 }
 
+                console.log('Power of Async');
                 if (initialChat) {
                     setIsChatCreated(true);
                     navigate('.', { replace: true });
                 }
+            })
+            .catch((e) => {
+                navigate(`${ROUTE.ROOT}${ROUTE.SEARCH}`);
             });
     };
+    // Event Handlers
+
     // Helpers
-    useEffect(() => {
-        if (state && state.needToCreate) {
-            setCanUserType(false);
-            setMessageList(() => {
-                return [
-                    {
-                        sender: 'user',
-                        message: `${state.userText}`,
-                        key: uuidGenerator(),
-                    },
-                    { sender: 'system', message: '', key: uuidGenerator() },
-                ];
-            });
-            setShowLoading(true);
+    const scrollBottom = () => {
+        messageContainerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    };
 
-            getChatApi({
-                indexId: state.indexId,
-                userText: state.userText,
-                chatId: state.chatId,
-                modelId: state.modelId,
-                initialChat: true,
-            });
-        } else {
-            const chatUuid = params[ROUTE.CHAT_ID];
-            chatApi
-                .getChatMessage({ chat_uuid: chatUuid })
-                .then((res) => {
-                    let tempMessageList: Message[] = [];
-                    res?.payload?.forEach((tempMessage) => {
-                        tempMessageList.push({
-                            sender: 'user',
-                            message: tempMessage.user_message,
-                            key: uuidGenerator(),
-                        });
-
-                        tempMessageList.push({
-                            sender: 'system',
-                            message: tempMessage.assistant_message,
-                            key: uuidGenerator(),
-                        });
-                    });
-                    if (tempMessageList && tempMessageList.length > 0) setMessageList(tempMessageList);
-                    scrollBottom();
-                })
-                .catch(() => {
-                    navigate(`${ROUTE.ROOT}${ROUTE.SEARCH}`);
-                });
-        }
-    }, [params[ROUTE.CHAT_ID]]);
-
-    // JSX Methods
-
-    // Your component logic here
     const getChat = (chat: Message) => {
         return chat.sender === 'system' ? Style.system : Style.user;
     };
+
+    // Your component logic here
+
     return (
         <div className={Style.container}>
             <Dialog
@@ -262,6 +269,7 @@ const Chat = () => {
 
                 <div className={Style.container__footer}>
                     <MessageTypeField
+                        initialIndex={initialIndex}
                         disable={!canUserType}
                         handleSubmit={(v) => {
                             getChatApi({

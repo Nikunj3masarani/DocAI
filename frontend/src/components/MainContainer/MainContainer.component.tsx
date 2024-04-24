@@ -1,4 +1,8 @@
+//Import Third Party lib
+import { useEffect, useState } from 'react';
 import { NavLink, Outlet, useNavigate, useParams } from 'react-router-dom';
+
+//Import Storybook
 import {
     Accordion,
     AccordionDetails,
@@ -7,14 +11,33 @@ import {
     ThreeDotItemMenu,
     IconButton,
 } from '@docAi-app/stories';
-import { ROUTE } from '@docAi-app/utils/constants/Route.constant';
-import Icons from '@docAi-app/icons';
-import Styles from './MainContainer.module.scss';
-import { useEffect, useState } from 'react';
-import { chatApi } from '@docAi-app/api/chat.api';
-import CheckIcon from '@mui/icons-material/Check';
-import { itemsProps } from '@docAi-app/stories/components/Menu/Menu.component';
+//Import Component
+
+//Import Page
+
+//Import Hook
 import { useChatCreate } from '@docAi-app/hooks';
+import CheckIcon from '@mui/icons-material/Check';
+
+//Import Context
+
+//Import Model Type
+import { itemsProps } from '@docAi-app/stories/components/Menu/Menu.component';
+
+//Import Util, Helper , Constant
+import { ROUTE } from '@docAi-app/utils/constants/Route.constant';
+
+//Import Icon
+import Icons from '@docAi-app/icons';
+
+//Import Api
+import { chatApi } from '@docAi-app/api/chat.api';
+
+//Import Assets
+
+//Import Style
+import Styles from './MainContainer.module.scss';
+
 const sideNavigationItems = [
     {
         to: ROUTE.SEARCH,
@@ -28,7 +51,7 @@ const sideNavigationItems = [
     },
     {
         to: import.meta.env.VITE_STREAM_APP_URL,
-        label: 'Stream Lit Assistants',
+        label: 'Doc Analyzer',
         icon: Icons.SmartToyOutlined,
     },
     {
@@ -36,6 +59,7 @@ const sideNavigationItems = [
         icon: Icons.History,
     },
 ];
+
 const getAccordionClasses = (activeAccordion: boolean) => {
     return `${activeAccordion ? `active ${Styles.accordion}` : ` ${Styles.accordion}`}`;
 };

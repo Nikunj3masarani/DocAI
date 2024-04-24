@@ -32,7 +32,6 @@ import { uuidGenerator } from '@docAi-app/utils/helper';
 import { useNavigate } from 'react-router-dom';
 import { ROUTE } from '@docAi-app/utils/constants/Route.constant';
 import { chatApi } from '@docAi-app/api';
-import { useChatCreate } from '@docAi-app/hooks';
 
 const Search = () => {
     // useRef
@@ -75,7 +74,7 @@ const Search = () => {
             state: {
                 needToCreate: true,
                 userText: val.message,
-                indexId: val['index'].value,
+                indexInfo: val['index'],
                 modelId: val['model'],
                 chatId: chatUuid,
             },
