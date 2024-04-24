@@ -38,6 +38,8 @@ import { chatApi } from '@docAi-app/api/chat.api';
 //Import Style
 import Styles from './MainContainer.module.scss';
 
+const STREAM_LIT_APP = 'Doc Analyzer';
+
 const sideNavigationItems = [
     {
         to: ROUTE.SEARCH,
@@ -51,7 +53,7 @@ const sideNavigationItems = [
     },
     {
         to: import.meta.env.VITE_STREAM_APP_URL,
-        label: 'Doc Analyzer',
+        label: STREAM_LIT_APP,
         icon: Icons.SmartToyOutlined,
     },
     {
@@ -117,7 +119,7 @@ const MainContainer = () => {
                 {navigationItem.label !== 'Chat' ? (
                     <li className="navItem" key={index}>
                         <NavLink
-                            target={navigationItem.label === 'Stream Lit Assistants' ? '_blank' : undefined}
+                            target={navigationItem.label === STREAM_LIT_APP ? '_blank' : undefined}
                             to={navigationItem.to || ''}
                             className={({ isActive }) =>
                                 isActive ? `navLink active ${Styles.menuItem}` : `navLink ${Styles.menuItem}`

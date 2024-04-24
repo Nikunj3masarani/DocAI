@@ -219,7 +219,7 @@ const DataGridComp = ({ isBrainChange, initialSearchValue }: DataGripComp) => {
     // JSX Elements
 
     const renderNoRows = () => {
-        return <NoDataFound message="No Brains were found based on your search" />;
+        return <NoDataFound message="No Brains were found based on your search" className={Styles.noDataFound} />;
     };
 
     return (

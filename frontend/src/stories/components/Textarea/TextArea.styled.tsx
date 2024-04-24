@@ -13,8 +13,12 @@ const StyledTextArea = styled(TextField)`
 
         .MuiInputBase-input {
             color: ${({ theme }) => theme.colors.black};
-            font-size: 1.4rem;
             line-height: normal;
+            font-size: 1.4rem;
+        }
+        
+        .MuiInputBase-root {
+            border-radius: 1rem;
         }
     }
 

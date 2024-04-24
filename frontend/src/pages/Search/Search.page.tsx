@@ -1,9 +1,12 @@
 //Import Third Party lib
-import { Button, Dialog } from '@docAi-app/stories';
+import { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 //Import Storybook
+import { Button, Dialog } from '@docAi-app/stories';
 
 //Import Component
+import { AddUpdateKnowledge, CreateUpdateBrain, MessageTypeField } from '@docAi-app/components';
 
 //Import Page
 
@@ -12,35 +15,31 @@ import { Button, Dialog } from '@docAi-app/stories';
 //Import Context
 
 //Import Model Type
+import { HeaderAction } from '@docAi-app/types';
 
 //Import Util, Helper , Constant
+import { uuidGenerator } from '@docAi-app/utils/helper';
+import { ROUTE } from '@docAi-app/utils/constants/Route.constant';
 
 //Import Icon
-import Logo from '@docAi-app/../public/assets/images/logo.svg';
+import PsychologyOutlinedIcon from '@mui/icons-material/PsychologyOutlined';
 
 //Import Api
+import { chatApi } from '@docAi-app/api';
 
 //Import Assets
+import Logo from '@docAi-app/../public/assets/images/logo.svg';
 
 //Import Style
 import Style from './Search.module.scss';
-import { useEffect, useRef, useState } from 'react';
-import { HeaderAction } from '@docAi-app/types';
-import { AddUpdateKnowledge, CreateUpdateBrain, MessageTypeField } from '@docAi-app/components';
-import PsychologyOutlinedIcon from '@mui/icons-material/PsychologyOutlined';
-import { uuidGenerator } from '@docAi-app/utils/helper';
-import { useNavigate } from 'react-router-dom';
-import { ROUTE } from '@docAi-app/utils/constants/Route.constant';
-import { chatApi } from '@docAi-app/api';
 
 const Search = () => {
-    // useRef
-    // useState
     const [headerAction, setHeaderAction] = useState<HeaderAction | undefined>();
     const [showDialogue, setShowDialogue] = useState<boolean>(false);
     const [disableSearchInput, setSearchInput] = useState<boolean>(false);
     const chatList = useRef<string[]>([]);
     const navigate = useNavigate();
+
     useEffect(() => {
         chatApi.getChatList().then(({ payload }) => {
             Object.keys(payload).forEach((key) => {
@@ -50,20 +49,12 @@ const Search = () => {
             });
         });
     }, []);
-    // Variables Dependent upon State
-
-    // Api Calls
-
-    // Event Handlers
-
-    // Helpers
-
-    // JSX Methods
+   
 
     // Your component logic here
     const handleSubmit = (val) => {
         setSearchInput((prev) => !prev);
-
+        
         let chatUuid = uuidGenerator();
 
         while (chatList.current.includes(chatUuid)) {
