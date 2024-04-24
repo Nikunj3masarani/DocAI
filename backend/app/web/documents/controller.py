@@ -50,21 +50,8 @@ class Documents:
             user=Depends(AuthBearer())
     ) -> DocumentResponse:
         
-        crawl_website = CrawlWebsite(url=url)
-        file_path, file_name = crawl_website.process()
-
-        with open(file_path, "rb") as f:
-            file_content = f.read()
-
-        # Create a file-like object in memory using BytesIO
-        file_object = io.BytesIO(file_content)
-        upload_file = UploadFile(
-            file=file_object, filename=file_name, size=len(file_content)
-        )
-        # file_instance = File(file=upload_file)
-        
         document_service = DocumentService(db, document_embeddings)
-        response = await document_service.index_documents([upload_file], index_uuid=index_uuid, user_uuid=user.get("user_uuid"))
+        response = await document_service.crawl_and_index_documents(url=url, index_uuid=index_uuid, user_uuid=user.get("user_uuid"))
 
         return DocumentResponse(
             payload=response,
