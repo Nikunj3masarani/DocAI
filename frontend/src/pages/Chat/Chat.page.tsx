@@ -1,22 +1,29 @@
 //Import Third Party lib
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
-import { AddUpdateKnowledge, CreateUpdateBrain, MessageTypeField } from '@docAi-app/components';
-import { HeaderAction } from '@docAi-app/types';
 import { useEffect, useRef, useState } from 'react';
 
 //Import Storybook
+import { Button, Dialog } from '@docAi-app/stories';
 
 //Import Component
+import { AddUpdateKnowledge, CreateUpdateBrain, MessageTypeField } from '@docAi-app/components';
+import { Skeleton } from '@mui/material';
 
 //Import Page
 
 //Import Hook
+import { getAlert, useChatCreate } from '@docAi-app/hooks';
 
 //Import Context
 import { IconButton } from '@docAi-app/stories';
 //Import Model Type
+import { HeaderAction } from '@docAi-app/types';
+import { Option } from '@docAi-app/types';
 
 //Import Util, Helper , Constant
+import { uuidGenerator } from '@docAi-app/utils/helper';
+import { ROUTE } from '@docAi-app/utils/constants/Route.constant';
 
 //Import Icon
 import PsychologyOutlinedIcon from '@mui/icons-material/PsychologyOutlined';
@@ -24,20 +31,15 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import TextSnippetIcon from '@mui/icons-material/TextSnippet';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
-import DescriptionIcon from '@mui/icons-material/Description';
+
 //Import Api
+import { chatApi } from '@docAi-app/api';
 
 //Import Assets
 
 //Import Style
 import Style from './Chat.module.scss';
-import { Button, Dialog } from '@docAi-app/stories';
-import { Skeleton } from '@mui/material';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { chatApi } from '@docAi-app/api';
-import { ROUTE } from '@docAi-app/utils/constants/Route.constant';
-import { uuidGenerator } from '@docAi-app/utils/helper';
-import { getAlert, useChatCreate } from '@docAi-app/hooks';
+
 const SYSTEM = 'system' as const;
 const USER = 'user' as const;
 
@@ -63,6 +65,7 @@ const Chat = () => {
     const [messageList, setMessageList] = useState<Message[]>([]);
     const [canUserType, setCanUserType] = useState<boolean>(true);
     const [showLoading, setShowLoading] = useState<boolean>(false);
+    const [initialIndex, setInitialIndex] = useState<Option>();
     const messageContainerRef = useRef<HTMLDivElement | null>(null);
     const systemLastMessageRef = useRef<HTMLDivElement | null>(null);
     const location = useLocation();
@@ -72,52 +75,6 @@ const Chat = () => {
     const { state } = location;
 
     // Variables Dependent upon State
-
-    // Api Calls
-
-    const scrollBottom = () => {
-        // console.log(messageContainerRef.current?.offsetHeight);
-        // console.log(messageContainerRef.current?.scrollHeight);
-
-        // messageContainerRef.current?.scrollTo(0, messageContainerRef.current.scrollHeight);
-        messageContainerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
-    };
-    // Event Handlers
-    const getChatApi = ({ indexId, userText, chatId, modelId, initialChat = false }: GetChatApiProps) => {
-        chatApi
-            .getChat({
-                index_uuid: indexId,
-                query: userText,
-                chat_uuid: chatId,
-                model_uuid: modelId,
-            })
-            .then(async (response) => {
-                while (true) {
-                    const res = await response.next();
-                    const { value, done } = res;
-                    if (done) {
-                        setCanUserType(true);
-                        break;
-                    }
-
-                    if (value) {
-                        setShowLoading(false);
-                    }
-                    // for (let i = 0; i < value.length; i++) {
-                    //     systemLastMessageRef.current!.innerHTML += value.at(i);
-                    // }
-                    systemLastMessageRef.current!.innerHTML += value;
-                    // systemLastMessageRef.current!.innerHTML +=
-                    scrollBottom();
-                }
-
-                if (initialChat) {
-                    setIsChatCreated(true);
-                    navigate('.', { replace: true });
-                }
-            });
-    };
-    // Helpers
     useEffect(() => {
         if (state && state.needToCreate) {
             setCanUserType(false);
@@ -131,7 +88,9 @@ const Chat = () => {
                     { sender: 'system', message: '', key: uuidGenerator() },
                 ];
             });
+
             setShowLoading(true);
+            if (state.indexInfo) setInitialIndex(state.indexInfo);
 
             getChatApi({
                 indexId: state.indexId,
@@ -143,10 +102,10 @@ const Chat = () => {
         } else {
             const chatUuid = params[ROUTE.CHAT_ID];
             chatApi
-                .getChatMessage({ chat_uuid: chatUuid })
+                .getChatMessage({ chat_uuid: chatUuid ?? '' })
                 .then((res) => {
-                    let tempMessageList: Message[] = [];
-                    res?.payload?.forEach((tempMessage) => {
+                    const tempMessageList: Message[] = [];
+                    res.payload.forEach((tempMessage) => {
                         tempMessageList.push({
                             sender: 'user',
                             message: tempMessage.user_message,
@@ -166,14 +125,57 @@ const Chat = () => {
                     navigate(`${ROUTE.ROOT}${ROUTE.SEARCH}`);
                 });
         }
-    }, [params[ROUTE.CHAT_ID]]);
+    }, [params]);
 
-    // JSX Methods
+    // Api Calls
+    const getChatApi = ({ indexId, userText, chatId, modelId, initialChat = false }: GetChatApiProps) => {
+        chatApi
+            .getChat({
+                index_uuid: indexId,
+                query: userText,
+                chat_uuid: chatId,
+                model_uuid: modelId,
+            })
+            .then(async (response) => {
+                while (systemLastMessageRef.current) {
+                    const res = await response.next();
+                    const { value, done } = res;
+                    if (done) {
+                        setCanUserType(true);
+                        break;
+                    }
 
-    // Your component logic here
+                    if (value) {
+                        setShowLoading(false);
+                    }
+
+                    systemLastMessageRef.current!.innerHTML += value;
+                    scrollBottom();
+                }
+
+                console.log('Power of Async');
+                if (initialChat) {
+                    setIsChatCreated(true);
+                    navigate('.', { replace: true });
+                }
+            })
+            .catch((e) => {
+                navigate(`${ROUTE.ROOT}${ROUTE.SEARCH}`);
+            });
+    };
+    // Event Handlers
+
+    // Helpers
+    const scrollBottom = () => {
+        messageContainerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    };
+
     const getChat = (chat: Message) => {
         return chat.sender === 'system' ? Style.system : Style.user;
     };
+
+    // Your component logic here
+
     return (
         <div className={Style.container}>
             <Dialog
@@ -229,16 +231,6 @@ const Chat = () => {
                                             : null
                                     }
                                 >
-                                    {/* {chat.sender === 'system' ? (
-                                        <div className={Style.system__header}>
-                                            <span>
-                                                <DescriptionIcon />
-                                                indexName
-                                            </span>
-                                            <span>modelName</span>
-                                        </div>
-                                    ) : null} */}
-
                                     {chat.message}
                                     {chat.sender === 'system' ? (
                                         <div className={Style.feedback}>
@@ -277,6 +269,7 @@ const Chat = () => {
 
                 <div className={Style.container__footer}>
                     <MessageTypeField
+                        initialIndex={initialIndex}
                         disable={!canUserType}
                         handleSubmit={(v) => {
                             getChatApi({

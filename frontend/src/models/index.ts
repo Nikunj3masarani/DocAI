@@ -5,6 +5,8 @@ export type {
     GetChatMessageRequestParams,
     GetChatRequestBody,
     DeleteChatRequestParams,
+    GetChatListResponseBody,
+    GetChatMessageResponseBody,
 } from './chat.model';
 
 export type { GetDocumentsRequestBody, UploadDocumentsProps, DeleteDocumentRequestParams } from './documents.model';
