@@ -35,13 +35,14 @@ services:
       context: ./frontend
       args:
           ENVIRONMENT: development
-          VITE_BASE_API: "http://backend:8080/api/"
-          VITE_STREAM_APP_URL: "http://structured_data:8053"
     ports:
       - "3000:3000"
     depends_on:
       backend:
         condition: service_started
+    environment:
+      VITE_BASE_API: "http://backend:8080/api/"
+      VITE_STREAM_APP_URL: "http://structured_data:8053"
 
   structured_data:
     build: ./structured_data_poc

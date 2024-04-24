@@ -1,8 +1,6 @@
 # Use a lightweight Node.js image
 FROM node:18-alpine
-ARG ENVIRONMENT 
-ARG VITE_BASE_API=http://13.202.8.105:8080/api/
-ARG VITE_STREAM_APP_URL=http://13.202.8.105:8053/
+ARG ENVIRONMENT
 
 # Set working directory
 WORKDIR /app
@@ -19,8 +17,6 @@ RUN yarn install
 RUN yarn add -D sass
 # Copy the rest of the project files (excluding node_modules)
 COPY . ./
-RUN echo "VITE_BASE_API=$VITE_BASE_API" > .env.${ENVIRONMENT}
-RUN echo "VITE_STREAM_APP_URL=$VITE_STREAM_APP_URL" > .env.${ENVIRONMENT}
 
 RUN yarn build:${ENVIRONMENT}
 
