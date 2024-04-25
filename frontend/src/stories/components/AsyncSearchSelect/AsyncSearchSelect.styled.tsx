@@ -55,7 +55,6 @@ const AsyncCreatableStyled = styled<React.ComponentType<AsyncCreatableStyledProp
 const AsyncSearchSelectStyled = styled(AsyncPaginate)`
     .css-hlgwow {
         padding-left: 0;
-        background: red;
     }
     .css-1dimb5e-singleValue {
         text-align: left;

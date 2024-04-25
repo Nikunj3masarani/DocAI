@@ -1,6 +1,6 @@
 //Import Third Party lib
 import { Field, Form } from 'react-final-form';
-import { Route, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 //Import Storybook
 import { Button, InputField } from '@docAi-app/stories';
@@ -118,7 +118,7 @@ const ForgotPassword = () => {
                             </div>
 
                             <div className={Styles.actionButton}>
-                                <Button type="submit" variant="contained" color="primary" onClick={() => {}}>
+                                <Button type="submit" variant="contained" color="primary" onClick={() => { }}>
                                     Reset Password
                                 </Button>
                                 <Button
