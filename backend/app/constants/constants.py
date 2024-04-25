@@ -28,3 +28,4 @@ class IndexRole(int, Enum):
     EDITOR = 3
 
 
+SUBJECT = "Invitation to DocAI Platform"

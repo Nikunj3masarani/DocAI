@@ -55,7 +55,7 @@ class Users(DBService):
             self.db_session.add(invitation_obj)
             await self.db_session.commit()
 
-        return user_obj.__dict__
+        return user_obj.__dict__ , invitation_obj.__dict__
 
     async def get_data_by_id(self, _id: Any, *args, **kwargs) -> Dict:
         existing_user_query = select(UserTable.user_uuid,

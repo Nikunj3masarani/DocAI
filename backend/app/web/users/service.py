@@ -13,10 +13,18 @@ class User(BaseService):
 
     async def create(self, data: Any, *args, **kwargs):
         user_db_service = UserDBService(self.db_client)
+        user_obj, invite_obj = await user_db_service.insert_data(data)
+        
+        email_data= dict()
+        email_data['user_uuid'] = str(user_obj.get("user_uuid"))
+        email_data['token'] = str(invite_obj.get("token"))
+        email_data['email'] = str(user_obj.get("email"))
+        email_data['action'] = "1"
+        
         user_email_service = UserEmailService()
-        user_email_service.invite_user_for_onboarding(data.get('email'))
-        return await user_db_service.insert_data(data)
-
+        user_email_service.invite_user_for_onboarding(email_data)
+        return user_obj
+    
     async def get_access_token(self, data, *args, **kwargs):
         user_email = data.get('email')
         user_db_service = UserDBService(self.db_client)
