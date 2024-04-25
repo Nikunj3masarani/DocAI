@@ -21,6 +21,8 @@ class Inference:
 
         inference_db_service = InferenceDBService(self.db_client)
 
+        chat_history = await inference_db_service.get_data_by_id(chat_request_data)
+
         tokens = []
         chat_data = {
             "user_message": chat_request_data.get("query"),
@@ -51,7 +53,11 @@ class Inference:
                                                               model_details,
                                                               self.rank_function, inference_callback)
 
-        response_generator = inference_haystack_service.get_answer(chat_request_data.get('query'))
+        condensed_query = await inference_haystack_service.get_condense_question(chat_history,
+                                                                                 chat_request_data.get('query'),
+                                                                                 model_details)
+
+        response_generator = inference_haystack_service.get_answer(condensed_query)
 
         return response_generator
 

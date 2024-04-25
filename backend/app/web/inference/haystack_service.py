@@ -21,6 +21,38 @@ class Inference:
         self.rank_function = rank_function
         self.callback_function = callback_function
 
+    async def get_condense_question(self, chat_history, query, model_details):
+        sorted_chat_history = sorted(chat_history, key=lambda x: x['created_at'], reverse=True)[:5]
+        conversation = '\n'.join([
+            f"User: {chat.user_message} \n  Assistant: {chat.assistant_message} \n Time: {chat.created_at}"
+            for chat in sorted_chat_history
+        ])
+        condense_prompt = f'''
+                    Instructions: 
+                        1. Review the conversations between User and Assistant provided below.
+                        2. Condense the user's query into shorter versions in the same language as the user's queries.
+                        3. If the user's question doesn't show contextual relevance to the preceding conversation (within the provided limit), return the original question without modification.
+                        4. Condense the question by extracting the most relevant keywords or summarizing the intent.
+                        5. Prioritize recent questions.
+
+                    Conversation History:
+                            {conversation}
+                            
+                    Query: {query}
+
+                    Output: 
+                        The condensed version of the user's most recent question, without any additional explanation.
+                    '''
+        llm = AsyncOpenAI(
+            api_key=settings.openai_api_key,
+        )
+        messages = [{"role": "user", "content": condense_prompt}]
+        completion_result = await llm.chat.completions.create(messages=messages, model=model_details.get('target_name'))
+        condense_query = []
+        for token in completion_result.choices:
+            condense_query.append(token.message.content or "")
+        return ''.join(condense_query)
+
     def get_answer(self, query):
         llm = AsyncOpenAI(
             api_key=settings.openai_api_key,
