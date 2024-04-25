@@ -9,13 +9,13 @@ interface AsyncCreatableStyledProps extends AsyncPaginateProps<unknown, GroupBas
 }
 const AsyncCreatableStyled = styled<React.ComponentType<AsyncCreatableStyledProps>>(AsyncCreatable)`
     & > div {
+        text-align: left;
         width: 100%;
         font-size: 1.4rem;
         line-height: 1.2;
         letter-spacing: -0.02em;
         box-shadow: none;
         padding: 12.5px 12px 0;
-    
 
         &:hover + div {
             border-bottom: 0px;
@@ -53,6 +53,14 @@ const AsyncCreatableStyled = styled<React.ComponentType<AsyncCreatableStyledProp
 `;
 
 const AsyncSearchSelectStyled = styled(AsyncPaginate)`
+    .css-hlgwow {
+        padding-left: 0;
+        background: red;
+    }
+    .css-1dimb5e-singleValue {
+        text-align: left;
+    }
+    
     & > div {
         width: 100%;
         font-size: 1.4rem;
@@ -66,7 +74,7 @@ const AsyncSearchSelectStyled = styled(AsyncPaginate)`
         .css-art2ul-ValueContainer2 {
             padding: 0px;
             .css-olqui2-singleValue {
-                color : rgba(0,0,0,0.38);
+                color: rgba(0, 0, 0, 0.38);
             }
             > div {
                 font-family: ${({ theme }) => theme.typography.fontFamily};
@@ -74,7 +82,7 @@ const AsyncSearchSelectStyled = styled(AsyncPaginate)`
                 font-weight: 400;
                 font-size: 1.4rem;
                 line-height: normal;
-                text-align : left;
+                text-align: left;
             }
         }
     }
@@ -83,6 +91,7 @@ const AsyncSearchSelectStyled = styled(AsyncPaginate)`
     .css-t3ipsp-control {
     }
 ` as typeof AsyncPaginate;
+
 const AsyncSearchSelectContainerStyled = styled('div')`
     position: relative;
 `;

@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { Button, Dialog } from '@docAi-app/stories';
 
 //Import Component
-import { AddUpdateKnowledge, CreateUpdateBrain, DataGridComp } from '@docAi-app/components';
+import { AddUpdateKnowledge, CreateUpdateBrain, BrainGrid } from '@docAi-app/components';
 
 //Import Page
 
@@ -86,7 +86,7 @@ const IndexList = () => {
                     </Button>
                 </div>
             </div>
-            <DataGridComp isBrainChange={isBrainCreated} initialSearchValue={''} />
+            <BrainGrid isBrainChange={isBrainCreated} initialSearchValue={''} />
         </div>
     );
 };

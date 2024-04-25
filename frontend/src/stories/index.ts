@@ -19,3 +19,4 @@ export { Accordion, AccordionSummary, AccordionDetails } from './components/Acco
 export { ThreeDotItemMenu } from './components/Menu';
 export { Alert, StyledToastContainer, toast, ToastBody, Slide, ToastCloseIcon } from './components/Alert';
 export type { ToastPosition } from './components/Alert';
+export { DataGrid } from './components/DataGrid';

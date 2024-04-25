@@ -26,7 +26,7 @@ export const StyledList = styled(List)`
     }
     .navItem {
         display: flex;
-        padding: 1rem 2.5rem 0rem 2rem;
+        padding: 1rem 2.5rem 0rem 1.5rem;
         gap: 1.5rem;
     }
     .navLink {

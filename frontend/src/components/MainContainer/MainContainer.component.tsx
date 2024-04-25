@@ -88,26 +88,28 @@ const MainContainer = () => {
     const [activeAccordion, setActiveAccordion] = useState(false);
     const [messageList, setMessageList] = useState<Record<string, MessageList[]>>({});
     const [editTitleId, setEditTitleId] = useState<string>('');
-    const isTitleEditing = (messageId: string) => {
-        return editTitleId === messageId ? Styles.active : '';
-    };
+
     const [editedMessage, setEditedMessage] = useState<string>();
     const { isChatCreated, setIsChatCreated } = useChatCreate();
     const params = useParams();
     const navigate = useNavigate();
 
+    const isTitleEditing = (messageId: string) => {
+        return editTitleId === messageId ? Styles.active : '';
+    };
     useEffect(() => {
         if (isChatCreated) {
             chatApi.getChatList().then((res) => {
                 const tempList = res.payload;
+                const newMessageList: Record<string, MessageList[]> = {}
                 Object.keys(tempList).forEach((key: string) => {
                     const tempObj = tempList[key].map((tempMessage) => {
                         return { message: tempMessage.chat_title, messageId: tempMessage.chat_uuid };
                     });
-                    setMessageList((prev) => {
-                        return { ...prev, [key]: tempObj };
-                    });
+
+                    newMessageList[key] = tempObj;
                 });
+                setMessageList(newMessageList);
             });
             setIsChatCreated(false);
         }
@@ -149,7 +151,7 @@ const MainContainer = () => {
                                     <ul className={Styles.chatList}>
                                         {Object.keys(messageList).map((key: string) => {
                                             return (
-                                                <li>
+                                                <li key={key} className={Styles.messageListkey}>
                                                     {key}
                                                     <ul>
                                                         {messageList[key].map(({ message, messageId }: MessageList) => {
@@ -199,7 +201,7 @@ const MainContainer = () => {
                                                                                                 }: MessageList) => {
                                                                                                     if (
                                                                                                         messageId ===
-                                                                                                            editTitleId &&
+                                                                                                        editTitleId &&
                                                                                                         editedMessage
                                                                                                     ) {
                                                                                                         return {
@@ -276,8 +278,6 @@ const MainContainer = () => {
                                                                                     );
                                                                                 }
                                                                             }}
-                                                                            header={''}
-                                                                            subTitle={''}
                                                                         />
                                                                     </div>
                                                                 </li>
