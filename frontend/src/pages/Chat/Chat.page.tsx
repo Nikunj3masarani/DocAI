@@ -4,10 +4,10 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 
 //Import Storybook
-import { Button, Dialog } from '@docAi-app/stories';
+import { Dialog } from '@docAi-app/stories';
 
 //Import Component
-import { AddUpdateKnowledge, CreateUpdateBrain, MessageTypeField } from '@docAi-app/components';
+import { AddUpdateKnowledge, CreateUpdateBrain, MessageTypeField, PageHeader } from '@docAi-app/components';
 import { Skeleton } from '@mui/material';
 
 //Import Page
@@ -25,7 +25,6 @@ import { uuidGenerator } from '@docAi-app/utils/helper';
 import { ROUTE } from '@docAi-app/utils/constants/Route.constant';
 
 //Import Icon
-import PsychologyOutlinedIcon from '@mui/icons-material/PsychologyOutlined';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import TextSnippetIcon from '@mui/icons-material/TextSnippet';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
@@ -184,32 +183,12 @@ const Chat = () => {
             >
                 {headerAction === 'Create Brain' ? <CreateUpdateBrain /> : <AddUpdateKnowledge />}
             </Dialog>
-            <div className={Style.container__header}>
-                <div>
-                    <h1>Chat</h1>
-                </div>
-                <div className={Style.container__header__body}>
-                    <Button
-                        variant="contained"
-                        onClick={() => {
-                            setShowDialogue(true);
-                            setHeaderAction('Create Brain');
-                        }}
-                    >
-                        <PsychologyOutlinedIcon />
-                        Create Brain
-                    </Button>
-                    <Button
-                        variant="outlined"
-                        onClick={() => {
-                            setShowDialogue(true);
-                            setHeaderAction('Add Knowledge');
-                        }}
-                    >
-                        Add Knowledge
-                    </Button>
-                </div>
-            </div>
+
+            <PageHeader title={'Chat'} showDialogue={true} handleButtonClick={(title: HeaderAction) => {
+                setShowDialogue(true);
+                setHeaderAction(title);
+            }} />
+
             <div className={Style.container__body}>
                 <div className={Style.messageContainer}>
                     {messageList?.map((chat, index) => {

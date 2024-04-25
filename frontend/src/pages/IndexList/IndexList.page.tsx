@@ -3,10 +3,10 @@ import { useState } from 'react';
 
 
 //Import Storybook
-import { Button, Dialog } from '@docAi-app/stories';
+import { Dialog } from '@docAi-app/stories';
 
 //Import Component
-import { AddUpdateKnowledge, CreateUpdateBrain, BrainGrid } from '@docAi-app/components';
+import { AddUpdateKnowledge, CreateUpdateBrain, BrainGrid, PageHeader } from '@docAi-app/components';
 
 //Import Page
 
@@ -20,13 +20,12 @@ import { HeaderAction } from '@docAi-app/types';
 //Import Util, Helper , Constant
 
 //Import Icon
-import PsychologyOutlinedIcon from '@mui/icons-material/PsychologyOutlined';
+
 //Import Api
 
 //Import Assets
 
 //Import Style
-import Styles from './IndexList.module.scss';
 
 const IndexList = () => {
     // useState
@@ -60,32 +59,11 @@ const IndexList = () => {
                     <AddUpdateKnowledge />
                 )}
             </Dialog>
-            <div className={Styles.header}>
-                <div>
-                    <h1>My Brains</h1>
-                </div>
-                <div className={Styles.header__body}>
-                    <Button
-                        variant="contained"
-                        onClick={() => {
-                            setShowDialogue(true);
-                            setHeaderAction('Create Brain');
-                        }}
-                    >
-                        <PsychologyOutlinedIcon />
-                        Create Brain
-                    </Button>
-                    <Button
-                        variant="outlined"
-                        onClick={() => {
-                            setShowDialogue(true);
-                            setHeaderAction('Add Knowledge');
-                        }}
-                    >
-                        Add Knowledge
-                    </Button>
-                </div>
-            </div>
+            <PageHeader title={'My Brains'} showDialogue={true} handleButtonClick={(title: HeaderAction) => {
+                setShowDialogue(true);
+                setHeaderAction(title);
+            }} />
+
             <BrainGrid isBrainChange={isBrainCreated} initialSearchValue={''} />
         </div>
     );

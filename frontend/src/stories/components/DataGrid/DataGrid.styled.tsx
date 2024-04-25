@@ -7,7 +7,7 @@ const StyledDataGrid = styled(DataGrid)`
     font-size: 1.4rem;
 
     .MuiDataGrid-columnHeader,.MuiDataGrid-cell { 
-        &:focus {
+        &:focus , &:focus-within {
         outline: none;
     }}
 

@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button, Dialog } from '@docAi-app/stories';
 
 //Import Component
-import { AddUpdateKnowledge, CreateUpdateBrain, MessageTypeField } from '@docAi-app/components';
+import { AddUpdateKnowledge, CreateUpdateBrain, MessageTypeField, PageHeader } from '@docAi-app/components';
 
 //Import Page
 
@@ -49,12 +49,12 @@ const Search = () => {
             });
         });
     }, []);
-   
+
 
     // Your component logic here
     const handleSubmit = (val) => {
         setSearchInput((prev) => !prev);
-        
+
         let chatUuid = uuidGenerator();
 
         while (chatList.current.includes(chatUuid)) {
@@ -84,32 +84,12 @@ const Search = () => {
             >
                 {headerAction === 'Create Brain' ? <CreateUpdateBrain /> : <AddUpdateKnowledge />}
             </Dialog>
-            <div className={Style.container__header}>
-                <div>
-                    <h1>Home</h1>
-                </div>
-                <div className={Style.container__header__body}>
-                    <Button
-                        variant="contained"
-                        onClick={() => {
-                            setShowDialogue(true);
-                            setHeaderAction('Create Brain');
-                        }}
-                    >
-                        <PsychologyOutlinedIcon />
-                        Create Brain
-                    </Button>
-                    <Button
-                        variant="outlined"
-                        onClick={() => {
-                            setShowDialogue(true);
-                            setHeaderAction('Add Knowledge');
-                        }}
-                    >
-                        Add Knowledge
-                    </Button>
-                </div>
-            </div>
+
+            <PageHeader title={'Home'} showDialogue={true} handleButtonClick={(title: HeaderAction) => {
+                setShowDialogue(true);
+                setHeaderAction(title);
+            }} />
+
             <div className={Style['container__body']}>
                 <div className={Style.content}>
                     <div className={Style.content__header}>
