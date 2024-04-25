@@ -21,7 +21,7 @@ class Inference:
 
         inference_db_service = InferenceDBService(self.db_client)
 
-        chat_history = await inference_db_service.get_data_by_id(chat_request_data)
+        chat_history = await inference_db_service.get_chat_history(chat_request_data.get('chat_uuid'))
 
         tokens = []
         chat_data = {
@@ -52,12 +52,14 @@ class Inference:
                                                               self.query_embeddings_function,
                                                               model_details,
                                                               self.rank_function, inference_callback)
+        if chat_history:
+            condensed_query = await inference_haystack_service.get_condense_question(chat_history,
+                                                                                     chat_request_data.get('query'),
+                                                                                     model_details)
 
-        condensed_query = await inference_haystack_service.get_condense_question(chat_history,
-                                                                                 chat_request_data.get('query'),
-                                                                                 model_details)
-
-        response_generator = inference_haystack_service.get_answer(condensed_query)
+            response_generator = inference_haystack_service.get_answer(condensed_query)
+        else:
+            response_generator = inference_haystack_service.get_answer(chat_request_data.get('query'))
 
         return response_generator
 
