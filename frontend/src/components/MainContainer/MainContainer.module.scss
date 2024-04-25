@@ -42,7 +42,6 @@
         display: flex;
         align-items: center;
         gap: 1rem;
-        
     }
 }
 
@@ -70,7 +69,9 @@
             background-color: black;
         }
     }
-    li {
+    .messageListkey {
+        color: $taupe50;
+        font-size: 1.4rem;
         margin-block: 2rem;
 
         li {

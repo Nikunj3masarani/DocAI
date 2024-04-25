@@ -60,8 +60,6 @@ type MessageTypeFieldProps = {
     handleSubmit: (v: any) => void;
 };
 const MessageTypeField = ({ disable, handleSubmit, initialIndex }: MessageTypeFieldProps) => {
-    // useRef
-    // useState
     
     const [index, setIndex] = useState<Option>(initialIndex ?? { label: '', value: '' });
     const [modelOption, setModelOption] = useState<Option[]>([]);
