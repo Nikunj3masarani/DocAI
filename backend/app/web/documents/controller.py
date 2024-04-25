@@ -11,7 +11,7 @@ from app.middleware.auth import AuthBearer
 from app.services.embeddings.dependency import get_documents_embedding_function
 from typing import List
 from fastapi import UploadFile
-from pydantic import UUID4
+from pydantic import UUID4, constr
 from app.web.documents.crawler import CrawlWebsite
 
 router = InferringRouter()
@@ -43,7 +43,7 @@ class Documents:
     async def crawl_endpoint(
             self,
             # crawl_website: CrawlWebsite,
-            url: str,
+            url: constr(regex=r'^https?://(?:www\.)?[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(/\S*)?$'),
             index_uuid: str,
             db=Depends(get_db_session),
             document_embeddings=Depends(get_documents_embedding_function),

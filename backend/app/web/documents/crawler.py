@@ -13,9 +13,9 @@ from pydantic import BaseModel
 class CrawlWebsite(BaseModel):
     url: str
     js: bool = False
-    depth: int = int(os.getenv("CRAWL_DEPTH", "1"))
+    depth: int = int(os.getenv("CRAWL_DEPTH", "2"))
     max_pages: int = 100
-    max_time: int = 60
+    max_time: int = 120
 
     def _crawl(self, url):
         try:
