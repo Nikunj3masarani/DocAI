@@ -1,13 +1,11 @@
 //Import Third Party lib
-
-import { TabComponent } from '@docAi-app/stories';
 import { useState } from 'react';
-import { BrainSettings } from '../BrainSettings/BrainSettings.component';
-import { AddUpdateKnowledge, People } from '..';
 
 //Import Storybook
+import { TabComponent } from '@docAi-app/stories';
 
 //Import Component
+import { AddUpdateKnowledge, People, BrainSettings } from '@docAi-app/components';
 
 //Import Page
 
@@ -29,7 +27,10 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 //Import Assets
 
 //Import Style
-
+import Style from './UpdateIndex.module.scss';
+import { Button } from '@docAi-app/stories';
+import { useNavigate, useNavigation } from 'react-router-dom';
+import { ROUTE } from '@docAi-app/utils/constants/Route.constant';
 interface TabPanelProps {
     children?: React.ReactNode;
     index: number;
@@ -57,54 +58,67 @@ const tabItem = [
         label: 'Settings',
         value: 0,
         canAccess: true,
-        icon: <SettingsIcon />,
+        // icon: <SettingsIcon />,
     },
     {
         label: 'Update Knowledge',
         value: 1,
         canAccess: true,
-        icon: <AssignmentIcon />,
+        // icon: <AssignmentIcon />,
     },
     {
         label: 'Invite People',
         value: 2,
         canAccess: true,
-        icon: <AccountCircleIcon />,
+        // icon: <AccountCircleIcon />,
     },
 ];
+
 const UpdateIndex = () => {
-    // useRef
     // useState
-    // Variables Dependent upon State
     const [activeTab, setActiveTab] = useState<number>(0);
-    // const [headerAction, setHeaderAction] = useState<HeaderAction | undefined>();
-    // const [showDialogue, setShowDialogue] = useState<boolean>(false);
-    // Api Calls
+    const navigate = useNavigate();
 
-    // Event Handlers
-
-    // Helpers
-
-    // JSX Methods
-
+    const goBack = () => {
+        navigate(`${ROUTE.ROOT}${ROUTE.BRAINS}`);
+    };
     // Your component logic here
     return (
-        <>
-            <TabComponent items={tabItem} selectedTabValue={activeTab} handleTabChange={setActiveTab} type="square" />
-            <CustomTabPanel value={0} index={activeTab}>
-                <BrainSettings />
-            </CustomTabPanel>
-            <CustomTabPanel value={1} index={activeTab}>
-                <>
-                    <AddUpdateKnowledge />
-                </>
-            </CustomTabPanel>
-            <CustomTabPanel value={2} index={activeTab}>
-                <>
-                    <People />
-                </>
-            </CustomTabPanel>
-        </>
+        <div className={Style.container}>
+            <div className={Style.container__header}>
+                <h1>Manage Brain</h1>
+                <Button
+                    variant="contained"
+                    onClick={() => {
+                        goBack();
+                    }}
+                >
+                    Go Back
+                </Button>
+            </div>
+
+            <div className={Style.container__body}>
+                <TabComponent
+                    items={tabItem}
+                    selectedTabValue={activeTab}
+                    handleTabChange={setActiveTab}
+                    type="square"
+                />
+                <CustomTabPanel value={0} index={activeTab}>
+                    <BrainSettings />
+                </CustomTabPanel>
+                <CustomTabPanel value={1} index={activeTab}>
+                    <>
+                        <AddUpdateKnowledge />
+                    </>
+                </CustomTabPanel>
+                <CustomTabPanel value={2} index={activeTab}>
+                    <>
+                        <People />
+                    </>
+                </CustomTabPanel>
+            </div>
+        </div>
     );
 };
 
