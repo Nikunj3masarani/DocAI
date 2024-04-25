@@ -2,8 +2,6 @@
 
 .wrapper {
     width: 100%;
-    padding-inline: 2rem;
-    border-bottom: 1px solid $black10;
 }
 
 .container {
@@ -12,7 +10,9 @@
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    
+    padding-inline: 2rem;
+    border-bottom: 1px solid $black10;
+
     &__header {
     }
     &__body {
@@ -21,4 +21,9 @@
         align-items: center;
         gap: 2rem;
     }
+}
+
+.children {
+    width: 100%;
+    padding-inline: 2rem;
 }

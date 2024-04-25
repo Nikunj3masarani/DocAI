@@ -184,91 +184,95 @@ const Chat = () => {
                 {headerAction === 'Create Brain' ? <CreateUpdateBrain /> : <AddUpdateKnowledge />}
             </Dialog>
 
-            <PageHeader title={'Chat'} showDialogue={true} handleButtonClick={(title: HeaderAction) => {
-                setShowDialogue(true);
-                setHeaderAction(title);
-            }} />
-
-            <div className={Style.container__body}>
-                <div className={Style.messageContainer}>
-                    {messageList?.map((chat, index) => {
-                        return (
-                            <>
-                                <div
-                                    key={chat.key}
-                                    className={`${Style.message} ${getChat(chat)}`}
-                                    style={{
-                                        visibility: `${showLoading && index === messageList.length - 1 && chat.sender === 'system' ? 'hidden' : 'visible'}`,
-                                    }}
-                                    ref={
-                                        index === messageList.length - 1 && chat.sender === 'system'
-                                            ? systemLastMessageRef
-                                            : null
-                                    }
-                                >
-                                    {chat.message}
-                                    {chat.sender === 'system' ? (
-                                        <div className={Style.feedback}>
-                                            <IconButton
-                                                onClick={() => {
-                                                    navigator.clipboard.writeText(chat.message);
-                                                    getAlert('success', 'Copied text successfully');
-                                                }}
-                                            >
-                                                <ContentCopyIcon />
-                                            </IconButton>
-                                            <IconButton>
-                                                <TextSnippetIcon />
-                                            </IconButton>
-                                            <IconButton>
-                                                <ThumbUpOffAltIcon />
-                                            </IconButton>
-                                            <IconButton>
-                                                <ThumbDownOffAltIcon />
-                                            </IconButton>
+            <PageHeader
+                title={'Chat'}
+                showDialogue={true}
+                handleButtonClick={(title: HeaderAction) => {
+                    setShowDialogue(true);
+                    setHeaderAction(title);
+                }}
+            >
+                <div className={Style.container__body}>
+                    <div className={Style.messageContainer}>
+                        {messageList?.map((chat, index) => {
+                            return (
+                                <>
+                                    <div
+                                        key={chat.key}
+                                        className={`${Style.message} ${getChat(chat)}`}
+                                        style={{
+                                            visibility: `${showLoading && index === messageList.length - 1 && chat.sender === 'system' ? 'hidden' : 'visible'}`,
+                                        }}
+                                        ref={
+                                            index === messageList.length - 1 && chat.sender === 'system'
+                                                ? systemLastMessageRef
+                                                : null
+                                        }
+                                    >
+                                        {chat.message}
+                                        {chat.sender === 'system' ? (
+                                            <div className={Style.feedback}>
+                                                <IconButton
+                                                    onClick={() => {
+                                                        navigator.clipboard.writeText(chat.message);
+                                                        getAlert('success', 'Copied text successfully');
+                                                    }}
+                                                >
+                                                    <ContentCopyIcon />
+                                                </IconButton>
+                                                <IconButton>
+                                                    <TextSnippetIcon />
+                                                </IconButton>
+                                                <IconButton>
+                                                    <ThumbUpOffAltIcon />
+                                                </IconButton>
+                                                <IconButton>
+                                                    <ThumbDownOffAltIcon />
+                                                </IconButton>
+                                            </div>
+                                        ) : null}
+                                    </div>
+                                    {index === messageList.length - 1 && showLoading ? (
+                                        <div className={`${Style.messageSkeleton} `}>
+                                            <Skeleton animation="wave" />
+                                            <Skeleton animation="wave" />
+                                            <Skeleton animation="wave" />
                                         </div>
                                     ) : null}
-                                </div>
-                                {index === messageList.length - 1 && showLoading ? (
-                                    <div className={`${Style.messageSkeleton} `}>
-                                        <Skeleton animation="wave" />
-                                        <Skeleton animation="wave" />
-                                        <Skeleton animation="wave" />
-                                    </div>
-                                ) : null}
-                            </>
-                        );
-                    })}
-                    <div ref={messageContainerRef}></div>
-                </div>
+                                </>
+                            );
+                        })}
+                        <div ref={messageContainerRef}></div>
+                    </div>
 
-                <div className={Style.container__footer}>
-                    <MessageTypeField
-                        key={params[ROUTE.CHAT_ID]}
-                        initialIndex={initialIndex}
-                        disable={!canUserType}
-                        handleSubmit={(v) => {
-                            getChatApi({
-                                indexId: v.index.value,
-                                modelId: v.model,
-                                userText: v.message,
-                                chatId: params[ROUTE.CHAT_ID] ?? '',
-                            });
+                    <div className={Style.container__footer}>
+                        <MessageTypeField
+                            key={params[ROUTE.CHAT_ID]}
+                            initialIndex={initialIndex}
+                            disable={!canUserType}
+                            handleSubmit={(v) => {
+                                getChatApi({
+                                    indexId: v.index.value,
+                                    modelId: v.model,
+                                    userText: v.message,
+                                    chatId: params[ROUTE.CHAT_ID] ?? '',
+                                });
 
-                            setCanUserType(false);
-                            setShowLoading(true);
-                            setMessageList((prev) => {
-                                return [
-                                    ...prev,
-                                    { message: v.message, sender: 'user', key: uuidGenerator() },
-                                    { sender: 'system', message: '', key: uuidGenerator() },
-                                ];
-                            });
-                            scrollBottom();
-                        }}
-                    />
+                                setCanUserType(false);
+                                setShowLoading(true);
+                                setMessageList((prev) => {
+                                    return [
+                                        ...prev,
+                                        { message: v.message, sender: 'user', key: uuidGenerator() },
+                                        { sender: 'system', message: '', key: uuidGenerator() },
+                                    ];
+                                });
+                                scrollBottom();
+                            }}
+                        />
+                    </div>
                 </div>
-            </div>
+            </PageHeader>
         </div>
     );
 };

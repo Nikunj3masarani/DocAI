@@ -50,7 +50,6 @@ const Search = () => {
         });
     }, []);
 
-
     // Your component logic here
     const handleSubmit = (val) => {
         setSearchInput((prev) => !prev);
@@ -85,22 +84,26 @@ const Search = () => {
                 {headerAction === 'Create Brain' ? <CreateUpdateBrain /> : <AddUpdateKnowledge />}
             </Dialog>
 
-            <PageHeader title={'Home'} showDialogue={true} handleButtonClick={(title: HeaderAction) => {
-                setShowDialogue(true);
-                setHeaderAction(title);
-            }} />
-
-            <div className={Style['container__body']}>
-                <div className={Style.content}>
-                    <div className={Style.content__header}>
-                        <img src={Logo} alt="basf logo" />
-                        <h1>Talk to DocAI</h1>
-                    </div>
-                    <div className={Style.content__body}>
-                        <MessageTypeField handleSubmit={handleSubmit} disable={disableSearchInput} />
+            <PageHeader
+                title={'Home'}
+                showDialogue={true}
+                handleButtonClick={(title: HeaderAction) => {
+                    setShowDialogue(true);
+                    setHeaderAction(title);
+                }}
+            >
+                <div className={Style['container__body']}>
+                    <div className={Style.content}>
+                        <div className={Style.content__header}>
+                            <img src={Logo} alt="basf logo" />
+                            <h1>Talk to DocAI</h1>
+                        </div>
+                        <div className={Style.content__body}>
+                            <MessageTypeField handleSubmit={handleSubmit} disable={disableSearchInput} />
+                        </div>
                     </div>
                 </div>
-            </div>
+            </PageHeader>
         </div>
     );
 };

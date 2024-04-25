@@ -1,7 +1,6 @@
 //Import Third Party lib
 import { useState } from 'react';
 
-
 //Import Storybook
 import { Dialog } from '@docAi-app/stories';
 
@@ -59,12 +58,16 @@ const IndexList = () => {
                     <AddUpdateKnowledge />
                 )}
             </Dialog>
-            <PageHeader title={'My Brains'} showDialogue={true} handleButtonClick={(title: HeaderAction) => {
-                setShowDialogue(true);
-                setHeaderAction(title);
-            }} />
-
-            <BrainGrid isBrainChange={isBrainCreated} initialSearchValue={''} />
+            <PageHeader
+                title={'My Brains'}
+                showDialogue={true}
+                handleButtonClick={(title: HeaderAction) => {
+                    setShowDialogue(true);
+                    setHeaderAction(title);
+                }}
+            >
+                <BrainGrid isBrainChange={isBrainCreated} initialSearchValue={''} />
+            </PageHeader>
         </div>
     );
 };

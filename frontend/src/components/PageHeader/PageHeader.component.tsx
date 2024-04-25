@@ -30,9 +30,10 @@ interface PageHeaderProps {
     title: string;
     showDialogue: boolean;
     handleButtonClick: (title: HeaderAction) => void;
+    children: React.ReactNode;
 }
 
-const PageHeader = ({ title, showDialogue, handleButtonClick }: PageHeaderProps) => {
+const PageHeader = ({ title, showDialogue, handleButtonClick, children }: PageHeaderProps) => {
     return (
         <div className={Style.wrapper}>
             <div className={Style.container}>
@@ -61,6 +62,7 @@ const PageHeader = ({ title, showDialogue, handleButtonClick }: PageHeaderProps)
                     </div>
                 ) : null}
             </div>
+            <div className={Style.children}>{children}</div>
         </div>
     );
 };
