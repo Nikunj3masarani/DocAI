@@ -29,11 +29,12 @@ class Inference:
         ])
         condense_prompt = f'''
                     Instructions: 
+                        
                         1. Review the conversations between User and Assistant provided below.
-                        2. Condense the user's query into shorter versions in the same language as the user's queries.
-                        3. If the user's question doesn't show contextual relevance to the preceding conversation (within the provided limit), return the original question without modification.
-                        4. Condense the question by extracting the most relevant keywords or summarizing the intent.
-                        5. Prioritize recent questions.
+                        2. Given the following conversation and a follow up question, rephrase the follow up query 
+                            to be a standalone question,
+                        3. Condense the question by extracting the most relevant keywords or summarizing the intent.
+                        4. Prioritize recent questions.
 
                     Conversation History:
                             {conversation}
@@ -41,7 +42,7 @@ class Inference:
                     Query: {query}
 
                     Output: 
-                        The condensed version of the user's most recent question, without any additional explanation.
+                        The standalone version of the user's most recent question, without any additional explanation.
                     '''
         llm = AsyncOpenAI(
             api_key=settings.openai_api_key,

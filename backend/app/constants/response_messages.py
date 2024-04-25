@@ -25,7 +25,7 @@ INDEX_CANT_ACCESS = "You can not access this Brain"
 
 
 # Document Messages
-DOCUMENT_UPLOADED = "Docments will be indexed soon."
+DOCUMENT_UPLOADED = "Docments uploaded successfully."
 DOCUMENT_TYPE_NOT_ALLOWED = "Document file type not allowed"
 DOCUMENTS_FETCHED_SUCCESSFULLY = "Documents fetched successfully"
 DOCUMENT_NOT_FOUND = "Document not found"
