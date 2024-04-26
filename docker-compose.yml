@@ -36,8 +36,8 @@ services:
       context: ./frontend
       args:
           ENVIRONMENT: development
-          VITE_BASE_API: "http://${backend}:8080/api/"
-          VITE_STREAM_APP_URL: "http://${structured_data}:8053"
+          VITE_BASE_API: ${VITE_BASE_API}
+          VITE_STREAM_APP_URL: ${VITE_STREAM_APP_URL}
 
     ports:
       - "3000:3000"
