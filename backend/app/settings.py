@@ -59,8 +59,11 @@ class Settings(BaseSettings):
     jwt_algo: str = "HS256"
 
     openai_api_key: str = ""
-    email_api_key: str = os.getenv("EMAIL_API_KEY","")
-    from_email: str = os.getenv("FROM_EMAIL","")
+    email_api_key: str
+    from_email: str
+
+    frontend_service: str
+
     @property
     def db_url(self) -> URL:
         """

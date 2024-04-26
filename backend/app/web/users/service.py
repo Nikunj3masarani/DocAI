@@ -7,6 +7,7 @@ from app.exception.custom import CustomException
 from app import constants
 from app.helper.jwt_token_helper import create_access_token
 
+
 class User(BaseService):
     def __init__(self, db_client):
         self.db_client = db_client
@@ -14,17 +15,17 @@ class User(BaseService):
     async def create(self, data: Any, *args, **kwargs):
         user_db_service = UserDBService(self.db_client)
         user_obj, invite_obj = await user_db_service.insert_data(data)
-        
-        email_data= dict()
+
+        email_data = dict()
         email_data['user_uuid'] = str(user_obj.get("user_uuid"))
         email_data['token'] = str(invite_obj.get("token"))
         email_data['email'] = str(user_obj.get("email"))
         email_data['action'] = str(constants.UserInviteAction.ONBOARDING.value)
-        
+
         user_email_service = UserEmailService()
         user_email_service.invite_user_for_onboarding(email_data)
         return user_obj
-    
+
     async def get_access_token(self, data, *args, **kwargs):
         user_email = data.get('email')
         user_db_service = UserDBService(self.db_client)
@@ -53,13 +54,13 @@ class User(BaseService):
     async def forget_password(self, data: Any, *args, **kwargs):
         user_db_service = UserDBService(self.db_client)
         user_obj, invite_obj = await user_db_service.forget_password(data.get('email'))
-        
-        email_data= dict()
+
+        email_data = dict()
         email_data['user_uuid'] = str(user_obj.user_uuid)
         email_data['token'] = str(invite_obj.token)
         email_data['email'] = str(data.get('email'))
         email_data['action'] = str(constants.UserInviteAction.FORGET_PASSWORD.value)
-        
+
         user_email_service = UserEmailService()
         user_email_service.forget_password(email_data)
 
@@ -71,4 +72,3 @@ class User(BaseService):
             await user_db_service.onboard_user(data)
         elif data.get('action') == constants.UserInviteAction.FORGET_PASSWORD:
             await user_db_service.reset_password(data)
-
