@@ -59,9 +59,8 @@ class Settings(BaseSettings):
     jwt_algo: str = "HS256"
 
     openai_api_key: str = ""
-    email_api_key: str = ""
-    from_email: str = "mohit.raiyani@smartsensesolutions.com"
-
+    email_api_key: str = os.getenv("EMAIL_API_KEY","")
+    from_email: str = os.getenv("FROM_EMAIL","")
     @property
     def db_url(self) -> URL:
         """
@@ -82,5 +81,5 @@ class Settings(BaseSettings):
         env_file_encoding = "utf-8"
 
 
-settings = Settings(email_api_key="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")
+settings = Settings()
 # s#

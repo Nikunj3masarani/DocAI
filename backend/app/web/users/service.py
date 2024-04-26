@@ -19,7 +19,7 @@ class User(BaseService):
         email_data['user_uuid'] = str(user_obj.get("user_uuid"))
         email_data['token'] = str(invite_obj.get("token"))
         email_data['email'] = str(user_obj.get("email"))
-        email_data['action'] = "1"
+        email_data['action'] = str(constants.UserInviteAction.ONBOARDING.value)
         
         user_email_service = UserEmailService()
         user_email_service.invite_user_for_onboarding(email_data)
