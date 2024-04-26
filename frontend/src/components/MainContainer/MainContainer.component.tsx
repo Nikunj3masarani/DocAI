@@ -1,4 +1,8 @@
+//Import Third Party lib
+import { useEffect, useState } from 'react';
 import { NavLink, Outlet, useNavigate, useParams } from 'react-router-dom';
+
+//Import Storybook
 import {
     Accordion,
     AccordionDetails,
@@ -7,14 +11,35 @@ import {
     ThreeDotItemMenu,
     IconButton,
 } from '@docAi-app/stories';
-import { ROUTE } from '@docAi-app/utils/constants/Route.constant';
-import Icons from '@docAi-app/icons';
-import Styles from './MainContainer.module.scss';
-import { useEffect, useState } from 'react';
-import { chatApi } from '@docAi-app/api/chat.api';
-import CheckIcon from '@mui/icons-material/Check';
-import { itemsProps } from '@docAi-app/stories/components/Menu/Menu.component';
+//Import Component
+
+//Import Page
+
+//Import Hook
 import { useChatCreate } from '@docAi-app/hooks';
+import CheckIcon from '@mui/icons-material/Check';
+
+//Import Context
+
+//Import Model Type
+import { itemsProps } from '@docAi-app/stories/components/Menu/Menu.component';
+
+//Import Util, Helper , Constant
+import { ROUTE } from '@docAi-app/utils/constants/Route.constant';
+
+//Import Icon
+import Icons from '@docAi-app/icons';
+
+//Import Api
+import { chatApi } from '@docAi-app/api/chat.api';
+
+//Import Assets
+
+//Import Style
+import Styles from './MainContainer.module.scss';
+
+const STREAM_LIT_APP = 'Doc Analyzer';
+
 const sideNavigationItems = [
     {
         to: ROUTE.SEARCH,
@@ -28,7 +53,7 @@ const sideNavigationItems = [
     },
     {
         to: import.meta.env.VITE_STREAM_APP_URL,
-        label: 'Stream Lit Assistants',
+        label: STREAM_LIT_APP,
         icon: Icons.SmartToyOutlined,
     },
     {
@@ -36,6 +61,7 @@ const sideNavigationItems = [
         icon: Icons.History,
     },
 ];
+
 const getAccordionClasses = (activeAccordion: boolean) => {
     return `${activeAccordion ? `active ${Styles.accordion}` : ` ${Styles.accordion}`}`;
 };
@@ -62,26 +88,28 @@ const MainContainer = () => {
     const [activeAccordion, setActiveAccordion] = useState(false);
     const [messageList, setMessageList] = useState<Record<string, MessageList[]>>({});
     const [editTitleId, setEditTitleId] = useState<string>('');
-    const isTitleEditing = (messageId: string) => {
-        return editTitleId === messageId ? Styles.active : '';
-    };
+
     const [editedMessage, setEditedMessage] = useState<string>();
     const { isChatCreated, setIsChatCreated } = useChatCreate();
     const params = useParams();
     const navigate = useNavigate();
 
+    const isTitleEditing = (messageId: string) => {
+        return editTitleId === messageId ? Styles.active : '';
+    };
     useEffect(() => {
         if (isChatCreated) {
             chatApi.getChatList().then((res) => {
                 const tempList = res.payload;
+                const newMessageList: Record<string, MessageList[]> = {}
                 Object.keys(tempList).forEach((key: string) => {
                     const tempObj = tempList[key].map((tempMessage) => {
                         return { message: tempMessage.chat_title, messageId: tempMessage.chat_uuid };
                     });
-                    setMessageList((prev) => {
-                        return { ...prev, [key]: tempObj };
-                    });
+
+                    newMessageList[key] = tempObj;
                 });
+                setMessageList(newMessageList);
             });
             setIsChatCreated(false);
         }
@@ -93,7 +121,7 @@ const MainContainer = () => {
                 {navigationItem.label !== 'Chat' ? (
                     <li className="navItem" key={index}>
                         <NavLink
-                            target={navigationItem.label === 'Stream Lit Assistants' ? '_blank' : undefined}
+                            target={navigationItem.label === STREAM_LIT_APP ? '_blank' : undefined}
                             to={navigationItem.to || ''}
                             className={({ isActive }) =>
                                 isActive ? `navLink active ${Styles.menuItem}` : `navLink ${Styles.menuItem}`
@@ -123,7 +151,7 @@ const MainContainer = () => {
                                     <ul className={Styles.chatList}>
                                         {Object.keys(messageList).map((key: string) => {
                                             return (
-                                                <li>
+                                                <li key={key} className={Styles.messageListkey}>
                                                     {key}
                                                     <ul>
                                                         {messageList[key].map(({ message, messageId }: MessageList) => {
@@ -173,7 +201,7 @@ const MainContainer = () => {
                                                                                                 }: MessageList) => {
                                                                                                     if (
                                                                                                         messageId ===
-                                                                                                            editTitleId &&
+                                                                                                        editTitleId &&
                                                                                                         editedMessage
                                                                                                     ) {
                                                                                                         return {
@@ -250,8 +278,6 @@ const MainContainer = () => {
                                                                                     );
                                                                                 }
                                                                             }}
-                                                                            header={''}
-                                                                            subTitle={''}
                                                                         />
                                                                     </div>
                                                                 </li>

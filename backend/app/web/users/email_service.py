@@ -12,39 +12,29 @@ class Users:
         pass
 
     def invite_user_for_onboarding(self, data):
-        try:
-            api_key = settings.email_api_key
-            from_email = settings.from_email
-            name = str(from_email).split("@")[0]
-            
-            url = str(os.getenv("FRONTEND_SERVICE",""))+"/auth/set-user-details?user_uuid="+ data.get("user_uuid")+"&token="+data.get("token")+"&action="+data.get("action")
-            
-            content = INVITE_USER.format(name=name,url=url)
-            message = Mail(from_email, data.get("email"), INVITE_USER_EMAIL_SUBJECT,html_content= content)
-            
-            send_grid = SendGridAPIClient(api_key)
-            response = send_grid.send(message)
-            
-            print(response.status_code, response.body, response.headers)
+        api_key = settings.email_api_key
+        from_email = settings.from_email
+        name = str(from_email).split("@")[0]
+        url = f'''{settings.frontend_service}/set-password?user_uuid={data.get('user_uuid')}&token={
+        data.get("token")}&action={data.get('action')}'''
 
-        except Exception as e:
-            print(e)   
+        content = INVITE_USER.format(name=name, url=url)
+        message = Mail(from_email, data.get("email"), INVITE_USER_EMAIL_SUBJECT, html_content=content)
+
+        send_grid = SendGridAPIClient(api_key)
+        response = send_grid.send(message)
+
 
     def forget_password(self, data):
-        try:
-            api_key = settings.email_api_key
-            from_email = settings.from_email
-            name = str(from_email).split("@")[0]
-            
-            url = str(os.getenv("FRONTEND_SERVICE",""))+"/reset-password?user_uuid="+ data.get("user_uuid")+"&token="+data.get("token")+"&action="+data.get("action")
-            
-            content = FORGOT_PASSWORD.format(name=name,url=url)
-            message = Mail(from_email, data.get("email"), FORGOT_PASSWORD_EMAIL_SUBJECT,html_content= content)
-            
-            send_grid = SendGridAPIClient(api_key)
-            response = send_grid.send(message)
-            
-            print(response.status_code, response.body, response.headers)
-    
-        except Exception as e:
-            print(e)   
+        api_key = settings.email_api_key
+        from_email = settings.from_email
+        name = str(from_email).split("@")[0]
+
+        url = f'''{settings.frontend_service}/reset-password?user_uuid={data.get('user_uuid')}&token={
+        data.get("token")}&action={data.get('action')}'''
+
+        content = FORGOT_PASSWORD.format(name=name, url=url)
+        message = Mail(from_email, data.get("email"), FORGOT_PASSWORD_EMAIL_SUBJECT, html_content=content)
+
+        send_grid = SendGridAPIClient(api_key)
+        response = send_grid.send(message)

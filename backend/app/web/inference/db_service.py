@@ -71,6 +71,19 @@ class Inference(DBService):
         chat_history_result = list(chat_history_result.all())
         return chat_history_result
 
+    async def get_chat_history(self, chat_uuid):
+        select_chat_history_query = select(ChatHistoryTable.chat_uuid,
+                                           ChatHistoryTable.user_message,
+                                           ChatHistoryTable.assistant_message,
+                                           ChatHistoryTable.message_uuid,
+                                           ChatHistoryTable.created_at,
+                                           ChatHistoryTable.feedback,
+                                           ChatHistoryTable.feedback_status).where(
+            ChatHistoryTable.chat_uuid == chat_uuid).order_by(desc(ChatHistoryTable.created_at)).limit(5)
+        chat_history_result = await self.db_client.execute(select_chat_history_query)
+        chat_history_result = list(chat_history_result.all())
+        return chat_history_result
+
     async def update_data(self, data: Any, *args, **kwargs) -> Dict:
 
         select_query = select(ChatTable).where(ChatTable.chat_uuid == data.get("chat_uuid"))

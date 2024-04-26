@@ -1,9 +1,12 @@
 //Import Third Party lib
-import { Button, Dialog } from '@docAi-app/stories';
+import { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 //Import Storybook
+import { Button, Dialog } from '@docAi-app/stories';
 
 //Import Component
+import { AddUpdateKnowledge, CreateUpdateBrain, MessageTypeField, PageHeader } from '@docAi-app/components';
 
 //Import Page
 
@@ -12,36 +15,31 @@ import { Button, Dialog } from '@docAi-app/stories';
 //Import Context
 
 //Import Model Type
+import { HeaderAction } from '@docAi-app/types';
 
 //Import Util, Helper , Constant
+import { uuidGenerator } from '@docAi-app/utils/helper';
+import { ROUTE } from '@docAi-app/utils/constants/Route.constant';
 
 //Import Icon
-import Logo from '@docAi-app/../public/assets/images/logo.svg';
+import PsychologyOutlinedIcon from '@mui/icons-material/PsychologyOutlined';
 
 //Import Api
+import { chatApi } from '@docAi-app/api';
 
 //Import Assets
+import Logo from '@docAi-app/../public/assets/images/logo.svg';
 
 //Import Style
 import Style from './Search.module.scss';
-import { useEffect, useRef, useState } from 'react';
-import { HeaderAction } from '@docAi-app/types';
-import { AddUpdateKnowledge, CreateUpdateBrain, MessageTypeField } from '@docAi-app/components';
-import PsychologyOutlinedIcon from '@mui/icons-material/PsychologyOutlined';
-import { uuidGenerator } from '@docAi-app/utils/helper';
-import { useNavigate } from 'react-router-dom';
-import { ROUTE } from '@docAi-app/utils/constants/Route.constant';
-import { chatApi } from '@docAi-app/api';
-import { useChatCreate } from '@docAi-app/hooks';
 
 const Search = () => {
-    // useRef
-    // useState
     const [headerAction, setHeaderAction] = useState<HeaderAction | undefined>();
     const [showDialogue, setShowDialogue] = useState<boolean>(false);
     const [disableSearchInput, setSearchInput] = useState<boolean>(false);
     const chatList = useRef<string[]>([]);
     const navigate = useNavigate();
+
     useEffect(() => {
         chatApi.getChatList().then(({ payload }) => {
             Object.keys(payload).forEach((key) => {
@@ -51,15 +49,6 @@ const Search = () => {
             });
         });
     }, []);
-    // Variables Dependent upon State
-
-    // Api Calls
-
-    // Event Handlers
-
-    // Helpers
-
-    // JSX Methods
 
     // Your component logic here
     const handleSubmit = (val) => {
@@ -75,7 +64,7 @@ const Search = () => {
             state: {
                 needToCreate: true,
                 userText: val.message,
-                indexId: val['index'].value,
+                indexInfo: val['index'],
                 modelId: val['model'],
                 chatId: chatUuid,
             },
@@ -94,43 +83,27 @@ const Search = () => {
             >
                 {headerAction === 'Create Brain' ? <CreateUpdateBrain /> : <AddUpdateKnowledge />}
             </Dialog>
-            <div className={Style.container__header}>
-                <div>
-                    <h1>Home</h1>
-                </div>
-                <div className={Style.container__header__body}>
-                    <Button
-                        variant="contained"
-                        onClick={() => {
-                            setShowDialogue(true);
-                            setHeaderAction('Create Brain');
-                        }}
-                    >
-                        <PsychologyOutlinedIcon />
-                        Create Brain
-                    </Button>
-                    <Button
-                        variant="outlined"
-                        onClick={() => {
-                            setShowDialogue(true);
-                            setHeaderAction('Add Knowledge');
-                        }}
-                    >
-                        Add Knowledge
-                    </Button>
-                </div>
-            </div>
-            <div className={Style['container__body']}>
-                <div className={Style.content}>
-                    <div className={Style.content__header}>
-                        <img src={Logo} alt="basf logo" />
-                        <h1>Talk to DocAI</h1>
-                    </div>
-                    <div className={Style.content__body}>
-                        <MessageTypeField handleSubmit={handleSubmit} disable={disableSearchInput} />
+
+            <PageHeader
+                title={'Home'}
+                showDialogue={true}
+                handleButtonClick={(title: HeaderAction) => {
+                    setShowDialogue(true);
+                    setHeaderAction(title);
+                }}
+            >
+                <div className={Style['container__body']}>
+                    <div className={Style.content}>
+                        <div className={Style.content__header}>
+                            <img src={Logo} alt="basf logo" />
+                            <h1>Talk to DocAI</h1>
+                        </div>
+                        <div className={Style.content__body}>
+                            <MessageTypeField handleSubmit={handleSubmit} disable={disableSearchInput} />
+                        </div>
                     </div>
                 </div>
-            </div>
+            </PageHeader>
         </div>
     );
 };

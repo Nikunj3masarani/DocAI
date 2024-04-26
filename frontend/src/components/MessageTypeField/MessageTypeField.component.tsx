@@ -55,19 +55,20 @@ export const indexList = async (searchString: string, loadOptions, { page }) => 
     };
 };
 type MessageTypeFieldProps = {
+    initialIndex?: Option;
     disable: boolean;
     handleSubmit: (v: any) => void;
 };
-const MessageTypeField = ({ disable, handleSubmit }: MessageTypeFieldProps) => {
-    // useRef
-    // useState
-    const [index, setIndex] = useState<Option>();
+const MessageTypeField = ({ disable, handleSubmit, initialIndex }: MessageTypeFieldProps) => {
+    
+    const [index, setIndex] = useState<Option>(initialIndex ?? { label: '', value: '' });
     const [modelOption, setModelOption] = useState<Option[]>([]);
-
     useEffect(() => {
-        indexList('', undefined, { page: 1 }).then((res) => {
-            setIndex(res.options[0]);
-        });
+        if (index.value === '') {
+            indexList('', undefined, { page: 1 }).then((res) => {
+                setIndex(res.options[0]);
+            });
+        }
 
         modelApi.getModelsList().then((res) => {
             let models = res.payload.models;

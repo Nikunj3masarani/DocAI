@@ -1,11 +1,12 @@
 //Import Third Party lib
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { SelectChangeEvent } from '@mui/material';
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import { GridColDef } from '@mui/x-data-grid';
 import { useNavigate } from 'react-router-dom';
+import { debounce } from 'lodash';
 
 //Import Storybook
-import { Dialog, Pagination, SearchInput, NoDataFound, Select } from '@docAi-app/stories';
+import { Dialog, SearchInput, NoDataFound, DataGrid } from '@docAi-app/stories';
 
 //Import Component
 import { ActionButton } from '@docAi-app/components/ActionButton';
@@ -20,6 +21,7 @@ import { ActionButton } from '@docAi-app/components/ActionButton';
 
 //Import Util, Helper , Constant
 import { PAGINATION_OPTIONS, TIMEOUT } from '@docAi-app/utils/constants/common.constant';
+import { ROUTE } from '@docAi-app/utils/constants/Route.constant';
 
 //Import Icon
 import Icons from '@docAi-app/icons';
@@ -30,14 +32,8 @@ import { indexApi } from '@docAi-app/api';
 //Import Assets
 
 //Import Style
-import Styles from './DataGrid.module.scss';
-import { debounce } from 'lodash';
-import { ROUTE } from '@docAi-app/utils/constants/Route.constant';
+import Styles from './BrainGrid.module.scss';
 
-// import { copyHandler, highlightSearchedWord } from '@patent-app/utils/helpers/common.helper';
-// import { PromptApi } from '@patent-app/apis';
-
-// const maxTags = 2;
 
 type IndexListType = {
     index_uuid: string;
@@ -50,7 +46,11 @@ interface DataGripComp {
     initialSearchValue: string;
 }
 
-const DataGridComp = ({ isBrainChange, initialSearchValue }: DataGripComp) => {
+const renderNoRows = () => {
+    return <NoDataFound message="No Brains were found based on your search" className={Styles.noDataFound} />;
+};
+
+const BrainGrid = ({ isBrainChange, initialSearchValue }: DataGripComp) => {
     // Hooks & Variables
     const [searchData, setSearchData] = useState(initialSearchValue);
     const [data, setData] = useState<IndexListType[]>([]);
@@ -62,63 +62,60 @@ const DataGridComp = ({ isBrainChange, initialSearchValue }: DataGripComp) => {
     const [isLoading, setIsLoading] = useState(true);
     const promptIdRef = useRef('');
     const navigate = useNavigate();
-    const columns: GridColDef[] = useMemo(
-        () => [
-            {
-                field: 'title',
-                headerName: 'Brains',
-                sortable: false,
-                width: 300,
-                filterable: false,
-            },
-            {
-                field: 'description',
-                headerName: 'Description',
-                width: 500,
-                sortable: false,
-                filterable: false,
-            },
+    const columns: GridColDef[] = [
+        {
+            field: 'title',
+            headerName: 'Brains',
+            sortable: false,
+            width: 300,
+            filterable: false,
+        },
+        {
+            field: 'description',
+            headerName: 'Description',
+            width: 500,
+            sortable: false,
+            filterable: false,
+        },
+        {
+            field: 'actions',
+            headerName: 'Actions',
+            sortable: false,
+            filterable: false,
+            width: 150,
+            renderCell: (params) => {
+                return (
+                    <div className={Styles.actionButtons}>
+                        <ActionButton
+                            icon={<Icons.Edit />}
+                            onClick={() => updateDataHandler(params.row)}
+                            title="Edit"
+                        />
 
-            {
-                field: 'actions',
-                headerName: 'Actions',
-                sortable: false,
-                filterable: false,
-                width: 150,
-                renderCell: (params) => {
-                    return (
-                        <div className={Styles.actionButtons}>
-                            <ActionButton
-                                icon={<Icons.Edit />}
-                                onClick={() => updateDataHandler(params.row)}
-                                title="Edit"
-                            />
-
-                            <ActionButton
-                                icon={<Icons.Delete />}
-                                onClick={(e) => {
-                                    e.preventDefault();
-                                    handleDeleteClick(params.row?.index_uuid);
-                                }}
-                                title="Delete"
-                            />
-                        </div>
-                    );
-                },
+                        <ActionButton
+                            icon={<Icons.Delete />}
+                            onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                handleDeleteClick(params.row?.index_uuid);
+                            }}
+                            title="Delete"
+                        />
+                    </div>
+                );
             },
-        ],
-        [searchData],
-    );
+        },
+    ];
 
     useEffect(() => {
-        onApiCall();
-    }, [pagination, searchData, isBrainChange]);
+        onApiCall({});
+    }, [pagination, isBrainChange]);
 
     // Api Calls
-    const onApiCall = (data = '') => {
+    const onApiCall = ({ pageNumber = pagination.page, data = '' }: { pageNumber?: number, data?: string }) => {
         const params = {
             search: data,
-            page_number: pagination.page,
+            page_number: pageNumber,
             records_per_page: pagination.size,
             sort_order: '',
             sort_by: '',
@@ -170,18 +167,15 @@ const DataGridComp = ({ isBrainChange, initialSearchValue }: DataGripComp) => {
 
     const onCloseDialog = (event: boolean) => {
         if (event) {
-            onApiCall();
+            onApiCall({});
         }
         setIsOpenDialog(false);
     };
 
     const onSearchData = (data: string) => {
-        if (pagination.page !== 1) {
-            setPagination((prev) => ({ ...prev, page: 1 }));
-        } else {
-            debounceSearch(data);
-        }
-        setSearchData(data);
+
+        debounceSearch({ data, pageNumber: 1 });
+        // setSearchData(data);
     };
 
     const handleChange = (_event: React.ChangeEvent<unknown>, value: number) => {
@@ -192,7 +186,7 @@ const DataGridComp = ({ isBrainChange, initialSearchValue }: DataGripComp) => {
         setPagination({ page: 1, size: event.target.value as number });
     };
 
-    const updateDataHandler = (data) => {
+    const updateDataHandler = (data: IndexListType) => {
         // setSelectedData(data);
         // setIsOpenDialog(true);
         navigate(`${ROUTE.ROOT}${ROUTE.INDEX_LIST}/${data['index_uuid']}`, { state: { title: data.title } });
@@ -200,7 +194,7 @@ const DataGridComp = ({ isBrainChange, initialSearchValue }: DataGripComp) => {
 
     const handleDeleteClick = (id: string) => {
         indexApi.deleteIndex({ index_uuid: id }).then(() => {
-            onApiCall();
+            onApiCall({});
         });
         // setIsDeleteConfirmationVisible(true);
     };
@@ -215,13 +209,7 @@ const DataGridComp = ({ isBrainChange, initialSearchValue }: DataGripComp) => {
     };
 
     // Helpers
-
     // JSX Elements
-
-    const renderNoRows = () => {
-        return <NoDataFound message="No Brains were found based on your search" />;
-    };
-
     return (
         <>
             <header className={Styles.header}>
@@ -233,19 +221,15 @@ const DataGridComp = ({ isBrainChange, initialSearchValue }: DataGripComp) => {
                             onSearchData('');
                             setSearchData('');
                         }}
-                        onChange={(e) => onSearchData(e.target.value)}
+                        onChange={(e) => {
+                            onSearchData(e.target.value);
+                            setSearchData(e.target.value);
+                        }}
                     />
                 </div>
             </header>
             <div className={Styles.dataGrid}>
                 <DataGrid
-                    disableColumnFilter={true}
-                    disableColumnSelector={true}
-                    disableColumnResize={true}
-                    disableColumnMenu={true}
-                    autosizeOptions={{
-                        expand: false,
-                    }}
                     getRowId={(row) => row.index_uuid}
                     rows={data}
                     columns={columns}
@@ -253,34 +237,19 @@ const DataGridComp = ({ isBrainChange, initialSearchValue }: DataGripComp) => {
                     slots={{
                         noRowsOverlay: renderNoRows,
                     }}
-                    // onRowClick={(row, e) => {
-                    //     console.log(e);
-                    //     navigate(`${row.id}`);
-                    // }}
                     loading={isLoading}
+                    pageSelectorSize="small"
+                    pageInfo={pagination}
+                    pager={pager}
+                    handlePageSizeChange={handleSelectChange}
+                    handlePageNumberChange={handleChange}
+                    numberOfRowOptions={PAGINATION_OPTIONS}
+                    onRowSelectionModelChange={(v) => {
+                        const selectedRow = data.filter((row) => row.index_uuid === v[0]);
+                        updateDataHandler(selectedRow[0]);
+                    }}
                 />
             </div>
-            {pager?.totalRecords >= 10 ? (
-                <div className={Styles.pagination}>
-                    <div>
-                        <Select
-                            options={PAGINATION_OPTIONS}
-                            id="size-select"
-                            value={pagination.size}
-                            size="small"
-                            onChange={handleSelectChange}
-                        />
-                    </div>
-                    <div>
-                        <Pagination
-                            count={Math.ceil(pager.totalRecords / pagination.size)}
-                            page={pagination.page}
-                            color="primary"
-                            onChange={handleChange}
-                        />
-                    </div>
-                </div>
-            ) : null}
 
             <Dialog
                 open={isOpenDialog}
@@ -302,4 +271,4 @@ const DataGridComp = ({ isBrainChange, initialSearchValue }: DataGripComp) => {
     );
 };
 
-export { DataGridComp };
+export { BrainGrid };

@@ -41,7 +41,7 @@ const SearchInput = ({ onClearClick, ...props }: TextFieldProps & CustomSearchTe
                 ...{
                     endAdornment: (
                         <IconButton onClick={onClearClick} isbordered={false}>
-                            <SearchIcon width={24} height={24} />
+                            <SearchIcon width={18} height={18} />
                         </IconButton>
                     ),
                 },

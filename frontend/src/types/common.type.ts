@@ -11,6 +11,7 @@ type IconType = {
     fill2?: string;
     stroke?: string;
     opacity?: number | string;
+    fontSize?: 'small' | 'inherit' | 'large' | 'medium';
 };
 
 interface FilesUpload {

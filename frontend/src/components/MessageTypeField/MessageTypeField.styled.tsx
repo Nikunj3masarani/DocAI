@@ -13,9 +13,13 @@ type CustomPaperProps = PaperProps & {
 };
 
 const StyledPaper = styled(Paper)<CustomPaperProps>`
-    display: flex;
-    align-items: center;
-    width: ${({ width }: { width ?: string }) => width ?? '70%'};
+    &.MuiPaper-root {
+        display: flex;
+        align-items: center;
+        padding : 0.5rem;
+        width: ${({ width }: { width?: string }) => width ?? '70%'};
+        border-radius: 1rem;
+    }
 `;
 
 export { StyledInputBase, StyledPaper };

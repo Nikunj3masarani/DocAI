@@ -72,7 +72,7 @@ class Chat(Base):
     index_uuid = Column(UUID(as_uuid=True), ForeignKey('indexes.index_uuid'))
     model_uuid = Column(UUID(as_uuid=True), ForeignKey('models.model_uuid'))
     prompt_uuid = Column(UUID(as_uuid=True), ForeignKey('prompts.prompt_uuid'), nullable=True)
-    chat_history = relationship("ChatHistory", cascade="delete", backref="chat")
+    chat_history = relationship("ChatHistory", cascade="delete", back_populates="chat")
 
 
 class ChatHistory(Base):
@@ -85,6 +85,7 @@ class ChatHistory(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
     feedback_status = Column(Integer)
     feedback = Column(String)
+    chat = relationship("Chat", back_populates="chat_history")
 
 
 class Invitation(Base):

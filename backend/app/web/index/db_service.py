@@ -6,6 +6,7 @@ from app.web.common.schema import Index as IndexTable
 from app.web.common.schema import Documents as DocumentTable
 from app.web.common.schema import IndexUserMapping as IndexUserMappingTable
 from app.web.common.schema import Chat as ChatTable
+from app.web.common.schema import ChatHistory as ChatHistoryTable
 from app.web.common.schema import User as UserTable
 from app.web.common.schema import Invitation as InvitationTable
 from app.exception import CustomException
@@ -104,12 +105,20 @@ class Index(DBService):
         delete_index_user_mapping = delete(IndexUserMappingTable).where(
             IndexUserMappingTable.index_uuid == data.get("index_uuid"))
         delete_documents_query = delete(DocumentTable).where(DocumentTable.index_uuid == data.get("index_uuid"))
-        delete_chat_query = delete(ChatTable).where(ChatTable.index_uuid == data.get("index_uuid"))
+        select_chat_query = select(ChatTable.chat_uuid).where(ChatTable.index_uuid == data.get("index_uuid"))
+
+        chat_id_result = await self.db_session.execute(select_chat_query)
+        chat_ids = list(chat_id_result.scalars())
+
+        delete_chat_history_query = delete(ChatHistoryTable).where(ChatHistoryTable.chat_uuid.in_(chat_ids))
+        delete_chat_query = delete(ChatTable).where(ChatTable.chat_uuid.in_(chat_ids))
 
         _ = await self.db_session.execute(delete_documents_query)
+        _ = await self.db_session.execute(delete_chat_history_query)
         _ = await self.db_session.execute(delete_chat_query)
         _ = await self.db_session.execute(delete_index_user_mapping)
         _ = await self.db_session.execute(delete_index_query)
+
         return index_result
 
     async def get_all_data(self, data: Any, *args, **kwargs) -> Dict:

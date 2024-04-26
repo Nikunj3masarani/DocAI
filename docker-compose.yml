@@ -15,6 +15,7 @@ services:
       POSTGRES_PORT: 5432
       ES_HOST_URL: "http://elasticsearch:9200"
       HAYSTACK_TELEMETRY_ENABLED: False
+      FRONTEND_SERVICE: "http://backend:3000"
 
     env_file:
       - .env
@@ -35,14 +36,14 @@ services:
       context: ./frontend
       args:
           ENVIRONMENT: development
+          VITE_BASE_API: ${VITE_BASE_API}
+          VITE_STREAM_APP_URL: ${VITE_STREAM_APP_URL}
+
     ports:
       - "3000:3000"
     depends_on:
       backend:
         condition: service_started
-    environment:
-      VITE_BASE_API: "http://backend:8080/api/"
-      VITE_STREAM_APP_URL: "http://structured_data:8053"
 
   structured_data:
     build: ./structured_data_poc
