@@ -28,4 +28,5 @@ class IndexRole(int, Enum):
     EDITOR = 3
 
 
-SUBJECT = "Invitation to DocAI Platform"
+INVITE_USER_EMAIL_SUBJECT = "Invitation to DocAI Platform"
+FORGOT_PASSWORD_EMAIL_SUBJECT = "Password Reset Request"
