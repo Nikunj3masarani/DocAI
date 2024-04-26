@@ -55,7 +55,7 @@ class Users(DBService):
             self.db_session.add(invitation_obj)
             await self.db_session.commit()
 
-        return user_obj.__dict__
+        return user_obj.__dict__ , invitation_obj.__dict__
 
     async def get_data_by_id(self, _id: Any, *args, **kwargs) -> Dict:
         existing_user_query = select(UserTable.user_uuid,
@@ -96,7 +96,7 @@ class Users(DBService):
         invitation_obj.invite_action = constants.UserInviteAction.FORGET_PASSWORD.value
         invitation_obj.user_uuid = existing_user_result.user_uuid
         self.db_session.add(invitation_obj)
-        return existing_user_result
+        return existing_user_result, invitation_obj
 
     async def update_data(self, data: Any, *args, **kwargs) -> Dict:
         pass
