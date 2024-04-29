@@ -1,7 +1,10 @@
 import { styled } from '@mui/material/styles';
-import { MuiChipsInput, MuiChipsInputProps } from  'mui-chips-input';
+import { MuiChipsInput, MuiChipsInputProps } from 'mui-chips-input';
+type StyledMuiChipsInputProps = MuiChipsInputProps & {
+    maxWidth ?: string;
+};
 
-const StyledMuiChipsInput = styled(MuiChipsInput)`
+const StyledMuiChipsInput = styled(MuiChipsInput)<StyledMuiChipsInputProps>`
     &.MuiFormControl-root {
         .MuiFormLabel-root {
             color: ${({ theme }) => theme.colors.davyGrey};
@@ -31,7 +34,7 @@ const StyledMuiChipsInput = styled(MuiChipsInput)`
             }
 
             .MuiChip-root {
-                max-width: 9rem;
+                max-width: ${({maxWidth}) => maxWidth ?? '9rem'};
                 border-radius: 0.4rem;
                 background: rgba(117, 63, 234, 0.1);
 
@@ -58,4 +61,4 @@ const StyledMuiChipsInput = styled(MuiChipsInput)`
 `;
 
 export { StyledMuiChipsInput };
-export type { MuiChipsInputProps };
+export type { StyledMuiChipsInputProps };

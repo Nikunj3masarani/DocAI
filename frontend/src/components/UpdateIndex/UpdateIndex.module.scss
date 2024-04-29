@@ -3,33 +3,24 @@
 .container {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
+    align-items: flex-start;
+    justify-content: center;
     height: 100vh;
     margin: auto;
     width: 100%;
 
     &__header {
         height: $headerHeight;
-        width: 100%;
         display: flex;
-        align-items: center;
         justify-content: space-between;
-        border-bottom: 2px solid $black;
-
-        &__body {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 2rem;
-        }
+        align-items: center;
+        border-bottom: 1px solid $black10;
+        width: 100%;
+        padding-inline: 2rem;
     }
     &__body {
         height: calc(100vh - $headerHeight);
+        padding-top: 2rem;
         width: 100%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
     }
 }

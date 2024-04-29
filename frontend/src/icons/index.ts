@@ -21,6 +21,8 @@ import Download from './Download.icon';
 import DownArrow from './DownArrow.icon';
 import { SmartToyOutlined } from './SmartToyOutlined.icon';
 import { History } from './History.icon';
+import { Person } from './Person.icon';
+
 const Icons = {
     BrowsePrompt,
     Close,
@@ -45,6 +47,7 @@ const Icons = {
     DownArrow,
     SmartToyOutlined,
     History,
+    Person,
 };
 
 export default Icons;

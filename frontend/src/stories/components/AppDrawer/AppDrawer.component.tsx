@@ -3,7 +3,7 @@
 //Import Storybook
 
 //Import Component
-import { StyledContainer, StyledList, StyledHeader } from './AppDrawer.styled';
+import { StyledContainer, StyledList, StyledHeader, StyledListItem } from './AppDrawer.styled';
 
 //Import Page
 
@@ -26,20 +26,22 @@ import Logo from '@docAi-app/../public/assets/images/logo.svg';
 import Styles from './AppDrawer.module.scss';
 
 interface AppDrawerProps {
-    drawerItem: React.ReactNode;
+    topItem: React.ReactNode;
+    bottomItem: React.ReactNode;
 }
 
-const AppDrawer = ({ drawerItem }: AppDrawerProps) => {
+const AppDrawer = ({ topItem, bottomItem }: AppDrawerProps) => {
     return (
         <StyledContainer>
             <StyledList>
                 <div className={Styles.container}>
-                    <div>
                         <StyledHeader>
                             <img src={Logo} />
                         </StyledHeader>
-                        <div>{drawerItem}</div>
-                    </div>
+                        <StyledListItem >
+                            <div>{topItem}</div>
+                            <div>{bottomItem}</div>
+                        </StyledListItem>
                 </div>
             </StyledList>
         </StyledContainer>

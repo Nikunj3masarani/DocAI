@@ -1,6 +1,14 @@
 import { Navigate, RouteObject, createBrowserRouter } from 'react-router-dom';
 import { ROUTE } from '@docAi-app/utils/constants/Route.constant';
-import { Chat, ForgotPassword, IndexList, Login, PageNotFound, ResetPassword } from '@docAi-app/pages';
+import {
+    Chat,
+    ForgotPassword,
+    IndexList,
+    Login,
+    PageNotFound,
+    ResetPassword,
+    SetUserDetails,
+} from '@docAi-app/pages';
 import { AuthContainer, AuthRoute, ErrorComponent, MainContainer, UpdateIndex } from '@docAi-app/components';
 import { Search } from '@docAi-app/pages/Search';
 import { ChatCreateContextProvider } from '@docAi-app/context/ChatCreateContext/ChatCreateContext';
@@ -28,6 +36,11 @@ const AUTHCHILDROUTES: RouteObject[] = [
     {
         path: ROUTE.RESET_PASSWORD,
         element: <ResetPassword />,
+        ...errorElement,
+    },
+    {
+        path: ROUTE.SET_USER_DETAILS,
+        element: <SetUserDetails />,
         ...errorElement,
     },
 ];

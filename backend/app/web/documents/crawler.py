@@ -29,14 +29,19 @@ class CrawlWebsite(BaseModel):
             raise
 
     def extract_content(self, url):
-        article = Article(url)
         try:
-            article.download()
-            article.parse()
+            response = requests.get(url)
+            soup = BeautifulSoup(response.content)
+            return soup.get_text()
         except Exception as e:
-            print(f"Error downloading or parsing article: {e}")
-            return None
-        return article.text
+            print(e)
+            return ""
+
+    def _safe_concate(self, str_1, str_2):
+        if str_1 and len(str_1)>0:
+            if str_2 and len(str_2)>0:
+                return str_1 + str_2
+        return str_1 or ""
 
     def _process_recursive(self, url, depth, visited_urls):
         if depth == 0 or url in visited_urls:
@@ -48,7 +53,7 @@ class CrawlWebsite(BaseModel):
         raw_html = self._crawl(url)
 
         if not raw_html:
-            return content
+            return content or ""
 
         soup = BeautifulSoup(raw_html, "html.parser")
         links = [a["href"] for a in soup.find_all("a", href=True)]
@@ -56,9 +61,9 @@ class CrawlWebsite(BaseModel):
             full_url = urljoin(url, link)
             # Ensure we're staying on the same domain
             if self.url in full_url:
-                content += self._process_recursive(full_url, depth - 1, visited_urls)  # type: ignore
+                content = self._safe_concate(content, self._process_recursive(full_url, depth - 1, visited_urls))
 
-        return content
+        return content or ""
 
     def process(self):
         # Extract and combine content recursively

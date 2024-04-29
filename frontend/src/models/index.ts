@@ -1,4 +1,10 @@
-export type { LoginRequestBody, ForgotPasswordRequestBody, LoginResponsePayload } from './auth.model';
+export type {
+    LoginRequestBody,
+    ForgotPasswordRequestBody,
+    LoginResponsePayload,
+    InviteUserRequestBody,
+    SetPassWordsRequestBody,
+} from './auth.model';
 
 export type {
     EditMessageTitleProps,

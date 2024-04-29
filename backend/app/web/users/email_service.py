@@ -30,7 +30,7 @@ class Users:
         from_email = settings.from_email
         name = str(from_email).split("@")[0]
 
-        url = f'''{settings.frontend_service}/reset-password?user_uuid={data.get('user_uuid')}&token={
+        url = f'''{settings.frontend_service}/auth/reset-password?user_uuid={data.get('user_uuid')}&token={
         data.get("token")}&action={data.get('action')}'''
 
         content = FORGOT_PASSWORD.format(name=name, url=url)

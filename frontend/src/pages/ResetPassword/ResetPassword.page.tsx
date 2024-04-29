@@ -21,8 +21,12 @@ import { CONFIRM_PASSWORD_VALIDATION, PASSWORD_VALIDATION } from '@docAi-app/uti
 
 //Import Style
 import Styles from './ResetPassword.module.scss';
+import { authApi } from '@docAi-app/api';
+import { useNavigate } from 'react-router-dom';
+import { ROUTE } from '@docAi-app/utils/constants/Route.constant';
 
 const ResetPassword = () => {
+    const navigate = useNavigate();
     const formControls = ['password', 'confirmPassword'] as const;
 
     type FieldValidation = {
@@ -70,6 +74,17 @@ const ResetPassword = () => {
     const handleSubmit = (val: {
         [P in (typeof formControls)[number]]: string;
     }) => {
+        // authApi
+        //     .setPasswords({
+        //         full_name: val['password'],
+        //         password: val['password'],
+        //         user_uuid: state['userUuid'],
+        //         token: state['token'],
+        //         action: 1,
+        //     })
+        //     .then(() => {
+        //         navigate(`${ROUTE.ROOT}${ROUTE.AUTH}/${ROUTE.LOGIN}`);
+        //     });
     };
 
     return (
