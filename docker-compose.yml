@@ -15,7 +15,6 @@ services:
       POSTGRES_PORT: 5432
       ES_HOST_URL: "http://elasticsearch:9200"
       HAYSTACK_TELEMETRY_ENABLED: False
-      FRONTEND_SERVICE: "http://backend:3000"
 
     env_file:
       - .env
