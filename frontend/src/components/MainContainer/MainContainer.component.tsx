@@ -19,7 +19,7 @@ import {
 import { AddNewUser } from '@docAi-app/components';
 
 //Import Hook
-import { useChatCreate } from '@docAi-app/hooks';
+import { useAuth, useChatCreate } from '@docAi-app/hooks';
 
 //Import Context
 
@@ -41,13 +41,15 @@ import { chatApi } from '@docAi-app/api/chat.api';
 
 //Import Style
 import Styles from './MainContainer.module.scss';
+import { ACCESS_TOKEN_KEY, CURRENT_USER_EMAIL } from '@docAi-app/utils/constants/storage.constant';
+import { removeFromLocalStorage } from '@docAi-app/utils/helper';
 
 const STREAM_LIT_APP = 'Doc Analyzer';
 interface SideNavigationItems {
     to?: string;
     label: string;
     icon: (props: IconType) => JSX.Element;
-    type: 'link' | 'externalLink' | 'accordion' | 'dialogue';
+    type: 'link' | 'externalLink' | 'accordion' | 'dialogue' | 'action';
     position: 'top' | 'bottom';
 }
 
@@ -85,6 +87,12 @@ const sideNavigationItems: SideNavigationItems[] = [
         type: 'dialogue',
         position: 'bottom',
     },
+    {
+        label: 'Logout',
+        icon: Icons.Logout,
+        type: 'action',
+        position: 'bottom',
+    },
 ];
 
 const getAccordionClasses = (activeAccordion: boolean) => {
@@ -120,6 +128,7 @@ const MainContainer = () => {
     const { isChatCreated, setIsChatCreated } = useChatCreate();
     const params = useParams();
     const navigate = useNavigate();
+    const { setIsLogin } = useAuth();
 
     const isTitleEditing = (messageId: string) => {
         return editTitleId === messageId ? Styles.active : '';
@@ -327,6 +336,24 @@ const MainContainer = () => {
                         onClick={() => {
                             setShowDialogue(true);
                             setDialogueHeader('Add New User');
+                        }}
+                    >
+                        <div className={`navLink ${Styles.menuItem}`}>
+                            <navigationItem.icon width={13} height={16} />
+                            {navigationItem.label}
+                        </div>
+                    </li>
+                );
+            }
+            case 'action': {
+                return (
+                    <li
+                        className="navItem"
+                        key={index}
+                        onClick={() => {
+                            removeFromLocalStorage(CURRENT_USER_EMAIL);
+                            removeFromLocalStorage(ACCESS_TOKEN_KEY);
+                            setIsLogin(false);
                         }}
                     >
                         <div className={`navLink ${Styles.menuItem}`}>
