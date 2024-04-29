@@ -4,9 +4,12 @@ import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 
-const DialogMainStyled = styled(Dialog)`
+type DialogMainStyledProps = DialogProps & {
+    minWidth?: string;
+};
+const DialogMainStyled = styled(Dialog)<DialogMainStyledProps>`
     .MuiPaper-root {
-        min-width: 100rem;
+        min-width: ${({ minWidth }) => minWidth ?? '100rem'};
         margin: 0;
         padding: 3rem 0rem 0rem 0rem;
         border-radius: 2rem;
@@ -33,7 +36,7 @@ const DialogTitleStyled = styled(DialogTitle)`
         }
 
         button {
-            cursor : pointer;
+            cursor: pointer;
             background: transparent;
             border: 0;
 
@@ -54,4 +57,4 @@ const DialogActionsStyled = styled(DialogActions)`
 `;
 
 export { DialogMainStyled, DialogTitleStyled, DialogContentStyled, DialogActionsStyled };
-export type { DialogProps };
+export type { DialogMainStyledProps };

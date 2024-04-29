@@ -16,9 +16,10 @@
 .menuItem {
     display: flex;
     align-items: center;
+    background-color: transparent;
+    cursor: pointer;
     gap: 1rem;
     width: 100%;
-    background-color: transparent;
 }
 
 .accordion {

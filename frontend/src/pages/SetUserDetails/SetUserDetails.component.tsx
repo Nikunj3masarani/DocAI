@@ -1,5 +1,5 @@
 //Import Third Party lib
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Field, Form } from 'react-final-form';
 
 //Import Storybook
@@ -16,9 +16,8 @@ import { Button, InputField } from '@docAi-app/stories';
 //Import Model Type
 
 //Import Util, Helper , Constant
-import { ROUTE } from '@docAi-app/utils/constants/Route.constant';
 import { removeEmptyField, validation } from '@docAi-app/utils/helper';
-import { EMAIL_VALIDATION, PASSWORD_VALIDATION } from '@docAi-app/utils/constants/validation.constant';
+import { PASSWORD_VALIDATION } from '@docAi-app/utils/constants/validation.constant';
 import { Validation } from '@docAi-app/types';
 
 //Import Icon
@@ -28,17 +27,17 @@ import { Validation } from '@docAi-app/types';
 //Import Assets
 
 //Import Style
-import Styles from './Login.module.scss';
-import { authApi } from '@docAi-app/api';
-import { setToLocalStorage } from '@docAi-app/utils/helper';
-import { ACCESS_TOKEN_KEY, CURRENT_USER_EMAIL } from '@docAi-app/utils/constants/storage.constant';
+import Styles from './SetUserDetails.module.scss';
 import { useAuth } from '@docAi-app/hooks';
+import { authApi } from '@docAi-app/api';
+import { ROUTE } from '@docAi-app/utils/constants/Route.constant';
 
-const Login = () => {
+const SetUserDetails = () => {
     // useRef
     // useState
     const navigate = useNavigate();
     const auth = useAuth();
+    const location = useLocation();
 
     // Variables Dependent upon State
 
@@ -52,14 +51,14 @@ const Login = () => {
 
     // Your component logic here
 
-    const formControls = ['email', 'password'] as const;
+    const formControls = ['fullName', 'password'] as const;
 
     type FieldValidation = {
         [P in (typeof formControls)[number]]: Partial<Validation>;
     };
 
     const fieldValidation: FieldValidation = {
-        email: EMAIL_VALIDATION,
+        fullName: { required: { message: 'User Name is required' } },
         password: PASSWORD_VALIDATION,
     };
 
@@ -67,13 +66,13 @@ const Login = () => {
         [P in (typeof formControls)[number]]: string;
     }) => {
         const errors = {
-            email: '',
+            fullName: '',
             password: '',
         };
         formControls.forEach((controlName) => {
             switch (controlName) {
-                case 'email': {
-                    errors['email'] = validation(fieldValidation['email'], val['email']);
+                case 'fullName': {
+                    errors['fullName'] = validation(fieldValidation['fullName'], val['fullName']);
                     break;
                 }
                 case 'password': {
@@ -92,18 +91,25 @@ const Login = () => {
     const handleSubmit = (val: {
         [P in (typeof formControls)[number]]: string;
     }) => {
-        authApi.login(val).then((res) => {
-            const token = res.payload.token;
-            setToLocalStorage(ACCESS_TOKEN_KEY, token);
-            setToLocalStorage(CURRENT_USER_EMAIL, val['email']);
-            auth.setIsLogin(true);
-            navigate(`${ROUTE.ROOT}`);
-        });
+        const { state } = location;
+        if (state['userUuid'] && state['token']) {
+            authApi
+                .setPasswords({
+                    full_name: val['fullName'],
+                    password: val['password'],
+                    user_uuid: state['userUuid'],
+                    token: state['token'],
+                    action: 1,
+                })
+                .then(() => {
+                    navigate(`${ROUTE.ROOT}${ROUTE.AUTH}/${ROUTE.LOGIN}`);
+                });
+        }
     };
 
     return (
         <div className={Styles.container}>
-            <h2 className="center">Enter Login Details</h2>
+            <h2 className="center">Enter User Details</h2>
             <Form
                 onSubmit={handleSubmit}
                 validate={validate}
@@ -112,15 +118,15 @@ const Login = () => {
                         <div>
                             <div>
                                 <Field
-                                    name="email"
+                                    name="fullName"
                                     render={({ input, meta }) => {
                                         return (
                                             <InputField
                                                 {...input}
-                                                type="email"
+                                                type="text"
                                                 fullWidth
-                                                label="Email"
-                                                placeholder="Enter Email"
+                                                label="User Name"
+                                                placeholder="Enter Your Full Name"
                                                 required
                                                 error={meta.touched && meta.error && true}
                                                 helperText={
@@ -159,18 +165,8 @@ const Login = () => {
                         </div>
 
                         <div className={Styles.actionButton}>
-                            <Button
-                                type="button"
-                                variant="outlined"
-                                onClick={() => {
-                                    navigate(`/${ROUTE.AUTH}/${ROUTE.FORGOT_PASSWORD}`);
-                                }}
-                            >
-                                Forgot Password?
-                            </Button>
-
-                            <Button type="submit" variant="contained" color="primary" >
-                                Login
+                            <Button type="submit" variant="contained" color="primary">
+                                Update Details
                             </Button>
                         </div>
                     </form>
@@ -180,4 +176,4 @@ const Login = () => {
     );
 };
 
-export { Login };
+export { SetUserDetails };

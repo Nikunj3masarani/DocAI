@@ -47,8 +47,22 @@ const AuthRoute = ({ children }: { children: React.ReactNode }) => {
         if (currentPath.includes(ROUTE.RESET_PASSWORD) && !isReset) {
             navigate(`/${ROUTE.AUTH}`);
         }
-    }, [isLogin, currentPath]);
+        if (currentPath.includes(ROUTE.SET_USER_DETAILS)) {
+            if (url['search'].includes('token')) {
+                const searchQuery = url['search'].substring(1).split('&');
+                const searchObj = searchQuery.map((query) => {
+                    return query.split('=')[1];
+                });
 
+                navigate(`${ROUTE.ROOT}${ROUTE.AUTH}/${ROUTE.SET_USER_DETAILS}`, {
+                    state: {
+                        userUuid: searchObj[0],
+                        token: searchObj[1],
+                    },
+                });
+            }
+        }
+    }, [isLogin, currentPath]);
 
     return <>{children}</>;
 };

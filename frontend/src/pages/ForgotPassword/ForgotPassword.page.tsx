@@ -75,14 +75,9 @@ const ForgotPassword = () => {
     const handleSubmit = (val: {
         [P in (typeof formControls)[number]]: string;
     }) => {
-        authApi
-            .forgotPassword({ email: val['email'] })
-            .then(() => {
-                navigate(`${ROUTE.ROOT}${ROUTE.AUTH}/${ROUTE.LOGIN}`);
-            })
-            .catch(() => {
-                console.log('Error while forgot password');
-            });
+        authApi.forgotPassword({ email: val['email'] }).then(() => {
+            navigate(`${ROUTE.ROOT}${ROUTE.AUTH}/${ROUTE.LOGIN}`);
+        });
     };
 
     // Your component logic here
@@ -118,7 +113,7 @@ const ForgotPassword = () => {
                             </div>
 
                             <div className={Styles.actionButton}>
-                                <Button type="submit" variant="contained" color="primary" onClick={() => { }}>
+                                <Button type="submit" variant="contained" color="primary" onClick={() => {}}>
                                     Reset Password
                                 </Button>
                                 <Button

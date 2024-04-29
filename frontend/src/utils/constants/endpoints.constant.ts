@@ -9,12 +9,12 @@ export const PROMPT_UUID = 'prompt_uuid';
 export const CHAT = 'chat';
 export const USERS = 'users';
 
-export const METHOD  = {
+export const METHOD = {
     GET: 'get',
     POST: 'post',
     DELETE: 'delete',
     PUT: 'put',
-} ;
+};
 
 export const ENDPOINTS = {
     AUTH: {
@@ -25,6 +25,14 @@ export const ENDPOINTS = {
         FORGOT_PASSWORD: {
             METHOD: METHOD.POST,
             URL: `${USERS}/forgot-password`,
+        },
+        INVITE_USER: {
+            METHOD: METHOD.POST,
+            URL: `${USERS}/invite`,
+        },
+        SET_PASSWORDS: {
+            METHOD: METHOD.POST,
+            URL: `${USERS}/set-password`,
         },
     },
     INDEX_MANAGEMENT: {
