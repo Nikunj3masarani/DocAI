@@ -3,11 +3,18 @@ import Tab, { TabProps } from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 
 export const StyledTabs = styled(Tabs)`
+
     .MuiTabs-indicator {
         background: ${({ theme }) => theme.colors.primary};
     }
+    & ~ div {
+        height: calc(100% - 4.8rem);
+        overflow: auto;
+    }
     .MuiTabs-flexContainer {
-        justify-content: stretch;
+        padding-inline: 2rem;
+        font-size: 2rem;
+        justify-content: flex-start;
         button:not(:last-child) {
             margin-right: 10px;
         }
@@ -19,20 +26,22 @@ export const StyledTab = styled(Tab)<TabProps>`
         background-color: ${({ theme }) => theme.colors.transparent};
         color: ${({ theme }) => theme.colors.black};
     }
+
     &.customSelectedCircle {
         background-color: ${({ theme }) => theme.colors.black} !important;
         color: ${({ theme }) => theme.colors.white} !important;
         font-weight: 600;
     }
+
     &.customRoot {
         font-size: 1.4rem;
         font-weight: normal;
         text-transform: none;
         border-radius: 8px;
-        width: 100%;
         color: ${({ theme }) => theme.colors.black} !important;
         font-family: ${({ theme }) => theme.typography.fontFamily};
     }
+
     &.customRootCircle {
         font-size: 1.4rem;
         color: ${({ theme }) => theme.colors.black};
@@ -46,6 +55,7 @@ export const StyledTab = styled(Tab)<TabProps>`
         opacity: 1;
         font-family: ${({ theme }) => theme.typography.fontFamily};
     }
+
     &.customNormal {
         border-bottom: 3px solid ${({ theme }) => theme.colors.transparent} !important;
         font-weight: bold !important;
@@ -53,6 +63,7 @@ export const StyledTab = styled(Tab)<TabProps>`
         font-size: 1.4rem;
         font-family: ${({ theme }) => theme.typography.fontFamily};
     }
+
     &.customRootNormal {
         color: ${({ theme }) => theme.colors.black};
         text-transform: none;
@@ -67,9 +78,11 @@ export const StyledTab = styled(Tab)<TabProps>`
             min-width: 96px;
         }
     }
+
     &.customIndicator {
         background-color: ${({ theme }) => theme.colors.red};
     }
+
     &.MuiTabs-indicator {
         background-color: ${({ theme }) => theme.colors.red};
     }

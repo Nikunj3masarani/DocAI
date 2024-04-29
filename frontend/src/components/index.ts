@@ -14,3 +14,4 @@ export { People } from './People';
 export { UsersWithAccess } from './UsersWithAccess';
 export { MessageTypeField } from './MessageTypeField';
 export { PageHeader } from './PageHeader';
+export { AddNewUser } from './AddNewUser';

@@ -10,6 +10,7 @@ export const ROUTE = {
     INDEX_ID: 'index-id',
     CHAT_ID: 'chat_uuid',
     BRAINS: 'brains',
+    SET_USER_DETAILS: 'set-user-details',
     INVITE: 'invite',
     WILDCARD: '*',
 };
