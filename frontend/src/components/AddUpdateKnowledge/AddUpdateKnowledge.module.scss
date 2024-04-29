@@ -2,27 +2,63 @@
 
 .fileUploader {
     display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    padding-top: 2rem;
     flex-direction: column;
-    width: 70%;
-    min-height: 60rem;
-    max-height: 80rem;
+    align-items: flex-start;
+    justify-content: flex-start;
     overflow: hidden;
     margin: auto;
-    
-    label[for='file'] {
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        position: relative;
-        flex-direction: column;
-        cursor: pointer;
-        padding: 2rem;
-        height: 24rem;
-        width: 100%;
+    flex: 1;
+    padding: 3rem;
+    width: 100%;
+    gap: 2rem;
+    min-height: 60rem;
+    max-height: 80rem;
+
+    &__row,
+    &__fileListRow {
         max-width: 100%;
+        min-width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 2rem;
+
+        label[for='file'] {
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            flex-direction: column;
+            cursor: pointer;
+            display: block;
+            height: 24rem;
+            margin-top: 2rem;
+            flex: 1;
+        }
+    }
+
+    &__fileListRow {
+        align-items: flex-start;
+    }
+
+    &__child {
+        min-width: 50%;
+        max-width: 50%;
+        flex: 1;
+
+        h4 {
+            font-size: 1.6rem;
+            font-weight: normal;
+            padding-top: 1.5rem;
+        }
+        p {
+            font-size: 1.4rem;
+            margin-top: 0;
+            padding-top: 0.8rem;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            width: 90%;
+        }
     }
 }
 
@@ -34,30 +70,24 @@
     text-align: center;
     position: relative;
     flex-direction: column;
-    position: relative;
-    top: -2rem;
+    border-radius: 1rem;
     padding: 2rem;
     height: 100%;
     width: 100%;
     max-width: 100%;
 }
 
-.fileListContainer {
-    width: 100%;
-    padding-inline: 2rem;
-}
-
 .formContainer {
-    width: 100%;
     display: flex;
     align-items: center;
     justify-content: flex-start;
     gap: 2rem;
     margin-top: 2rem;
+    width: 100%;
 }
 
 .field {
-    width: 30%;
+    width: 100%;
 }
 
 .fileList {
@@ -65,16 +95,15 @@
     justify-content: start;
     flex-direction: column;
     align-self: flex-start;
-    width: 70%;
-    margin-top: 2rem;
-    margin-left: 30%;
+    width: 80%;
+    margin-top: 1rem;
 }
 
-.actionButton {
+.actionButtons {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
-    width: 70%;
+    margin-bottom: 2rem;
 }
 
 .fileError {

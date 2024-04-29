@@ -15,7 +15,12 @@ export type {
     GetChatMessageResponseBody,
 } from './chat.model';
 
-export type { GetDocumentsRequestBody, UploadDocumentsProps, DeleteDocumentRequestParams } from './documents.model';
+export type {
+    GetDocumentsRequestBody,
+    UploadDocumentsProps,
+    DeleteDocumentRequestParams,
+    UploadCrawlProps,
+} from './documents.model';
 
 export type {
     GetIndexRequestParams,
