@@ -41,27 +41,14 @@ axiosInstance.interceptors.response.use(
         if (response.data) return response.data;
     },
     (error: AxiosError<ApiErrorResponse>) => {
-        // const { status, message } = error?.response || {};
-
-        // if (status === ERROR_STATUS_CODE[401]) {
-        //     removeFromLocalStorage(ACCESS_TOKEN_KEY);
-        //     return Promise.reject({ show: false });
-        // }
-
-        // const parsedJson = JSON.parse(error?.request?.response || false);
-        // if (!parsedJson) {
-        //     if (error?.message === 'Network Error') {
-        //         return Promise.reject({ show: false });
-        //     }
-        //     return Promise.reject(error);
-        // }
-        // console.log(JSON.parse(error.request));
         const errorResponse = error?.response ?? { data: '' };
         return Promise.reject(errorResponse.data);
     },
 );
 
-export async function* getIterableStream<ResponsePayload>(body: ReadableStream<Uint8Array>): AsyncIterable<ResponsePayload> {
+export async function* getIterableStream<ResponsePayload>(
+    body: ReadableStream<Uint8Array>,
+): AsyncIterable<ResponsePayload> {
     const reader = body.getReader();
     const decoder = new TextDecoder();
     while (true) {
@@ -75,7 +62,7 @@ export async function* getIterableStream<ResponsePayload>(body: ReadableStream<U
     }
 }
 
-export const generateStream = async <ResponsePayload , RequestBody = undefined>(
+export const generateStream = async <ResponsePayload, RequestBody = undefined>(
     apiConfig: ApiConfig<RequestBody>,
 ): Promise<AsyncIterable<string>> => {
     const { method, url, data } = apiConfig;
@@ -127,11 +114,11 @@ export const apiCall = async <ResponsePayload, RequestBody = undefined>(
             //     console.log({ error });
             // }
 
-            const { status, message }: { status: number; message: string } = error;
+            const { status_code, message }: { status_code: number; message: string } = error;
             console.log(error);
             if (showAlertToast && message) {
                 getAlert('error', message);
-            } else if (status === ERROR_STATUS_CODE['422']) {
+            } else if (status_code === ERROR_STATUS_CODE['422']) {
                 getAlert('error', message);
             }
             throw error;

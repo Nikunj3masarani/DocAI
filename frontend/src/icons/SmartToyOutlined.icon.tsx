@@ -8,3 +8,4 @@ const SmartToyOutlined = ({ fontSize = 'small', fill = theme.colors.secondary, s
 };
 
 export { SmartToyOutlined };
+

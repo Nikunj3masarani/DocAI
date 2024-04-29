@@ -107,6 +107,10 @@ export const ENDPOINTS = {
             METHOD: METHOD.DELETE,
             URL: `${DOCUMENTS}/?document_uuid`,
         },
+        UPLOAD_CRAWL: {
+            METHOD: METHOD.POST,
+            URL: `${DOCUMENTS}/crawl/?url&${INDEX_UUID}`,
+        },
     },
     CHAT: {
         GET_LIST: {
