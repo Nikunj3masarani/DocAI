@@ -8,7 +8,7 @@ const StyledSearchInput = styled(TextField)`
     .MuiInputBase-root {
         background-color: ${({ theme }) => theme.colors.white};
         border: 1px solid ${({ theme }) => theme.colors.secondary20};
-        border-radius: 0.8rem;
+        border-radius: 1rem;
 
         &:hover,
         &.Mui-focused {
@@ -52,7 +52,7 @@ const StyledSearchInput = styled(TextField)`
         }
 
         .MuiInputBase-input {
-            font-size: 2rem;
+            font-size: 1.4rem;
             font-weight: 500;
             padding: 0.9rem 1.4rem;
         }

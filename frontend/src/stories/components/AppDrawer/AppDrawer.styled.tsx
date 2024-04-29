@@ -26,12 +26,13 @@ export const StyledList = styled(List)`
     }
     .navItem {
         display: flex;
-        padding: 1rem 2.5rem 0rem 2rem;
+        padding: 1rem 2.5rem 0rem 1.5rem;
         gap: 1.5rem;
     }
     .navLink {
         color: ${({ theme }) => theme.colors.secondary};
         background-color: ${({ theme }) => theme.colors.transparent};
+        text-decoration:none;
         display: flex;
         align-items: center;
         gap: 10px;
@@ -39,7 +40,8 @@ export const StyledList = styled(List)`
         font-weight: 400;
         padding: 1.2rem 1.5rem;
 
-        &.active {
+        &.active,
+        &:hover {
             background: ${({ theme }) => theme.colors.mercury} !important;
             border-radius: 0.8rem !important;
             width: 100%;

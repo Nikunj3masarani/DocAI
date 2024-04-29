@@ -1,0 +1,29 @@
+@import '@docAi-app/styles/abstracts/_abstracts';
+
+.wrapper {
+    width: 100%;
+}
+
+.container {
+    height: $headerHeight;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding-inline: 2rem;
+    border-bottom: 1px solid $black10;
+
+    &__header {
+    }
+    &__body {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 2rem;
+    }
+}
+
+.children {
+    width: 100%;
+    padding-inline: 2rem;
+}

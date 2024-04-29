@@ -1,4 +1,3 @@
-
 //Import Third Party lib
 import { MenuPlacement, components } from 'react-select';
 
@@ -36,7 +35,6 @@ import SearchIcon from '@docAi-app/icons/Search.icon';
 //Import Assets
 
 //Import Style
-
 
 export interface AsyncSelectDataType {
     value: string;
@@ -342,6 +340,7 @@ const AsyncSearchSelect = ({
                                 return {
                                     ...defaultStyles,
                                     height: 'auto',
+                                    borderRadius: '1rem',
                                     background: `${theme.colors.white}`,
                                     color: `${theme.colors.davyGrey}`,
                                     ...(isMulti

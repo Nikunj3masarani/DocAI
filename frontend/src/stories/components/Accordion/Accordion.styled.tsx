@@ -6,7 +6,7 @@ import {
     AccordionDetails,
     AccordionDetailsProps,
 } from '@mui/material';
-import styled from 'styled-components';
+import { styled } from '@mui/material/styles';
 
 type StyledAccordionProps = AccordionProps;
 type StyledAccordionSummaryProps = AccordionSummaryProps;
@@ -22,8 +22,11 @@ const StyledAccordionSummary = styled(AccordionSummary)<StyledAccordionSummaryPr
     width: 100%;
     min-height: 100%;
     max-height: unset;
-    padding-inline : 0 !important;
-    
+    &:hover {
+        background-color: ${({ theme }) => theme.colors.mercury};
+    }
+    padding: 1.2rem 1.5rem !important;
+
     .MuiAccordionSummary-content,
     .Mui-expand {
         margin-block: 0 !important;
