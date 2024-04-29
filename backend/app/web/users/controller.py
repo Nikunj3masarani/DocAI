@@ -62,7 +62,7 @@ class Users:
             status=status.HTTP_200_OK,
         )
 
-    @router.post("/auth/set-user-details")
+    @router.post("/set-password")
     async def set_password(
             self,
             set_password_data: SetPassword,
