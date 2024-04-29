@@ -43,7 +43,7 @@ class Documents:
     async def crawl_endpoint(
             self,
             # crawl_website: CrawlWebsite,
-            url: constr(regex=r'^https?://(?:www\.)?[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(/\S*)?$'),
+            url: constr(regex=r'^https?://(?:www\.)?[a-zA-Z0-9-]+\.[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(?:/\S*)?$'),
             index_uuid: str,
             db=Depends(get_db_session),
             document_embeddings=Depends(get_documents_embedding_function),
