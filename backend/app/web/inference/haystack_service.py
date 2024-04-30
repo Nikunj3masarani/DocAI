@@ -26,6 +26,25 @@ class Inference:
         decrypted_data = fernet.decrypt(encrypted_data).decode()
         return decrypted_data
 
+    def _get_llm(self):
+        if self.model_details.get('deployment') == 'Azure':
+            llm = AsyncAzureOpenAI(
+                api_key=self.decrypt_data(settings.secret_key, self.model_details.get('api_key')),
+                api_version=self.model_details.get("api_version"),
+                azure_endpoint=self.model_details.get("deployment_url"),
+                azure_deployment=self.model_details.get("target_name"),
+            )
+        elif self.model_details.get('deployment') == 'vLLM':
+            llm = AsyncOpenAI(
+                api_key='EMPTY',
+                base_url=self.model_details.get('deployment_url')
+            )
+        else:
+            llm = AsyncOpenAI(
+                api_key=self.decrypt_data(settings.secret_key, self.model_details.get('api_key')),
+            )
+        return llm
+
     async def get_condense_question(self, chat_history, query):
         sorted_chat_history = sorted(chat_history, key=lambda x: x['created_at'], reverse=True)[:5]
         conversation = '\n'.join([
@@ -49,9 +68,7 @@ class Inference:
                     Output: 
                         The standalone version of the user's most recent question, without any additional explanation.
                     '''
-        llm = AsyncOpenAI(
-            api_key=self.decrypt_data(settings.secret_key, self.model_details.get('api_key')),
-        )
+        llm = self._get_llm()
         messages = [{"role": "user", "content": condense_prompt}]
         completion_result = await llm.chat.completions.create(messages=messages, model=self.model_details.get('target_name'))
         condense_query = []
@@ -60,9 +77,7 @@ class Inference:
         return ''.join(condense_query)
 
     def get_answer(self, query):
-        llm = AsyncOpenAI(
-            api_key=self.decrypt_data(settings.secret_key, self.model_details.get('api_key')),
-        )
+        llm = self._get_llm()
 
         query_embeddings = self.query_embeddings_function.run(text=query)
 
