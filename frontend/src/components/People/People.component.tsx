@@ -33,19 +33,6 @@ import { indexApi } from '@docAi-app/api';
 import Styles from './People.module.scss';
 
 const People = () => {
-    // useRef
-    // useState
-    // Variables Dependent upon State
-
-    // Api Calls
-
-    // Event Handlers
-
-    // Helpers
-
-    // JSX Methods
-
-    // Your component logic here
     const [userList, setUserList] = useState<Users[]>([]);
     const [currentUser, setCurrentUser] = useState<Users>({ email: '', role: 1, userId: '' });
     const [needToUpdateUserList, setNeedToUpdateUserList] = useState<boolean>(false);
@@ -72,6 +59,9 @@ const People = () => {
             });
         }
     }, [needToUpdateUserList]);
+
+    // Your component logic here
+
     return (
         <div className={Styles.container}>
             {currentUser?.role === USER_ROLE['owner'].value ? (

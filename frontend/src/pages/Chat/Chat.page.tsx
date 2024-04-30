@@ -71,7 +71,6 @@ const Chat = () => {
 
     const initialIndex = state?.indexInfo ?? { label: '', value: '' };
 
-    // Variables Dependent upon State
     useEffect(() => {
         if (state && state.needToCreate) {
             setCanUserType(false);
@@ -158,7 +157,6 @@ const Chat = () => {
                 navigate(`${ROUTE.ROOT}${ROUTE.SEARCH}`);
             });
     };
-    // Event Handlers
 
     // Helpers
     const scrollBottom = () => {
