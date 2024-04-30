@@ -191,3 +191,4 @@ wsproto
 passlib==1.7.4
 sendgrid==6.11.0
 python-jose
+cryptography==42.0.5
