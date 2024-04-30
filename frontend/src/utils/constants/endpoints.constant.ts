@@ -24,7 +24,7 @@ export const ENDPOINTS = {
         },
         FORGOT_PASSWORD: {
             METHOD: METHOD.POST,
-            URL: `${USERS}/forgot-password`,
+            URL: `${USERS}/forget-password`,
         },
         INVITE_USER: {
             METHOD: METHOD.POST,

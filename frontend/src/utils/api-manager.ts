@@ -114,11 +114,10 @@ export const apiCall = async <ResponsePayload, RequestBody = undefined>(
             //     console.log({ error });
             // }
 
-            const { status_code, message }: { status_code: number; message: string } = error;
-            console.log(error);
+            const { status_code, status, message }: { status: number; status_code: number; message: string } = error;
             if (showAlertToast && message) {
                 getAlert('error', message);
-            } else if (status_code === ERROR_STATUS_CODE['422']) {
+            } else if (status_code === ERROR_STATUS_CODE['422'] || status === ERROR_STATUS_CODE['422']) {
                 getAlert('error', message);
             }
             throw error;

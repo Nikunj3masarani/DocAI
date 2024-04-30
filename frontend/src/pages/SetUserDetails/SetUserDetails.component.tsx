@@ -19,24 +19,22 @@ import { Button, InputField } from '@docAi-app/stories';
 import { removeEmptyField, validation } from '@docAi-app/utils/helper';
 import { PASSWORD_VALIDATION } from '@docAi-app/utils/constants/validation.constant';
 import { Validation } from '@docAi-app/types';
+import { ROUTE } from '@docAi-app/utils/constants/Route.constant';
 
 //Import Icon
 
 //Import Api
+import { authApi } from '@docAi-app/api';
 
 //Import Assets
 
 //Import Style
 import Styles from './SetUserDetails.module.scss';
-import { useAuth } from '@docAi-app/hooks';
-import { authApi } from '@docAi-app/api';
-import { ROUTE } from '@docAi-app/utils/constants/Route.constant';
 
 const SetUserDetails = () => {
     // useRef
     // useState
     const navigate = useNavigate();
-    const auth = useAuth();
     const location = useLocation();
 
     // Variables Dependent upon State
