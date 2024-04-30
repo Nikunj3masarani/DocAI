@@ -49,6 +49,8 @@ const deleteIndex = (requestParams: DeleteIndexParams) => {
     const data: ApiConfig<undefined> = {
         method: ENDPOINTS.INDEX_MANAGEMENT.DELETE_INDEX.METHOD as Method,
         url: parseEndpoint(ENDPOINTS.INDEX_MANAGEMENT.DELETE_INDEX.URL, { ...requestParams }),
+        showSuccessToast: true,
+        showAlertToast: true,
     };
     return apiCall(data);
 };
@@ -79,6 +81,8 @@ const inviteIndexUser = (requestBody: InviteIndexUserRequestBody) => {
         method: ENDPOINTS.INDEX_MANAGEMENT.INVITE_USER.METHOD as Method,
         url: ENDPOINTS.INDEX_MANAGEMENT.INVITE_USER.URL,
         data: requestBody,
+        showSuccessToast: true,
+        showAlertToast: true,
     };
     return apiCall(data);
 };
@@ -88,6 +92,8 @@ const removeIndexUser = (requestBody: RemoveIndexUserRequestBody) => {
         method: ENDPOINTS.INDEX_MANAGEMENT.REMOVE_USERS.METHOD as Method,
         url: ENDPOINTS.INDEX_MANAGEMENT.REMOVE_USERS.URL,
         data: requestBody,
+        showSuccessToast: true,
+        showAlertToast: true,
     };
 
     return apiCall(data);

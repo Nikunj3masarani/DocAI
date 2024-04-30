@@ -15,6 +15,8 @@ const login = (requestBody: LoginRequestBody) => {
         method: ENDPOINTS.AUTH.LOGIN.METHOD as Method,
         url: ENDPOINTS.AUTH.LOGIN.URL,
         data: requestBody,
+        showSuccessToast: true,
+        showAlertToast: true,
     };
 
     return apiCall<LoginResponsePayload, LoginRequestBody>(data);
@@ -25,6 +27,8 @@ const forgotPassword = (requestBody: ForgotPasswordRequestBody) => {
         method: ENDPOINTS.AUTH.FORGOT_PASSWORD.METHOD as Method,
         url: ENDPOINTS.AUTH.FORGOT_PASSWORD.URL,
         data: requestBody,
+        showSuccessToast: true,
+        showAlertToast: true,
     };
 
     return apiCall(data);
@@ -47,6 +51,8 @@ const setPasswords = (requestBody: SetPassWordsRequestBody) => {
         method: ENDPOINTS.AUTH.SET_PASSWORDS.METHOD as Method,
         url: ENDPOINTS.AUTH.SET_PASSWORDS.URL,
         data: requestBody,
+        showSuccessToast: true,
+        showAlertToast: true,
     };
 
     return apiCall(data);

@@ -35,6 +35,7 @@ const deleteDocument = (requestParams: DeleteDocumentRequestParams) => {
         method: ENDPOINTS.DOCUMENTS.DELETE_DOCUMENTS.METHOD as Method,
         url: parseEndpoint(ENDPOINTS.DOCUMENTS.DELETE_DOCUMENTS.URL, { ...requestParams }),
         showSuccessToast: true,
+        showAlertToast: true,
     };
 
     return apiCall(data);
@@ -45,6 +46,7 @@ const uploadCrawl = ({ requestParams }: UploadCrawlProps) => {
         method: ENDPOINTS.DOCUMENTS.UPLOAD_CRAWL.METHOD as Method,
         url: parseEndpoint(ENDPOINTS.DOCUMENTS.UPLOAD_CRAWL.URL, { ...requestParams }),
         showSuccessToast: true,
+        showAlertToast: true,
     };
 
     return apiCall(data);

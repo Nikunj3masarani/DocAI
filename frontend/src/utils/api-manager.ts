@@ -57,7 +57,7 @@ export async function* getIterableStream<ResponsePayload>(
         if (done) {
             break;
         }
-        const decodedChunk = decoder.decode(value, { stream: true });
+        const decodedChunk = decoder.decode(value, { stream: true }) as ResponsePayload;
         yield decodedChunk;
     }
 }
@@ -110,10 +110,6 @@ export const apiCall = async <ResponsePayload, RequestBody = undefined>(
             return response;
         })
         .catch((error) => {
-            // if (error && showAlertToast && error.message) {
-            //     console.log({ error });
-            // }
-
             const { status_code, status, message }: { status: number; status_code: number; message: string } = error;
             if (showAlertToast && message) {
                 getAlert('error', message);
