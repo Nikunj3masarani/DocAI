@@ -54,8 +54,7 @@ class Inference:
                                                               self.rank_function, inference_callback)
         if chat_history:
             condensed_query = await inference_haystack_service.get_condense_question(chat_history,
-                                                                                     chat_request_data.get('query'),
-                                                                                     model_details)
+                                                                                     chat_request_data.get('query'))
 
             response_generator = inference_haystack_service.get_answer(condensed_query)
         else:

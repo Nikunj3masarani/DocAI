@@ -1,4 +1,3 @@
-
 from haystack.components.builders.prompt_builder import PromptBuilder
 from haystack_integrations.document_stores.elasticsearch import ElasticsearchDocumentStore
 from haystack_integrations.components.retrievers.elasticsearch import ElasticsearchEmbeddingRetriever
@@ -7,6 +6,7 @@ from haystack.components.joiners import DocumentJoiner
 from openai import AsyncAzureOpenAI, AsyncOpenAI
 from app import constants
 from app.settings import settings
+from cryptography.fernet import Fernet
 
 
 class Inference:
@@ -21,7 +21,12 @@ class Inference:
         self.rank_function = rank_function
         self.callback_function = callback_function
 
-    async def get_condense_question(self, chat_history, query, model_details):
+    def decrypt_data(self, key, encrypted_data):
+        fernet = Fernet(key)
+        decrypted_data = fernet.decrypt(encrypted_data).decode()
+        return decrypted_data
+
+    async def get_condense_question(self, chat_history, query):
         sorted_chat_history = sorted(chat_history, key=lambda x: x['created_at'], reverse=True)[:5]
         conversation = '\n'.join([
             f"User: {chat.user_message} \n  Assistant: {chat.assistant_message} \n Time: {chat.created_at}"
@@ -45,10 +50,10 @@ class Inference:
                         The standalone version of the user's most recent question, without any additional explanation.
                     '''
         llm = AsyncOpenAI(
-            api_key=settings.openai_api_key,
+            api_key=self.decrypt_data(settings.secret_key, self.model_details.get('api_key')),
         )
         messages = [{"role": "user", "content": condense_prompt}]
-        completion_result = await llm.chat.completions.create(messages=messages, model=model_details.get('target_name'))
+        completion_result = await llm.chat.completions.create(messages=messages, model=self.model_details.get('target_name'))
         condense_query = []
         for token in completion_result.choices:
             condense_query.append(token.message.content or "")
@@ -56,13 +61,14 @@ class Inference:
 
     def get_answer(self, query):
         llm = AsyncOpenAI(
-            api_key=settings.openai_api_key,
+            api_key=self.decrypt_data(settings.secret_key, self.model_details.get('api_key')),
         )
 
         query_embeddings = self.query_embeddings_function.run(text=query)
 
-        relevant_embeddings_documents = self.document_embeddings_retriever.run(query_embedding=query_embeddings.get("embedding"),
-                                                                               top_k=10)
+        relevant_embeddings_documents = self.document_embeddings_retriever.run(
+            query_embedding=query_embeddings.get("embedding"),
+            top_k=10)
         relevant_query_documents = self.document_query_retriever.run(query=query,
                                                                      top_k=10)
 
@@ -91,4 +97,5 @@ class Inference:
                     await self.callback_function(token)
 
                 yield token_string
+
         return response_generator
