@@ -1,6 +1,7 @@
 //Import Third Party lib
 import { Field, Form } from 'react-final-form';
 import { useNavigate } from 'react-router-dom';
+import { FORM_ERROR } from 'final-form';
 
 //Import Storybook
 import { Button, InputField } from '@docAi-app/stories';
@@ -30,12 +31,12 @@ import { removeEmptyField, validation } from '@docAi-app/utils/helper';
 //Import Style
 import Styles from './ForgotPassword.module.scss';
 import { authApi } from '@docAi-app/api';
+import { useRef } from 'react';
+import { FormApi } from 'final-form';
 
 const ForgotPassword = () => {
-    // useRef
-    // useState
+    const formRef = useRef<FormApi<{ email: string }, Partial<{ email: string }>>>();
     const navigate = useNavigate();
-    // Variables Dependent upon State
     const formControls = ['email'] as const;
 
     type FieldValidation = {
@@ -45,9 +46,7 @@ const ForgotPassword = () => {
     const fieldValidation: FieldValidation = {
         email: EMAIL_VALIDATION,
     };
-    // Api Calls
 
-    // Event Handlers
     const validate = (val: {
         [P in (typeof formControls)[number]]: string;
     }) => {
@@ -72,12 +71,26 @@ const ForgotPassword = () => {
         return Object.keys(errorObject).length > 0 ? errorObject : {};
     };
 
-    const handleSubmit = (val: {
+    const handleSubmit = async (val: {
         [P in (typeof formControls)[number]]: string;
     }) => {
-        authApi.forgotPassword({ email: val['email'] }).then(() => {
+        const isSuccess = await authApi
+            .forgotPassword({ email: val['email'] })
+            .then(() => {
+                return true;
+            })
+            .catch(() => {
+                return false;
+            });
+
+        if (isSuccess) {
             navigate(`${ROUTE.ROOT}${ROUTE.AUTH}/${ROUTE.LOGIN}`);
-        });
+        } else {
+            if (formRef.current) {
+                formRef.current.restart(val);
+            }
+            return { [FORM_ERROR]: 'User Not Found' };
+        }
     };
 
     // Your component logic here
@@ -88,7 +101,17 @@ const ForgotPassword = () => {
             <Form
                 onSubmit={handleSubmit}
                 validate={validate}
-                render={({ handleSubmit }) => {
+                render={({
+                    handleSubmit,
+                    hasValidationErrors,
+                    dirty,
+                    submitting,
+                    form,
+                    submitFailed,
+                    hasSubmitErrors,
+                    submitError,
+                }) => {
+                    formRef.current = form;
                     return (
                         <form className={Styles.formContainer} onSubmit={handleSubmit}>
                             <div>
@@ -103,8 +126,15 @@ const ForgotPassword = () => {
                                                     placeholder="Enter Email"
                                                     required
                                                     fullWidth
-                                                    error={meta.touched && meta.error}
-                                                    helperText={meta.touched && meta.error && <span>{meta.error}</span>}
+                                                    error={(meta.touched && meta.error) || submitFailed}
+                                                    helperText={
+                                                        (meta.touched && meta.error && (
+                                                            <span style={{ width: '100%' }}>{meta.error}</span>
+                                                        )) ||
+                                                        (!dirty && hasSubmitErrors && (
+                                                            <span style={{ width: '100%' }}>{submitError}</span>
+                                                        ))
+                                                    }
                                                 />
                                             );
                                         }}
@@ -113,7 +143,12 @@ const ForgotPassword = () => {
                             </div>
 
                             <div className={Styles.actionButton}>
-                                <Button type="submit" variant="contained" color="primary" onClick={() => {}}>
+                                <Button
+                                    type="submit"
+                                    variant="contained"
+                                    color="primary"
+                                    disabled={hasValidationErrors || !dirty || submitting}
+                                >
                                     Reset Password
                                 </Button>
                                 <Button
@@ -129,7 +164,7 @@ const ForgotPassword = () => {
                         </form>
                     );
                 }}
-            ></Form>
+            />
         </div>
     );
 };

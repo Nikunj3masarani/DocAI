@@ -32,7 +32,6 @@ const AuthRoute = ({ children }: { children: React.ReactNode }) => {
     const url = useLocation();
 
     const currentPath = url.pathname;
-    const isReset = false;
 
     useEffect(() => {
         if (!currentPath.includes(ROUTE.AUTH)) {
@@ -44,22 +43,30 @@ const AuthRoute = ({ children }: { children: React.ReactNode }) => {
                 navigate(`${ROUTE.ROOT}${ROUTE.SEARCH}`);
             }
         }
-        if (currentPath.includes(ROUTE.RESET_PASSWORD) && !isReset) {
-            navigate(`/${ROUTE.AUTH}`);
-        }
-        if (currentPath.includes(ROUTE.SET_USER_DETAILS)) {
+
+        if (currentPath.includes(ROUTE.SET_USER_DETAILS) || currentPath.includes(ROUTE.RESET_PASSWORD)) {
+            let includePath = ROUTE.SET_USER_DETAILS;
+
+            if (currentPath.includes(ROUTE.RESET_PASSWORD)) {
+                includePath = ROUTE.RESET_PASSWORD;
+            }
+
             if (url['search'].includes('token')) {
                 const searchQuery = url['search'].substring(1).split('&');
                 const searchObj = searchQuery.map((query) => {
                     return query.split('=')[1];
                 });
 
-                navigate(`${ROUTE.ROOT}${ROUTE.AUTH}/${ROUTE.SET_USER_DETAILS}`, {
+                navigate(`${ROUTE.ROOT}${ROUTE.AUTH}/${includePath}`, {
                     state: {
                         userUuid: searchObj[0],
                         token: searchObj[1],
                     },
                 });
+            } else {
+                if (!url.state?.userUuid) {
+                    navigate(`${ROUTE.ROOT}${ROUTE.AUTH}`);
+                }
             }
         }
     }, [isLogin, currentPath]);
