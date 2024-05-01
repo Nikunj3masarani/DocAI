@@ -64,11 +64,11 @@ export const StyledHeader = styled('div')`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 2.1rem 3rem;
+    padding: 1rem 3rem;
     width: 100%;
 
     img {
-        height: 6rem;
+        height: 5.9rem;
     }
 `;
 

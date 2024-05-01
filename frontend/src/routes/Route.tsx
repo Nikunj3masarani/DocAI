@@ -3,6 +3,7 @@ import { ROUTE } from '@docAi-app/utils/constants/Route.constant';
 import {
     Chat,
     ForgotPassword,
+    Home,
     IndexList,
     InviteToBrain,
     Login,
@@ -11,7 +12,6 @@ import {
     SetUserDetails,
 } from '@docAi-app/pages';
 import { AuthContainer, AuthRoute, ErrorComponent, MainContainer, UpdateIndex } from '@docAi-app/components';
-import { Search } from '@docAi-app/pages/Search';
 import { ChatCreateContextProvider } from '@docAi-app/context/ChatCreateContext/ChatCreateContext';
 
 const errorElement = {
@@ -54,7 +54,7 @@ const PRIVATE_ROUTES: RouteObject[] = [
     },
     {
         path: `${ROUTE.HOME}`,
-        element: <Search />,
+        element: <Home />,
         ...errorElement,
     },
     {

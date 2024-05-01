@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 //Import Storybook
-import { Button, Dialog } from '@docAi-app/stories';
+import { Dialog } from '@docAi-app/stories';
 
 //Import Component
 import { AddUpdateKnowledge, CreateUpdateBrain, MessageTypeField, PageHeader } from '@docAi-app/components';
@@ -22,18 +22,17 @@ import { uuidGenerator } from '@docAi-app/utils/helper';
 import { ROUTE } from '@docAi-app/utils/constants/Route.constant';
 
 //Import Icon
-import PsychologyOutlinedIcon from '@mui/icons-material/PsychologyOutlined';
 
 //Import Api
 import { chatApi } from '@docAi-app/api';
 
 //Import Assets
-import Logo from '@docAi-app/../public/assets/images/logo.svg';
+import IconOnly from '@docAi-app/../public/assets/images/Icon-only.png';
 
 //Import Style
-import Style from './Search.module.scss';
+import Style from './Home.module.scss';
 
-const Search = () => {
+const Home = () => {
     const [headerAction, setHeaderAction] = useState<HeaderAction | undefined>();
     const [showDialogue, setShowDialogue] = useState<boolean>(false);
     const [disableSearchInput, setSearchInput] = useState<boolean>(false);
@@ -95,7 +94,7 @@ const Search = () => {
                 <div className={Style['container__body']}>
                     <div className={Style.content}>
                         <div className={Style.content__header}>
-                            <img src={Logo} alt="basf logo" />
+                            <img src={IconOnly} alt="basf logo" />
                             <h1>Talk to DocAI</h1>
                         </div>
                         <div className={Style.content__body}>
@@ -108,4 +107,4 @@ const Search = () => {
     );
 };
 
-export { Search };
+export { Home };
