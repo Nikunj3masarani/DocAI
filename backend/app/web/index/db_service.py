@@ -215,6 +215,7 @@ class Index(DBService):
         invitation_obj.created_at = datetime.utcnow()
         invitation_obj.status = constants.InvitationStatus.SENT
         invitation_obj.invite_action = constants.UserInviteAction.INDEX
+        invitation_obj.user_uuid = select_user_result[0].user_uuid
         self.db_session.add(invitation_obj)
         await self.db_session.commit()
         return invitation_obj.__dict__
