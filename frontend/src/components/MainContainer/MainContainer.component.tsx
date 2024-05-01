@@ -41,7 +41,12 @@ import { chatApi } from '@docAi-app/api/chat.api';
 
 //Import Style
 import Styles from './MainContainer.module.scss';
-import { ACCESS_TOKEN_KEY, CURRENT_USER_EMAIL } from '@docAi-app/utils/constants/storage.constant';
+import {
+    ACCESS_TOKEN_KEY,
+    CURRENT_USER_EMAIL,
+    REDIRECT_URL,
+    USER_UUID,
+} from '@docAi-app/utils/constants/storage.constant';
 import { removeFromLocalStorage } from '@docAi-app/utils/helper';
 
 const STREAM_LIT_APP = 'Doc Analyzer';
@@ -55,7 +60,7 @@ interface SideNavigationItems {
 
 const sideNavigationItems: SideNavigationItems[] = [
     {
-        to: ROUTE.SEARCH,
+        to: ROUTE.HOME,
         label: 'Home',
         icon: Icons.DraftPatent,
         type: 'link',
@@ -353,6 +358,8 @@ const MainContainer = () => {
                         onClick={() => {
                             removeFromLocalStorage(CURRENT_USER_EMAIL);
                             removeFromLocalStorage(ACCESS_TOKEN_KEY);
+                            removeFromLocalStorage(USER_UUID);
+                            removeFromLocalStorage(REDIRECT_URL);
                             setIsLogin(false);
                         }}
                     >

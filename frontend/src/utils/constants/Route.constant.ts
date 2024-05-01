@@ -4,7 +4,7 @@ export const ROUTE = {
     LOGIN: 'login',
     FORGOT_PASSWORD: 'forgot-password',
     RESET_PASSWORD: 'reset-password',
-    SEARCH: 'home',
+    HOME: 'home',
     CHAT: 'chat',
     INDEX_LIST: 'brains',
     INDEX_ID: 'index-id',
@@ -12,5 +12,6 @@ export const ROUTE = {
     BRAINS: 'brains',
     SET_USER_DETAILS: 'set-user-details',
     INVITE: 'invite',
+    INVITE_TO_BRAIN: 'invite-to-brain',
     WILDCARD: '*',
 };

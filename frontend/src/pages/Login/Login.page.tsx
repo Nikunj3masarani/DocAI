@@ -31,7 +31,7 @@ import { Validation } from '@docAi-app/types';
 import Styles from './Login.module.scss';
 import { authApi } from '@docAi-app/api';
 import { setToLocalStorage } from '@docAi-app/utils/helper';
-import { ACCESS_TOKEN_KEY, CURRENT_USER_EMAIL } from '@docAi-app/utils/constants/storage.constant';
+import { ACCESS_TOKEN_KEY, CURRENT_USER_EMAIL, USER_UUID } from '@docAi-app/utils/constants/storage.constant';
 import { useAuth } from '@docAi-app/hooks';
 import { FORM_ERROR, FormApi } from 'final-form';
 import { useRef } from 'react';
@@ -103,6 +103,8 @@ const Login = () => {
                 const token = res.payload.token;
                 setToLocalStorage(ACCESS_TOKEN_KEY, token);
                 setToLocalStorage(CURRENT_USER_EMAIL, val['email']);
+                setToLocalStorage(USER_UUID, res.payload.user_uuid);
+
                 auth.setIsLogin(true);
                 navigate(`${ROUTE.ROOT}`);
             })
@@ -182,7 +184,7 @@ const Login = () => {
                                                         (meta.touched && meta.error && (
                                                             <span style={{ width: '100%' }}>{meta.error}</span>
                                                         )) ||
-                                                        ((!dirty && hasSubmitErrors) && (
+                                                        (!dirty && hasSubmitErrors && (
                                                             <span style={{ width: '100%' }}>{submitError}</span>
                                                         ))
                                                     }

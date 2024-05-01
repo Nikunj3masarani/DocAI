@@ -49,6 +49,13 @@ interface UpdateIndexProps {
     };
 }
 
+interface AddIndexUserRequestBody {
+    token: string;
+    user_uuid: string;
+    status: 1 | 2;
+    index_uuid: string;
+}
+
 export type {
     GetIndexRequestParams,
     DeleteIndexParams,
@@ -58,4 +65,5 @@ export type {
     InviteIndexUserRequestBody,
     RemoveIndexUserRequestBody,
     UpdateIndexProps,
+    AddIndexUserRequestBody,
 };

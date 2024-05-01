@@ -117,7 +117,7 @@ const Chat = () => {
                     scrollBottom();
                 })
                 .catch(() => {
-                    navigate(`${ROUTE.ROOT}${ROUTE.SEARCH}`);
+                    navigate(`${ROUTE.ROOT}${ROUTE.HOME}`);
                 });
         }
     }, [state, params]);
@@ -154,7 +154,7 @@ const Chat = () => {
                 }
             })
             .catch((e) => {
-                navigate(`${ROUTE.ROOT}${ROUTE.SEARCH}`);
+                navigate(`${ROUTE.ROOT}${ROUTE.HOME}`);
             });
     };
 

@@ -5,6 +5,7 @@ interface LoginRequestBody {
 
 interface LoginResponsePayload {
     token: string;
+    user_uuid: string;
 }
 
 interface ForgotPasswordRequestBody {
