@@ -4,6 +4,7 @@ import {
     Chat,
     ForgotPassword,
     IndexList,
+    InviteToBrain,
     Login,
     PageNotFound,
     ResetPassword,
@@ -48,11 +49,11 @@ const AUTHCHILDROUTES: RouteObject[] = [
 const PRIVATE_ROUTES: RouteObject[] = [
     {
         index: true,
-        element: <Navigate to={ROUTE.SEARCH} />,
+        element: <Navigate to={ROUTE.HOME} />,
         ...errorElement,
     },
     {
-        path: `${ROUTE.SEARCH}`,
+        path: `${ROUTE.HOME}`,
         element: <Search />,
         ...errorElement,
     },
@@ -72,6 +73,7 @@ const PRIVATE_ROUTES: RouteObject[] = [
         ...errorElement,
     },
 ];
+
 const ROUTES: RouteObject[] = [
     {
         path: ROUTE.ROOT,
@@ -84,6 +86,15 @@ const ROUTES: RouteObject[] = [
         ),
         ...errorElement,
         children: PRIVATE_ROUTES,
+    },
+    {
+        path: `${ROUTE.ROOT}${ROUTE.INVITE_TO_BRAIN}`,
+        element: (
+            <AuthRoute>
+                <InviteToBrain />
+            </AuthRoute>
+        ),
+        ...errorElement,
     },
     {
         path: ROUTE.AUTH,

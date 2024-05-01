@@ -5,6 +5,7 @@ import { Method } from 'axios';
 import { CreateIndexRequestBody, GetAllIndexResponse } from '@docAi-app/types';
 import { parseEndpoint } from '@docAi-app/utils/helper';
 import {
+    AddIndexUserRequestBody,
     DeleteIndexParams,
     GetAllIndexRequestBody,
     GetIndexRequestParams,
@@ -99,6 +100,18 @@ const removeIndexUser = (requestBody: RemoveIndexUserRequestBody) => {
     return apiCall(data);
 };
 
+const addIndexUser = (requestBody: AddIndexUserRequestBody) => {
+    const data: ApiConfig<AddIndexUserRequestBody> = {
+        method: ENDPOINTS.INDEX_MANAGEMENT.ADD_USERS.METHOD as Method,
+        url: ENDPOINTS.INDEX_MANAGEMENT.ADD_USERS.URL,
+        data: requestBody,
+        showAlertToast: true,
+        showSuccessToast: true,
+    };
+
+    return apiCall(data);
+};
+
 const indexApi = {
     createIndex,
     getIndex,
@@ -108,6 +121,7 @@ const indexApi = {
     inviteIndexUser,
     removeIndexUser,
     updateIndex,
+    addIndexUser,
 };
 
 export { indexApi };

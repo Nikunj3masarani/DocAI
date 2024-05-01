@@ -69,6 +69,10 @@ export const ENDPOINTS = {
             URL: `${INDEX}/${USERS}/remove`,
             METHOD: METHOD.POST,
         },
+        ADD_USERS: {
+            URL: `${INDEX}/${USERS}/invite/update`,
+            METHOD: METHOD.POST,
+        },
     },
     MODELS: {
         GET_LIST: {
