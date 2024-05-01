@@ -39,7 +39,9 @@ class User(BaseService):
             "user_uuid": str(user_obj.user_uuid)
         }
         token = create_access_token(_data)
-        return {"token": token}
+        return {"token": token,
+                "user_uuid": str(user_obj.user_uuid)
+                }
 
     async def get(self, data: Any, *args, **kwargs):
         user_db_service = UserDBService(self.db_client)
