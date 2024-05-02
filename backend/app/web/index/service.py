@@ -60,14 +60,15 @@ class Index(BaseService):
     async def index_invite_user(self, data: Any, *args, **kwargs):
         index_db_service = IndexDBService(self.db_session)
         invitation_obj = await index_db_service.invite_user_for_index(data)
+        index_obj = await index_db_service.get_data_by_id(data)
         
         email_data = dict()
-        email_data['user_uuid'] = str(invitation_obj.get("user_uuid"))
-        email_data['token'] = str(invitation_obj.get("token"))
-        email_data['index_uuid'] = str(data.get("index_uuid"))
-        email_data['email'] = str(data.get("email"))
-        email_data['status'] = str(constants.InvitationStatus.SENT.value)
-        
+        email_data['user_uuid'] = invitation_obj.get("user_uuid", '')
+        email_data['token'] = invitation_obj.get("token", '')
+        email_data['index_uuid'] = data.get("index_uuid", '')
+        email_data['email'] = data.get("email", '')
+        email_data['status'] = constants.InvitationStatus.SENT.value
+        email_data['title'] = index_obj.get('title')
         user_email_service = UserEmailService()
         user_email_service.invite_user_for_index(email_data)
         return {}

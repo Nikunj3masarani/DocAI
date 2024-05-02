@@ -15,7 +15,7 @@ class Users:
         from_email = settings.from_email
         name = str(from_email).split("@")[0]
 
-        url = f'''{settings.frontend_service}/invite-to-brain?user_uuid={data.get("user_uuid")}&token={data.get("token")}&status={data.get("status")}&index_uuid={data.get("index_uuid")}'''
+        url = f'''{settings.frontend_service}/invite-to-brain?user_uuid={data.get("user_uuid")}&title={data.get("title")}&token={data.get("token")}&status={data.get("status")}&index_uuid={data.get("index_uuid")}'''
 
         content = INDEX_INVITE_USER.format(name=name, url=url)
         message = Mail(from_email, data.get("email"), INVITE_INDEX_USER_EMAIL_SUBJECT, html_content=content)
