@@ -18,7 +18,12 @@ import { useAuth } from '@docAi-app/hooks';
 
 //Import Util, Helper , Constant
 import { ROUTE } from '@docAi-app/utils/constants/Route.constant';
-import { getFromLocalStorage, removeFromLocalStorage, setToLocalStorage } from '@docAi-app/utils/helper';
+import {
+    clearLocalStorage,
+    getFromLocalStorage,
+    removeFromLocalStorage,
+    setToLocalStorage,
+} from '@docAi-app/utils/helper';
 import { REDIRECT_URL } from '@docAi-app/utils/constants/storage.constant';
 import { USER_UUID } from '../../utils/constants/storage.constant';
 
@@ -37,13 +42,14 @@ const SEARCH_QUERY = {
 };
 
 const AuthRoute = ({ children }: { children: React.ReactNode }) => {
-    const { isLogin } = useAuth();
+    const { isLogin, setIsLogin } = useAuth();
     const navigate = useNavigate();
     const url = useLocation();
 
     const currentPath = url.pathname;
 
     useEffect(() => {
+        // for private route
         if (!currentPath.includes(ROUTE.AUTH)) {
             const redirectUrlInfo: Partial<{ url: string; state: any }> = getFromLocalStorage(REDIRECT_URL);
 
@@ -60,7 +66,9 @@ const AuthRoute = ({ children }: { children: React.ReactNode }) => {
                 removeFromLocalStorage(REDIRECT_URL);
                 navigate(url, { state: state });
             }
-        } else if (currentPath.includes(ROUTE.AUTH)) {
+        }
+        // for public route
+        else if (currentPath.includes(ROUTE.AUTH)) {
             if (isLogin) {
                 navigate(`${ROUTE.ROOT}${ROUTE.HOME}`);
             }
@@ -81,7 +89,11 @@ const AuthRoute = ({ children }: { children: React.ReactNode }) => {
 
             if (url['search'].length > 0) {
                 const searchObj = getUrlSearchObject(url['search']);
-                if (searchObj?.user_uuid !== getFromLocalStorage(USER_UUID)) {
+                const currUser = getFromLocalStorage(USER_UUID);
+
+                if (currentPath.includes(ROUTE.INVITE_TO_BRAIN) && searchObj?.user_uuid !== currUser) {
+                    clearLocalStorage();
+                    setIsLogin(false);
                     navigate(`${ROUTE.ROOT}${ROUTE.AUTH}`);
                 } else {
                     navigate(`${ROUTE.ROOT}${includePath}`, {

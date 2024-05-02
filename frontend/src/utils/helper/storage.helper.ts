@@ -1,3 +1,5 @@
+import { CURRENT_USER_EMAIL, ACCESS_TOKEN_KEY, USER_UUID, REDIRECT_URL } from '../constants/storage.constant';
+
 const getFromLocalStorage = (key: string) => {
     const item = localStorage.getItem(key);
     if (item) {
@@ -20,4 +22,11 @@ const removeFromLocalStorage = (key: string) => {
     }
 };
 
-export { getFromLocalStorage, setToLocalStorage, removeFromLocalStorage };
+const clearLocalStorage = () => {
+    removeFromLocalStorage(CURRENT_USER_EMAIL);
+    removeFromLocalStorage(ACCESS_TOKEN_KEY);
+    removeFromLocalStorage(USER_UUID);
+    removeFromLocalStorage(REDIRECT_URL);
+};
+
+export { getFromLocalStorage, setToLocalStorage, removeFromLocalStorage, clearLocalStorage };
