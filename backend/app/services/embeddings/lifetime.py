@@ -11,7 +11,7 @@ def init_embeddings(app: FastAPI) -> None:  # pragma: no cover
     document_embedding_function.warm_up()
     query_embedding_function = SentenceTransformersTextEmbedder(model=settings.embedding_model_path)
     query_embedding_function.warm_up()
-    rank_function = TransformersSimilarityRanker(model=settings.rank_model_path, top_k=5)
+    rank_function = TransformersSimilarityRanker(model=settings.rank_model_path, top_k=3)
     rank_function.warm_up()
 
     app.state.document_embedding_function = document_embedding_function
