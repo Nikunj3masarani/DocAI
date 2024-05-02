@@ -47,7 +47,7 @@ import {
     REDIRECT_URL,
     USER_UUID,
 } from '@docAi-app/utils/constants/storage.constant';
-import { removeFromLocalStorage } from '@docAi-app/utils/helper';
+import { clearLocalStorage, removeFromLocalStorage } from '@docAi-app/utils/helper';
 
 const STREAM_LIT_APP = 'Doc Analyzer';
 interface SideNavigationItems {
@@ -356,10 +356,7 @@ const MainContainer = () => {
                         className="navItem"
                         key={index}
                         onClick={() => {
-                            removeFromLocalStorage(CURRENT_USER_EMAIL);
-                            removeFromLocalStorage(ACCESS_TOKEN_KEY);
-                            removeFromLocalStorage(USER_UUID);
-                            removeFromLocalStorage(REDIRECT_URL);
+                            clearLocalStorage();
                             setIsLogin(false);
                         }}
                     >
