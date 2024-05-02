@@ -96,7 +96,7 @@ const AuthRoute = ({ children }: { children: React.ReactNode }) => {
                 const searchObj = getUrlSearchObject(url['search']);
                 const currUser = getFromLocalStorage(USER_UUID);
 
-                if (!currUser || (currentPath.includes(ROUTE.INVITE_TO_BRAIN) && searchObj?.user_uuid !== currUser)) {
+                if (!currUser || (currentPath.includes(ROUTE.INVITE_TO_BRAIN) && searchObj?.userUuid !== currUser)) {
                     clearLocalStorage();
                     setIsLogin(false);
                 }
@@ -118,12 +118,12 @@ const AuthRoute = ({ children }: { children: React.ReactNode }) => {
 function getUrlSearchObject(querySearch: string) {
     const searchQuery = querySearch.substring(1).split('&');
 
-    const searchObj: Partial<typeof SEARCH_QUERY> = {};
+    const searchObj: { [x: string]: string } = {};
 
     searchQuery.forEach((query: string) => {
         const tempQuery = query.split('=');
 
-        searchObj[tempQuery[0] as keyof typeof SEARCH_QUERY] = tempQuery[1];
+        searchObj[SEARCH_QUERY[tempQuery[0] as keyof typeof SEARCH_QUERY]] = tempQuery[1];
     });
 
     return searchObj;
