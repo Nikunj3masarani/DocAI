@@ -45,32 +45,37 @@ const AuthRoute = ({ children }: { children: React.ReactNode }) => {
     const { isLogin, setIsLogin } = useAuth();
     const navigate = useNavigate();
     const url = useLocation();
-
     const currentPath = url.pathname;
-
     useEffect(() => {
         // for private route
         if (!currentPath.includes(ROUTE.AUTH)) {
             const redirectUrlInfo: Partial<{ url: string; state: any }> = getFromLocalStorage(REDIRECT_URL);
 
             if (!isLogin) {
-                if (!redirectUrlInfo?.url) {
-                    setToLocalStorage(REDIRECT_URL, {
-                        url: currentPath,
-                        state: { ...getUrlSearchObject(url['search']) },
-                    });
-                }
-                navigate(`/${ROUTE.AUTH}`);
+                removeFromLocalStorage(REDIRECT_URL);
+                setToLocalStorage(REDIRECT_URL, {
+                    url: currentPath,
+                    state: { ...getUrlSearchObject(url['search']) },
+                });
+                return navigate(`${ROUTE.ROOT}${ROUTE.AUTH}/${ROUTE.LOGIN}`);
             } else if (redirectUrlInfo?.url) {
                 const { url, state } = redirectUrlInfo;
                 removeFromLocalStorage(REDIRECT_URL);
-                navigate(url, { state: state });
+                return navigate(url, { state: { ...state } });
             }
         }
         // for public route
         else if (currentPath.includes(ROUTE.AUTH)) {
             if (isLogin) {
-                navigate(`${ROUTE.ROOT}${ROUTE.HOME}`);
+                const redirectUrlInfo: Partial<{ url: string; state: any }> = getFromLocalStorage(REDIRECT_URL);
+                removeFromLocalStorage(REDIRECT_URL);
+
+                if (redirectUrlInfo?.url) {
+                    const { url, state } = redirectUrlInfo;
+                    return navigate(url, { state: { ...state } });
+                } else {
+                    return navigate(`${ROUTE.ROOT}`);
+                }
             }
         }
 
@@ -91,18 +96,17 @@ const AuthRoute = ({ children }: { children: React.ReactNode }) => {
                 const searchObj = getUrlSearchObject(url['search']);
                 const currUser = getFromLocalStorage(USER_UUID);
 
-                if (currentPath.includes(ROUTE.INVITE_TO_BRAIN) && searchObj?.user_uuid !== currUser) {
+                if (!currUser || (currentPath.includes(ROUTE.INVITE_TO_BRAIN) && searchObj?.user_uuid !== currUser)) {
                     clearLocalStorage();
                     setIsLogin(false);
-                    navigate(`${ROUTE.ROOT}${ROUTE.AUTH}`);
-                } else {
-                    navigate(`${ROUTE.ROOT}${includePath}`, {
-                        state: { ...searchObj },
-                    });
                 }
+
+                return navigate(`${ROUTE.ROOT}${includePath}`, {
+                    state: { ...searchObj },
+                });
             } else {
-                if (!url.state?.userUuid) {
-                    navigate(`${ROUTE.ROOT}${ROUTE.AUTH}`);
+                if (!url.state?.user_uuid) {
+                    return navigate(`${ROUTE.ROOT}${ROUTE.AUTH}`);
                 }
             }
         }
