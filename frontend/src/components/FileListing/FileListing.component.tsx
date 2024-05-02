@@ -1,6 +1,4 @@
 //Import Third Party lib
-import { useNavigate, useParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
 
 //Import Storybook
 import { IconButton } from '@docAi-app/stories';
@@ -21,22 +19,23 @@ import { FilesUpload } from '@docAi-app/types';
 //Import Icon
 import Delete from '@docAi-app/icons/Delete.icon';
 //Import Api
-import { indexApi } from '@docAi-app/api';
 
 //Import Assets
 
 //Import Style
 import Style from './FileListing.module.scss';
-import { ExistingFiles } from '../AddUpdateKnowledge/AddUpdateKnowledge.component';
+import { ExistingFiles, UrlToUpload } from '../AddUpdateKnowledge/AddUpdateKnowledge.component';
 
 const FileListing = ({
     files = [],
     existingFiles = [],
     deleteFiles,
+    urlsToUpload = [],
 }: {
     files: FilesUpload[] | undefined;
     deleteFiles: (fileToRemove: { files: FilesUpload | ExistingFiles; fromExisting: boolean }) => void;
     existingFiles: ExistingFiles[] | undefined;
+    urlsToUpload: UrlToUpload[] | undefined;
 }) => {
     // Your component logic here
 
@@ -53,6 +52,22 @@ const FileListing = ({
                                   <IconButton
                                       onClick={() => {
                                           deleteFiles({ files: { title, key }, fromExisting: true });
+                                      }}
+                                  >
+                                      <Delete />
+                                  </IconButton>
+                              </li>
+                          );
+                      })
+                    : null}
+                {urlsToUpload
+                    ? urlsToUpload.map(({ title, key }: UrlToUpload) => {
+                          return (
+                              <li className={Style.fileListContainer__file} key={key}>
+                                  <p> {title}</p>
+                                  <IconButton
+                                      onClick={() => {
+                                          deleteFiles({ files: { title, key }, fromExisting: false });
                                       }}
                                   >
                                       <Delete />

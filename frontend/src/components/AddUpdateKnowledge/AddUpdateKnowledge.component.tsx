@@ -3,9 +3,10 @@ import { useEffect, useRef, useState } from 'react';
 import { Form, Field } from 'react-final-form';
 import { useNavigate, useParams } from 'react-router-dom';
 import { FileUploader } from 'react-drag-drop-files';
+import { FormApi } from 'final-form';
 
 //Import Storybook
-import { AsyncSearchSelect, Button } from '@docAi-app/stories';
+import { AsyncSearchSelect, Button, InputField, IconButton } from '@docAi-app/stories';
 
 //Import Component
 import { FileListing } from '@docAi-app/components/FileListing';
@@ -21,11 +22,14 @@ import { getAlert } from '@docAi-app/hooks';
 import { FilesUpload, Option } from '@docAi-app/types';
 
 //Import Util, Helper , Constant
-import { uuidGenerator } from '@docAi-app/utils/helper';
+import { removeEmptyField, uuidGenerator, validation } from '@docAi-app/utils/helper';
 import { ROUTE } from '@docAi-app/utils/constants/Route.constant';
 import { ALLOW_FILE_TYPES, MAX_FILE_SIZE } from '@docAi-app/utils/constants/common.constant';
+import { REGEX } from '@docAi-app/utils/constants/regex.constant';
 
 //Import Icon
+import Icons from '@docAi-app/icons';
+
 //Import Api
 import { indexApi, documentApi } from '@docAi-app/api';
 
@@ -63,15 +67,21 @@ export interface ExistingFiles {
     key: string;
 }
 
+export interface UrlToUpload extends ExistingFiles {}
+
 const FILE_ERROR = {
     type: 0,
     size: 1,
 } as const;
 
 const AddUpdateKnowledge = () => {
-    const [files, setFiles] = useState<FilesUpload[]>([]);
+    const [filesToUpload, setFilesToUpload] = useState<FilesUpload[]>([]);
     const [existingFiles, setExistingFiles] = useState<ExistingFiles[]>([]);
+    const [urlsToUpload, setUrlsToUpload] = useState<UrlToUpload[]>([]);
     const [index, setIndex] = useState<Option>();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const formRef = useRef<FormApi<any, Partial<any>>>();
+    const formSubmittingRef = useRef<boolean>(false);
     const existingFilesToRemove = useRef<string[]>([]);
     const fileUploadRef = useRef<HTMLDivElement | null>(null);
     const [fileError, setFileError] = useState<keyof typeof FILE_ERROR>();
@@ -104,38 +114,89 @@ const AddUpdateKnowledge = () => {
         const fileToUpload: FilesUpload[] = fileArr.map((file: File) => {
             return { file, key: uuidGenerator() };
         });
-        setFiles((prevFiles) => {
+        setFilesToUpload((prevFiles) => {
             return prevFiles ? [...prevFiles, ...fileToUpload] : [...fileToUpload];
         });
         setFileError(undefined);
     };
 
-    const deleteFiles = ({ files, fromExisting }: { files: FilesUpload | ExistingFiles; fromExisting: boolean }) => {
+    const deleteFiles = ({
+        files,
+        fromExisting,
+    }: {
+        files: FilesUpload | ExistingFiles | UrlToUpload;
+        fromExisting: boolean;
+    }) => {
         if (fromExisting) {
             const { key } = files;
             const fileToRemove = key;
+
             existingFilesToRemove.current.push(fileToRemove);
+
             setExistingFiles((prevFiles) => prevFiles.filter(({ key }) => key !== fileToRemove));
         } else if (files) {
-            setFiles((prevFiles) => prevFiles?.filter((prevFile) => prevFile.key !== files.key));
+            if ('file' in files) {
+                setFilesToUpload((prevFiles) => prevFiles?.filter((prevFile) => prevFile.key !== files.key));
+            } else {
+                const { key } = files;
+                setUrlsToUpload((prev) => {
+                    return prev.filter((url) => url.key !== key);
+                });
+            }
         }
     };
 
     const handleSubmit = async (v) => {
+        const formData = new FormData();
         if (fileUploadRef.current) {
             fileUploadRef.current.className = `${Styles.fileUploader} disable`;
         }
-
-        const formData = new FormData();
+        let apiCount = 0;
         existingFilesToRemove.current.forEach(async (fileToRemove) => {
-            await documentApi.deleteDocument({ document_uuid: fileToRemove });
+            apiCount++;
+            await documentApi.deleteDocument({ document_uuid: fileToRemove }).then((res) => {
+                apiCount--;
+                if (apiCount == 0) {
+                    if (fileUploadRef.current) {
+                        fileUploadRef.current.className = `${Styles.fileUploader}`;
+                    }
+                }
+            });
         });
-        existingFilesToRemove.current = [];
 
-        if (files.length) {
-            files?.forEach((file) => {
+        apiCount = 0;
+        urlsToUpload.forEach(async (url) => {
+            apiCount++;
+            if (fileUploadRef.current) {
+                fileUploadRef.current.className = `${Styles.fileUploader} disable`;
+            }
+            await documentApi
+                .uploadCrawl({
+                    requestParams: { index_uuid: (v.index.value as string) ?? '', url: url.title },
+                })
+                .then((res) => {
+                    apiCount--;
+                    if (apiCount === 0 && fileUploadRef.current) {
+                        fileUploadRef.current.className = `${Styles.fileUploader}`;
+                    }
+                });
+        });
+
+        existingFilesToRemove.current = [];
+        existingFiles;
+        setUrlsToUpload([]);
+
+        if (filesToUpload.length) {
+            apiCount = 0;
+            if (fileUploadRef.current) {
+                fileUploadRef.current.className = `${Styles.fileUploader} disable`;
+            }
+            filesToUpload?.forEach((file) => {
                 formData.append('documents', file.file);
             });
+            if (fileUploadRef.current) {
+                fileUploadRef.current.className = `${Styles.fileUploader} disable`;
+            }
 
             await documentApi
                 .uploadDocuments({ requestBody: formData, requestParams: { index_uuid: v.index.value } })
@@ -143,6 +204,7 @@ const AddUpdateKnowledge = () => {
                     getAlert('info', res.message);
                 })
                 .then(() => {
+                    apiCount--;
                     if (!params[ROUTE.INDEX_ID]) navigate(`${ROUTE.ROOT}${ROUTE.INDEX_LIST}`);
                     const indexUuid = index?.value;
                     if (indexUuid) {
@@ -156,10 +218,10 @@ const AddUpdateKnowledge = () => {
                                 });
                             })
                             .finally(() => {
-                                setFiles([]);
+                                setFilesToUpload([]);
                             });
                     }
-                    if (fileUploadRef.current) {
+                    if (apiCount === 0 && fileUploadRef.current) {
                         fileUploadRef.current.className = `${Styles.fileUploader}`;
                     }
                 });
@@ -170,50 +232,47 @@ const AddUpdateKnowledge = () => {
         }
     };
 
+    const handleAddWebUrl = (v) => {
+        if (v['url'] && v['url'].length > 0) {
+            setUrlsToUpload((prev) => {
+                return prev.length
+                    ? [...prev, { title: v['url'], key: uuidGenerator() }]
+                    : [{ title: v['url'], key: uuidGenerator() }];
+            });
+        }
+    };
+
+    const handleValidateUrls = (val: { url: string }) => {
+        const error = {
+            url: '',
+        };
+
+        error['url'] = validation(
+            {
+                regex: {
+                    regexPattern: REGEX.URL_VALID,
+                    message: 'Please Enter valid URL',
+                },
+            },
+            val['url'],
+        );
+        const errorObject = removeEmptyField(error) as object;
+        return Object.keys(errorObject).length > 0 ? errorObject : {};
+    };
+
     // component logic
     return (
         <div ref={fileUploadRef} className={`${Styles.fileUploader}`}>
-            <FileUploader
-                name="file"
-                multiple={true}
-                label=""
-                hoverTitle="Drop here"
-                dropMessageStyle={{
-                    zIndex: '100',
-                    backgroundColor: 'white',
-                    opacity: '1',
-                    transition: 'all 2s ease-out',
-                }}
-                handleChange={handleChange}
-                types={ALLOW_FILE_TYPES}
-                maxSize={MAX_FILE_SIZE}
-                onTypeError={() => {
-                    setFileError('type');
-                }}
-                onSizeError={() => {
-                    setFileError('size');
-                }}
-            >
-                <div className={`${Styles.dropArea} ${fileError ? Styles.fileError : null}`}>
-                    <p> Choose Files or Drag it Here </p>
-                    <p> Files with .html , .pdf , .txt extension are allow</p>
-                    <p>
-                        {fileError
-                            ? fileError === 'size'
-                                ? 'Maximum allow file size is 10mb'
-                                : 'Selected type of documents are not acceptable'
-                            : null}
-                    </p>
-                </div>
-            </FileUploader>
-            <div className={Styles.fileListContainer}>
-                <div>
+            <div className={Styles.fileUploader__row}>
+                <div className={Styles.fileUploader__child}>
                     <Form
                         initialValues={{
                             index: index ?? undefined,
                         }}
                         onSubmit={handleSubmit}
                         render={({ handleSubmit, form, submitting }) => {
+                            formRef.current = form;
+                            formSubmittingRef.current = submitting;
                             return (
                                 <form onSubmit={handleSubmit} className={Styles.formContainer}>
                                     <div className={Styles.field}>
@@ -274,36 +333,137 @@ const AddUpdateKnowledge = () => {
                                                                     });
                                                             }
                                                             existingFilesToRemove.current = [];
-                                                            setFiles([]);
+                                                            setUrlsToUpload([]);
+                                                            setFilesToUpload([]);
                                                         }}
                                                     />
                                                 );
                                             }}
                                         />
                                     </div>
-                                    <div className={Styles.actionButton}>
-                                        <div>{<p>Knowledge to Upload </p>}</div>
-                                        <Button
-                                            type="submit"
-                                            variant="contained"
-                                            disabled={
-                                                index?.value === '' ||
-                                                submitting ||
-                                                (files.length === 0 && existingFilesToRemove.current.length === 0)
-                                            }
+                                </form>
+                            );
+                        }}
+                    />
+                </div>
+                <div className={Styles.fileUploader__child}>
+                    <h4>Knowledge to Upload</h4>
+                </div>
+            </div>
+            <div className={Styles.fileUploader__fileListRow}>
+                <div className={Styles.fileUploader__child}>
+                    <FileUploader
+                        name="file"
+                        multiple={true}
+                        label=""
+                        hoverTitle="Drop here"
+                        dropMessageStyle={{
+                            zIndex: '100',
+                            backgroundColor: 'white',
+                            opacity: '1',
+                            transition: 'all 2s ease-out',
+                        }}
+                        handleChange={handleChange}
+                        types={ALLOW_FILE_TYPES}
+                        maxSize={MAX_FILE_SIZE}
+                        onTypeError={() => {
+                            setFileError('type');
+                        }}
+                        onSizeError={() => {
+                            setFileError('size');
+                        }}
+                    >
+                        <div className={`${Styles.dropArea} ${fileError ? Styles.fileError : null}`}>
+                            <p> Choose Files or Drag it Here </p>
+                            <p> Files with .html , .pdf , .txt extension are allow</p>
+                            <p>
+                                {fileError
+                                    ? fileError === 'size'
+                                        ? 'Maximum allow file size is 10mb'
+                                        : 'Selected type of documents are not acceptable'
+                                    : null}
+                            </p>
+                        </div>
+                    </FileUploader>
+                </div>
+                <div className={Styles.fileUploader__child}>
+                    <div className={Styles.fileList}>
+                        {
+                            <FileListing
+                                urlsToUpload={urlsToUpload}
+                                existingFiles={existingFiles}
+                                files={filesToUpload}
+                                deleteFiles={deleteFiles}
+                            />
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div className={Styles.fileUploader__row}>
+                <div className={Styles.fileUploader__child}>
+                    <Form
+                        validate={handleValidateUrls}
+                        onSubmit={handleAddWebUrl}
+                        render={({ form, values, invalid }) => {
+                            return (
+                                <form className={Styles.formContainer}>
+                                    <div className={Styles.field}>
+                                        <Field
+                                            name="url"
+                                            render={({ input, meta }) => {
+                                                return (
+                                                    <InputField
+                                                        fullWidth
+                                                        {...input}
+                                                        type="text"
+                                                        placeholder="Enter the knowledge through url"
+                                                        error={meta.touched && meta.error && true}
+                                                        helperText={
+                                                            meta.touched &&
+                                                            meta.error && (
+                                                                <span style={{ width: '100%' }}>{meta.error}</span>
+                                                            )
+                                                        }
+                                                    />
+                                                );
+                                            }}
+                                        />
+                                    </div>
+                                    <div className={Styles.actionButtons}>
+                                        <IconButton
+                                            onClick={() => {
+                                                handleAddWebUrl(values);
+                                                form.restart();
+                                            }}
+                                            disabled={invalid || !values['url']}
                                         >
-                                            Update knowledge
-                                        </Button>
+                                            {<Icons.ArrowCircleUp />}
+                                        </IconButton>
                                     </div>
                                 </form>
                             );
                         }}
                     />
                 </div>
+            </div>
 
-                <div className={Styles.fileList}>
-                    {<FileListing existingFiles={existingFiles} files={files} deleteFiles={deleteFiles} />}
-                </div>
+            <div className={Styles.actionButton}>
+                <Button
+                    variant="contained"
+                    onClick={() => {
+                        formRef.current?.submit();
+                    }}
+                    disabled={
+                        index?.value === '' ||
+                        formSubmittingRef.current ||
+                        (filesToUpload.length === 0 &&
+                            existingFilesToRemove.current.length === 0 &&
+                            urlsToUpload.length === 0)
+                    }
+                >
+                    Upload Knowledge
+                </Button>
             </div>
         </div>
     );

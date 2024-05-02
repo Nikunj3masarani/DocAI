@@ -1,4 +1,5 @@
-from fastapi import Depends, status, BackgroundTasks
+import io
+from fastapi import Depends, File, status, BackgroundTasks
 from app import constants
 from fastapi_utils.cbv import cbv
 from fastapi_utils.inferring_router import InferringRouter
@@ -10,7 +11,9 @@ from app.middleware.auth import AuthBearer
 from app.services.embeddings.dependency import get_documents_embedding_function
 from typing import List
 from fastapi import UploadFile
-from pydantic import UUID4
+from pydantic import UUID4, constr
+from app.web.documents.crawler import CrawlWebsite
+
 router = InferringRouter()
 
 
@@ -35,6 +38,26 @@ class Documents:
             message=constants.DOCUMENT_UPLOADED,
             status=status.HTTP_200_OK,
         )
+        
+    @router.post("/crawl")
+    async def crawl_endpoint(
+            self,
+            # crawl_website: CrawlWebsite,
+            url: constr(regex=r'^https?://(?:www\.)?[a-zA-Z0-9-]+\.[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(?:/\S*)?$'),
+            index_uuid: str,
+            db=Depends(get_db_session),
+            document_embeddings=Depends(get_documents_embedding_function),
+            user=Depends(AuthBearer())
+    ) -> DocumentResponse:
+        
+        document_service = DocumentService(db, document_embeddings)
+        response = await document_service.crawl_and_index_documents(url=url, index_uuid=index_uuid, user_uuid=user.get("user_uuid"))
+
+        return DocumentResponse(
+            payload=response,
+            message=constants.DOCUMENT_UPLOADED,
+            status=status.HTTP_200_OK,
+        )    
 
     @router.post('/list')
     async def get_documents(self,

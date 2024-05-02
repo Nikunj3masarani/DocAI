@@ -12,6 +12,7 @@ export const StyledContainer = styled(Box)`
     padding: 0;
     height: 100vh;
 `;
+
 export const StyledList = styled(List)`
     &.MuiList-root {
         padding-top: 0;
@@ -26,12 +27,13 @@ export const StyledList = styled(List)`
     }
     .navItem {
         display: flex;
-        padding: 1rem 2.5rem 0rem 2rem;
+        padding: 1rem 2.5rem 0rem 1.5rem;
         gap: 1.5rem;
     }
     .navLink {
         color: ${({ theme }) => theme.colors.secondary};
         background-color: ${({ theme }) => theme.colors.transparent};
+        text-decoration: none;
         display: flex;
         align-items: center;
         gap: 10px;
@@ -39,7 +41,8 @@ export const StyledList = styled(List)`
         font-weight: 400;
         padding: 1.2rem 1.5rem;
 
-        &.active {
+        &.active,
+        &:hover {
             background: ${({ theme }) => theme.colors.mercury} !important;
             border-radius: 0.8rem !important;
             width: 100%;
@@ -55,16 +58,28 @@ export const StyledList = styled(List)`
         }
     }
 `;
+
 export const StyledHeader = styled('div')`
     border-bottom: 1px solid ${({ theme }) => theme.colors.platinum};
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 2.1rem 3rem;
+    padding: 1rem 3rem;
+    width: 100%;
 
     img {
-        height: 6rem;
+        height: 5.9rem;
     }
 `;
 
-export const StyledListItem = styled(ListItem)``;
+export const StyledListItem = styled('div')`
+    display: flex;
+    flex-direction : column;
+    justify-content : space-between;
+    align-items : flex-start;
+    width: 100%;
+    min-height: calc(100vh - 11rem);
+    > div {
+        width: 100%;
+    }
+`;

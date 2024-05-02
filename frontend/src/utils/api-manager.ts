@@ -1,6 +1,6 @@
 import axios, { AxiosError } from 'axios';
 import { ApiConfig, ApiErrorResponse, ApiResponse, AxiosRequest } from '@docAi-app/types';
-import { getFromLocalStorage, removeFromLocalStorage } from '@docAi-app/utils/helper';
+import { getFromLocalStorage } from '@docAi-app/utils/helper';
 import { ACCESS_TOKEN_KEY } from '@docAi-app/utils/constants/storage.constant';
 import { ERROR_STATUS_CODE } from '@docAi-app/utils/constants/common.constant';
 import { getAlert } from '@docAi-app/hooks';
@@ -40,27 +40,15 @@ axiosInstance.interceptors.response.use(
     (response) => {
         if (response.data) return response.data;
     },
-    (error) => {
-        // const { status, message } = error?.response || {};
-
-        // if (status === ERROR_STATUS_CODE[401]) {
-        //     removeFromLocalStorage(ACCESS_TOKEN_KEY);
-        //     return Promise.reject({ show: false });
-        // }
-
-        // const parsedJson = JSON.parse(error?.request?.response || false);
-        // if (!parsedJson) {
-        //     if (error?.message === 'Network Error') {
-        //         return Promise.reject({ show: false });
-        //     }
-        //     return Promise.reject(error);
-        // }
-        // console.log(JSON.parse(error.request));
-        return Promise.reject(error.response.data);
+    (error: AxiosError<ApiErrorResponse>) => {
+        const errorResponse = error?.response ?? { data: '' };
+        return Promise.reject(errorResponse.data);
     },
 );
 
-export async function* getIterableStream(body: ReadableStream<Uint8Array>): AsyncIterable<string> {
+export async function* getIterableStream<ResponsePayload>(
+    body: ReadableStream<Uint8Array>,
+): AsyncIterable<ResponsePayload> {
     const reader = body.getReader();
     const decoder = new TextDecoder();
     while (true) {
@@ -69,12 +57,12 @@ export async function* getIterableStream(body: ReadableStream<Uint8Array>): Asyn
         if (done) {
             break;
         }
-        const decodedChunk = decoder.decode(value, { stream: true });
+        const decodedChunk = decoder.decode(value, { stream: true }) as ResponsePayload;
         yield decodedChunk;
     }
 }
 
-export const generateStream = async <RequestBody = undefined>(
+export const generateStream = async <ResponsePayload, RequestBody = undefined>(
     apiConfig: ApiConfig<RequestBody>,
 ): Promise<AsyncIterable<string>> => {
     const { method, url, data } = apiConfig;
@@ -88,10 +76,14 @@ export const generateStream = async <RequestBody = undefined>(
         },
         body: JSON.stringify({ ...data, stream: true }),
     });
-    if (response.status !== 200) throw new Error(response.status.toString());
+
+    if (response.status === ERROR_STATUS_CODE['422']) {
+        getAlert('error', 'Something went wrong');
+        throw new Error(response.status.toString());
+    }
     if (!response.body) throw new Error('Response body does not exist');
 
-    return getIterableStream(response.body);
+    return getIterableStream<ResponsePayload>(response.body);
 };
 
 export const apiCall = async <ResponsePayload, RequestBody = undefined>(
@@ -118,15 +110,10 @@ export const apiCall = async <ResponsePayload, RequestBody = undefined>(
             return response;
         })
         .catch((error) => {
-            // if (error && showAlertToast && error.message) {
-            //     console.log({ error });
-            // }
-
-            const { status , message }  : {status : number , message : string}= error;
-            console.log(error);
+            const { status_code, status, message }: { status: number; status_code: number; message: string } = error;
             if (showAlertToast && message) {
                 getAlert('error', message);
-            } else if (status === ERROR_STATUS_CODE['422']) {
+            } else if (status_code === ERROR_STATUS_CODE['422'] || status === ERROR_STATUS_CODE['422']) {
                 getAlert('error', message);
             }
             throw error;

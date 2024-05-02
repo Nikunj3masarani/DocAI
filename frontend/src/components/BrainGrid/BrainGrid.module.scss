@@ -38,3 +38,10 @@
     justify-content: flex-start;
     column-gap: 1.5rem;
 }
+
+.noDataFound {
+    padding-inline: 2rem;
+    h1 {
+        font-size: 2rem;
+    }
+}

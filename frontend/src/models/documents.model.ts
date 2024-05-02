@@ -11,4 +11,13 @@ interface DeleteDocumentRequestParams {
     document_uuid: string;
 }
 
-export type { GetDocumentsRequestBody, UploadDocumentsProps, DeleteDocumentRequestParams };
+interface UploadCrawlRequestParams {
+    url: string;
+    index_uuid: string;
+}
+
+interface UploadCrawlProps {
+    requestParams: UploadCrawlRequestParams;
+}
+
+export type { GetDocumentsRequestBody, UploadDocumentsProps, DeleteDocumentRequestParams, UploadCrawlProps };

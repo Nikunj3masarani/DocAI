@@ -28,3 +28,6 @@ class IndexRole(int, Enum):
     EDITOR = 3
 
 
+INVITE_USER_EMAIL_SUBJECT = "Invitation to DocAI Platform"
+FORGOT_PASSWORD_EMAIL_SUBJECT = "Password Reset Request"
+INVITE_INDEX_USER_EMAIL_SUBJECT="Invitation to join Brain"

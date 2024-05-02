@@ -31,11 +31,15 @@ import { Validation } from '@docAi-app/types';
 import Styles from './Login.module.scss';
 import { authApi } from '@docAi-app/api';
 import { setToLocalStorage } from '@docAi-app/utils/helper';
-import { ACCESS_TOKEN_KEY, CURRENT_USER_EMAIL } from '@docAi-app/utils/constants/storage.constant';
+import { ACCESS_TOKEN_KEY, CURRENT_USER_EMAIL, USER_UUID } from '@docAi-app/utils/constants/storage.constant';
 import { useAuth } from '@docAi-app/hooks';
+import { FORM_ERROR, FormApi } from 'final-form';
+import { useRef } from 'react';
 
 const Login = () => {
     // useRef
+    const formRef =
+        useRef<FormApi<{ email: string; password: string }, Partial<{ email: string; password: string }>>>();
     // useState
     const navigate = useNavigate();
     const auth = useAuth();
@@ -89,16 +93,32 @@ const Login = () => {
         return Object.keys(errorObject).length > 0 ? errorObject : {};
     };
 
-    const handleSubmit = (val: {
+    const handleSubmit = async (val: {
         [P in (typeof formControls)[number]]: string;
     }) => {
-        authApi.login(val).then((res) => {
-            const token = res.payload.token;
-            setToLocalStorage(ACCESS_TOKEN_KEY, token);
-            setToLocalStorage(CURRENT_USER_EMAIL, val['email']);
-            auth.setIsLogin(true);
-            navigate(`${ROUTE.ROOT}`);
-        });
+        let isError = false;
+        const res = await authApi
+            .login(val)
+            .then((res) => {
+                const token = res.payload.token;
+                setToLocalStorage(ACCESS_TOKEN_KEY, token);
+                setToLocalStorage(CURRENT_USER_EMAIL, val['email']);
+                setToLocalStorage(USER_UUID, res.payload.user_uuid);
+
+                auth.setIsLogin(true);
+                navigate(`${ROUTE.ROOT}`);
+            })
+            .catch((error) => {
+                isError = true;
+                return error;
+            });
+
+        if (formRef.current) {
+            formRef.current.restart(val);
+        }
+        if (isError) {
+            return { [FORM_ERROR]: res.message };
+        }
     };
 
     return (
@@ -107,74 +127,97 @@ const Login = () => {
             <Form
                 onSubmit={handleSubmit}
                 validate={validate}
-                render={({ handleSubmit }) => (
-                    <form onSubmit={handleSubmit} className={Styles.formContainer}>
-                        <div>
+                render={({
+                    handleSubmit,
+                    submitting,
+                    dirty,
+                    submitFailed,
+                    form,
+                    hasValidationErrors,
+                    hasSubmitErrors,
+                    submitError,
+                }) => {
+                    formRef.current = form;
+                    return (
+                        <form onSubmit={handleSubmit} className={Styles.formContainer}>
                             <div>
-                                <Field
-                                    name="email"
-                                    render={({ input, meta }) => {
-                                        return (
-                                            <InputField
-                                                {...input}
-                                                type="email"
-                                                fullWidth
-                                                label="Email"
-                                                placeholder="Enter Email"
-                                                required
-                                                error={meta.touched && meta.error && true}
-                                                helperText={
-                                                    meta.touched &&
-                                                    meta.error && <span style={{ width: '100%' }}>{meta.error}</span>
-                                                }
-                                            />
-                                        );
-                                    }}
-                                />
+                                <div>
+                                    <Field
+                                        name="email"
+                                        render={({ input, meta }) => {
+                                            return (
+                                                <InputField
+                                                    {...input}
+                                                    type="email"
+                                                    fullWidth
+                                                    label="Email"
+                                                    placeholder="Enter Email"
+                                                    required
+                                                    error={meta.touched && meta.error && true}
+                                                    helperText={
+                                                        meta.touched &&
+                                                        meta.error && (
+                                                            <span style={{ width: '100%' }}>{meta.error}</span>
+                                                        )
+                                                    }
+                                                />
+                                            );
+                                        }}
+                                    />
+                                </div>
                             </div>
-                        </div>
-                        <div>
                             <div>
-                                <Field
-                                    name="password"
-                                    render={({ input, meta }) => {
-                                        return (
-                                            <InputField
-                                                label="Password"
-                                                type="password"
-                                                fullWidth
-                                                {...input}
-                                                placeholder="Enter Password"
-                                                required
-                                                error={meta.touched && meta.error && true}
-                                                helperText={
-                                                    meta.touched &&
-                                                    meta.error && <span style={{ width: '100%' }}>{meta.error}</span>
-                                                }
-                                            />
-                                        );
-                                    }}
-                                />
+                                <div>
+                                    <Field
+                                        name="password"
+                                        render={({ input, meta }) => {
+                                            return (
+                                                <InputField
+                                                    label="Password"
+                                                    type="password"
+                                                    fullWidth
+                                                    {...input}
+                                                    placeholder="Enter Password"
+                                                    required
+                                                    error={(meta.touched && meta.error && true) || submitFailed}
+                                                    helperText={
+                                                        (meta.touched && meta.error && (
+                                                            <span style={{ width: '100%' }}>{meta.error}</span>
+                                                        )) ||
+                                                        (!dirty && hasSubmitErrors && (
+                                                            <span style={{ width: '100%' }}>{submitError}</span>
+                                                        ))
+                                                    }
+                                                />
+                                            );
+                                        }}
+                                    />
+                                </div>
                             </div>
-                        </div>
 
-                        <div className={Styles.actionButton}>
-                            <Button
-                                type="button"
-                                variant="outlined"
-                                onClick={() => {
-                                    navigate(`/${ROUTE.AUTH}/${ROUTE.FORGOT_PASSWORD}`);
-                                }}
-                            >
-                                Forgot Password?
-                            </Button>
+                            <div className={Styles.actionButton}>
+                                <Button
+                                    type="button"
+                                    variant="outlined"
+                                    onClick={() => {
+                                        navigate(`/${ROUTE.AUTH}/${ROUTE.FORGOT_PASSWORD}`);
+                                    }}
+                                >
+                                    Forgot Password?
+                                </Button>
 
-                            <Button type="submit" variant="contained" color="primary">
-                                Login
-                            </Button>
-                        </div>
-                    </form>
-                )}
+                                <Button
+                                    type="submit"
+                                    variant="contained"
+                                    color="primary"
+                                    disabled={hasValidationErrors || !dirty || submitting}
+                                >
+                                    Login
+                                </Button>
+                            </div>
+                        </form>
+                    );
+                }}
             ></Form>
         </div>
     );

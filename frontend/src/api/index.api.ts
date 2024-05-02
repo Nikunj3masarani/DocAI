@@ -5,6 +5,7 @@ import { Method } from 'axios';
 import { CreateIndexRequestBody, GetAllIndexResponse } from '@docAi-app/types';
 import { parseEndpoint } from '@docAi-app/utils/helper';
 import {
+    AddIndexUserRequestBody,
     DeleteIndexParams,
     GetAllIndexRequestBody,
     GetIndexRequestParams,
@@ -49,6 +50,8 @@ const deleteIndex = (requestParams: DeleteIndexParams) => {
     const data: ApiConfig<undefined> = {
         method: ENDPOINTS.INDEX_MANAGEMENT.DELETE_INDEX.METHOD as Method,
         url: parseEndpoint(ENDPOINTS.INDEX_MANAGEMENT.DELETE_INDEX.URL, { ...requestParams }),
+        showSuccessToast: true,
+        showAlertToast: true,
     };
     return apiCall(data);
 };
@@ -79,6 +82,8 @@ const inviteIndexUser = (requestBody: InviteIndexUserRequestBody) => {
         method: ENDPOINTS.INDEX_MANAGEMENT.INVITE_USER.METHOD as Method,
         url: ENDPOINTS.INDEX_MANAGEMENT.INVITE_USER.URL,
         data: requestBody,
+        showSuccessToast: true,
+        showAlertToast: true,
     };
     return apiCall(data);
 };
@@ -88,6 +93,20 @@ const removeIndexUser = (requestBody: RemoveIndexUserRequestBody) => {
         method: ENDPOINTS.INDEX_MANAGEMENT.REMOVE_USERS.METHOD as Method,
         url: ENDPOINTS.INDEX_MANAGEMENT.REMOVE_USERS.URL,
         data: requestBody,
+        showSuccessToast: true,
+        showAlertToast: true,
+    };
+
+    return apiCall(data);
+};
+
+const addIndexUser = (requestBody: AddIndexUserRequestBody) => {
+    const data: ApiConfig<AddIndexUserRequestBody> = {
+        method: ENDPOINTS.INDEX_MANAGEMENT.ADD_USERS.METHOD as Method,
+        url: ENDPOINTS.INDEX_MANAGEMENT.ADD_USERS.URL,
+        data: requestBody,
+        showAlertToast: true,
+        showSuccessToast: true,
     };
 
     return apiCall(data);
@@ -102,6 +121,7 @@ const indexApi = {
     inviteIndexUser,
     removeIndexUser,
     updateIndex,
+    addIndexUser,
 };
 
 export { indexApi };

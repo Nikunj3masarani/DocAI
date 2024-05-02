@@ -1,3 +1,4 @@
+import uuid
 from haystack.components.converters import PyPDFToDocument, TextFileToDocument, HTMLToDocument
 from haystack.components.preprocessors import DocumentCleaner, DocumentSplitter
 from haystack_integrations.document_stores.elasticsearch import ElasticsearchDocumentStore
@@ -30,7 +31,6 @@ class Documents:
             cleaned_documents = self.document_cleaner.run(documents=converted_documents.get('documents'))
             split_documents = self.document_spliter.run(documents=cleaned_documents.get('documents'))
             embedded_documents = self.document_embeddings.run(documents=split_documents.get('documents'))
-
             self.document_store.write_documents(embedded_documents.get("documents"))
             
         return embedded_documents["documents"][0].meta["source_id"]

@@ -1,10 +1,14 @@
+import io
 import uuid
+
+from fastapi import UploadFile
 from app import constants
 from app.web.documents.db_service import Documents as DocumentsDBService
 from app.constants import DocumentUploadStatus
 from app.web.index.db_service import Index as IndexDBService
 from app.web.documents.haystack_service import Documents as DocumentHaystackService
 from app.exception.custom import CustomException
+from app.web.documents.crawler import CrawlWebsite
 
 
 class Documents:
@@ -38,7 +42,7 @@ class Documents:
 
             doc_data = {
                 "index_uuid": kwargs.get("index_uuid"),
-                "source_id":source_id,
+                "source_id": source_id,
                 "file_name": doc.filename,
                 "document_uuid": str(uuid.uuid4()),
                 "file_ext": doc.filename.split(".")[-1],
@@ -50,6 +54,24 @@ class Documents:
 
         return {"status": response_messages}
 
+    async def crawl_and_index_documents(self, **kwargs):
+
+        crawl_website = CrawlWebsite(url=kwargs.get("url"))
+        file_path, file_name = crawl_website.process()
+
+        with open(file_path, "rb") as f:
+            file_content = f.read()
+
+        # Create a file-like object in memory using BytesIO
+        file_object = io.BytesIO(file_content)
+        upload_file = UploadFile(
+            file=file_object, filename=file_name, size=len(file_content)
+        )
+        # file_instance = File(file=upload_file)
+        response = await self.index_documents([upload_file], **kwargs)
+
+        return response
+
     async def get_all_documents(self, data):
         document_db_service = DocumentsDBService(self.db_client)
         return await document_db_service.get_all_data(data)
@@ -57,11 +79,11 @@ class Documents:
     async def delete_documents(self, document_delete_data):
         document_db_service = DocumentsDBService(self.db_client)
         data = await document_db_service.delete_data(document_delete_data)
-        
+
         document_db_service = DocumentsDBService(self.db_client)
         index_db_service = IndexDBService(self.db_client)
-        
-        index_data={
+
+        index_data = {
             "index_uuid": data.get("index_uuid"),
             "user_uuid": document_delete_data.get("user_uuid")
         }

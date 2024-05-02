@@ -1,7 +1,7 @@
 .fileListContainer {
     overflow: auto;
-    max-height: 15rem;
-    padding-left: 1rem;
+    max-height: 24rem;
+    padding-inline: 0 1rem;
     
     &__file {
         display: flex;
@@ -9,4 +9,3 @@
         align-items: center;
     }
 }
-

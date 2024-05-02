@@ -1,13 +1,26 @@
-export type { LoginRequestBody, ForgotPasswordRequestBody, LoginResponsePayload } from './auth.model';
+export type {
+    LoginRequestBody,
+    ForgotPasswordRequestBody,
+    LoginResponsePayload,
+    InviteUserRequestBody,
+    SetPassWordsRequestBody,
+} from './auth.model';
 
 export type {
     EditMessageTitleProps,
     GetChatMessageRequestParams,
     GetChatRequestBody,
     DeleteChatRequestParams,
+    GetChatListResponseBody,
+    GetChatMessageResponseBody,
 } from './chat.model';
 
-export type { GetDocumentsRequestBody, UploadDocumentsProps, DeleteDocumentRequestParams } from './documents.model';
+export type {
+    GetDocumentsRequestBody,
+    UploadDocumentsProps,
+    DeleteDocumentRequestParams,
+    UploadCrawlProps,
+} from './documents.model';
 
 export type {
     GetIndexRequestParams,
@@ -18,6 +31,7 @@ export type {
     InviteIndexUserRequestBody,
     RemoveIndexUserRequestBody,
     UpdateIndexProps,
+    AddIndexUserRequestBody,
 } from './index.model';
 
 export type {

@@ -9,12 +9,12 @@ export const PROMPT_UUID = 'prompt_uuid';
 export const CHAT = 'chat';
 export const USERS = 'users';
 
-export const METHOD  = {
+export const METHOD = {
     GET: 'get',
     POST: 'post',
     DELETE: 'delete',
     PUT: 'put',
-} ;
+};
 
 export const ENDPOINTS = {
     AUTH: {
@@ -24,7 +24,15 @@ export const ENDPOINTS = {
         },
         FORGOT_PASSWORD: {
             METHOD: METHOD.POST,
-            URL: `${USERS}/forgot-password`,
+            URL: `${USERS}/forget-password`,
+        },
+        INVITE_USER: {
+            METHOD: METHOD.POST,
+            URL: `${USERS}/invite`,
+        },
+        SET_PASSWORDS: {
+            METHOD: METHOD.POST,
+            URL: `${USERS}/set-password`,
         },
     },
     INDEX_MANAGEMENT: {
@@ -59,6 +67,10 @@ export const ENDPOINTS = {
         },
         REMOVE_USERS: {
             URL: `${INDEX}/${USERS}/remove`,
+            METHOD: METHOD.POST,
+        },
+        ADD_USERS: {
+            URL: `${INDEX}/${USERS}/invite/update`,
             METHOD: METHOD.POST,
         },
     },
@@ -98,6 +110,10 @@ export const ENDPOINTS = {
         DELETE_DOCUMENTS: {
             METHOD: METHOD.DELETE,
             URL: `${DOCUMENTS}/?document_uuid`,
+        },
+        UPLOAD_CRAWL: {
+            METHOD: METHOD.POST,
+            URL: `${DOCUMENTS}/crawl/?url&${INDEX_UUID}`,
         },
     },
     CHAT: {

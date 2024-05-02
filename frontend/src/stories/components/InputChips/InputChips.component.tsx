@@ -3,7 +3,7 @@
 //Import Storybook
 
 //Import Component
-import { StyledMuiChipsInput, MuiChipsInputProps } from './InputChips.styled';
+import { StyledMuiChipsInput, StyledMuiChipsInputProps } from './InputChips.styled';
 
 //Import Page
 
@@ -23,7 +23,7 @@ import { StyledMuiChipsInput, MuiChipsInputProps } from './InputChips.styled';
 
 //Import Style
 
-type InputChipsPros = MuiChipsInputProps & { tooltip?: string };
+type InputChipsPros = StyledMuiChipsInputProps & { tooltip?: string };
 
 const InputChips = (props: InputChipsPros) => {
     return <StyledMuiChipsInput {...props} />;

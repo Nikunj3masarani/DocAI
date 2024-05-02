@@ -14,7 +14,8 @@ class Index:
         return index_name
 
     async def delete_index(self, index_name):
-        if await self.es_client.indices.exists(index=index_name):
+        is_exists = await self.es_client.indices.exists(index=index_name.lower())
+        if is_exists:
             await self.es_client.indices.delete(index=index_name.lower())
 
     async def get_index_list(self):

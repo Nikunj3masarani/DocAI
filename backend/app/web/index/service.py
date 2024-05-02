@@ -5,6 +5,7 @@ from app.web.index.db_service import Index as IndexDBService
 from app.web.index.es_service import Index as IndexESService
 from elasticsearch import AsyncElasticsearch
 from app.exception.custom import CustomException
+from app.web.index.email_service import Users as UserEmailService
 from app import constants
 
 
@@ -59,7 +60,16 @@ class Index(BaseService):
     async def index_invite_user(self, data: Any, *args, **kwargs):
         index_db_service = IndexDBService(self.db_session)
         invitation_obj = await index_db_service.invite_user_for_index(data)
-        # todo send index invitation mail
+        
+        email_data = dict()
+        email_data['user_uuid'] = str(invitation_obj.get("user_uuid"))
+        email_data['token'] = str(invitation_obj.get("token"))
+        email_data['index_uuid'] = str(data.get("index_uuid"))
+        email_data['email'] = str(data.get("email"))
+        email_data['status'] = str(constants.InvitationStatus.SENT.value)
+        
+        user_email_service = UserEmailService()
+        user_email_service.invite_user_for_index(email_data)
         return {}
 
     async def index_invite_user_update(self, data: Any, *args, **kwargs):

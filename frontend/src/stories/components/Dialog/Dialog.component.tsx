@@ -29,10 +29,11 @@ interface DialogTitleProps {
     open: boolean;
     title?: string;
     children?: React.ReactNode;
+    minWidth?: string;
     onClose: (param: boolean) => void;
 }
 
-const DialogComp = ({ open, title, children, onClose, ...props }: DialogTitleProps) => {
+const DialogComp = ({ open, title, children, onClose, minWidth, ...props }: DialogTitleProps) => {
     const [openDialog, setOpen] = useState(open);
 
     useEffect(() => {
@@ -46,7 +47,12 @@ const DialogComp = ({ open, title, children, onClose, ...props }: DialogTitlePro
 
     return (
         <>
-            <DialogMainStyled onClose={handleClose} aria-labelledby="customized-dialog-title" open={openDialog}>
+            <DialogMainStyled
+                onClose={handleClose}
+                aria-labelledby="customized-dialog-title"
+                open={openDialog}
+                minWidth={minWidth}
+            >
                 <DialogTitleStyled sx={{ m: 0, p: 2 }} {...props}>
                     <p>{title}</p>
                     {openDialog ? (
