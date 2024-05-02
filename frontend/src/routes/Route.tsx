@@ -88,7 +88,7 @@ const ROUTES: RouteObject[] = [
         children: PRIVATE_ROUTES,
     },
     {
-        path: `${ROUTE.ROOT}${ROUTE.INVITE_TO_BRAIN}`,
+        path: `${ROUTE.INVITE_TO_BRAIN}`,
         element: (
             <AuthRoute>
                 <InviteToBrain />

@@ -42,7 +42,7 @@ const Login = () => {
         useRef<FormApi<{ email: string; password: string }, Partial<{ email: string; password: string }>>>();
     // useState
     const navigate = useNavigate();
-    const auth = useAuth();
+    const {setIsLogin} = useAuth();
 
     // Variables Dependent upon State
 
@@ -104,9 +104,8 @@ const Login = () => {
                 setToLocalStorage(ACCESS_TOKEN_KEY, token);
                 setToLocalStorage(CURRENT_USER_EMAIL, val['email']);
                 setToLocalStorage(USER_UUID, res.payload.user_uuid);
-
-                auth.setIsLogin(true);
-                navigate(`${ROUTE.ROOT}`);
+                setIsLogin(true);
+                navigate(`${ROUTE.ROOT}${ROUTE.AUTH}`);
             })
             .catch((error) => {
                 isError = true;
