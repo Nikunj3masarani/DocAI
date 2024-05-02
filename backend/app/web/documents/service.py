@@ -42,7 +42,7 @@ class Documents:
 
             doc_data = {
                 "index_uuid": kwargs.get("index_uuid"),
-                "source_id":source_id,
+                "source_id": source_id,
                 "file_name": doc.filename,
                 "document_uuid": str(uuid.uuid4()),
                 "file_ext": doc.filename.split(".")[-1],
@@ -55,7 +55,7 @@ class Documents:
         return {"status": response_messages}
 
     async def crawl_and_index_documents(self, **kwargs):
-        
+
         crawl_website = CrawlWebsite(url=kwargs.get("url"))
         file_path, file_name = crawl_website.process()
 
@@ -69,9 +69,8 @@ class Documents:
         )
         # file_instance = File(file=upload_file)
         response = await self.index_documents([upload_file], **kwargs)
-        
+
         return response
-        
 
     async def get_all_documents(self, data):
         document_db_service = DocumentsDBService(self.db_client)
@@ -80,11 +79,11 @@ class Documents:
     async def delete_documents(self, document_delete_data):
         document_db_service = DocumentsDBService(self.db_client)
         data = await document_db_service.delete_data(document_delete_data)
-        
+
         document_db_service = DocumentsDBService(self.db_client)
         index_db_service = IndexDBService(self.db_client)
-        
-        index_data={
+
+        index_data = {
             "index_uuid": data.get("index_uuid"),
             "user_uuid": document_delete_data.get("user_uuid")
         }

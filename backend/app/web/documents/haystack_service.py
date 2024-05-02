@@ -29,14 +29,8 @@ class Documents:
 
             converted_documents = document_converter.run(sources=[temp_file_name])
             cleaned_documents = self.document_cleaner.run(documents=converted_documents.get('documents'))
-            if doc_ext == 'txt':
-                split_documents = {"documents": cleaned_documents.get('documents')}
-                cleaned_documents["documents"][0].meta["source_id"] =str(uuid.uuid4()) 
-            else:
-                split_documents = self.document_spliter.run(documents=cleaned_documents.get('documents'))
-            
+            split_documents = self.document_spliter.run(documents=cleaned_documents.get('documents'))
             embedded_documents = self.document_embeddings.run(documents=split_documents.get('documents'))
-
             self.document_store.write_documents(embedded_documents.get("documents"))
             
         return embedded_documents["documents"][0].meta["source_id"]
