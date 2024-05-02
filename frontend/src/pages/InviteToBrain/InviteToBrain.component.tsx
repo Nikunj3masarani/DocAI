@@ -26,24 +26,20 @@ import { ROUTE } from '@docAi-app/utils/constants/Route.constant';
 
 //Import Style
 import Styles from './InviteToBrain.module.scss';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const InviteToBrain = () => {
+    const [brainName, setBrainName] = useState<string>('');
     const navigate = useNavigate();
     const location = useLocation();
-    const [brainName, setBrainName] = useState<string>('');
     const { state } = location;
-    useState(() => {
-        if (state) {
-            const { indexUuid } = state;
 
-            if (indexUuid) {
-                indexApi.getIndex({ index_uuid: indexUuid }).then((res) => {
-                    setBrainName(res.payload.title);
-                });
-            }
+    useEffect(() => {
+        if (state) {
+            const { title } = state;
+            setBrainName(title);
         }
-    }, []);
+    }, [state]);
 
     const handleClick = (status: boolean) => {
         if (state) {
@@ -57,6 +53,9 @@ const InviteToBrain = () => {
                         user_uuid: userUuid,
                     })
                     .then(() => {
+                        navigate(`${ROUTE.ROOT}${ROUTE.HOME}`);
+                    })
+                    .catch(() => {
                         navigate(`${ROUTE.ROOT}${ROUTE.HOME}`);
                     });
             } else {
