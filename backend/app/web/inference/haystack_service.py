@@ -83,9 +83,9 @@ class Inference:
 
         relevant_embeddings_documents = self.document_embeddings_retriever.run(
             query_embedding=query_embeddings.get("embedding"),
-            top_k=5)
+            top_k=10)
         relevant_query_documents = self.document_query_retriever.run(query=query,
-                                                                     top_k=5)
+                                                                     top_k=10)
 
         relevant_documents = self.document_joiner.run(
             documents=[relevant_embeddings_documents.get('documents'), relevant_query_documents.get('documents')])

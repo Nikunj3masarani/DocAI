@@ -31,7 +31,7 @@ class CrawlWebsite(BaseModel):
     def extract_content(self, url):
         try:
             response = requests.get(url)
-            soup = BeautifulSoup(response.content)
+            soup = BeautifulSoup(response.content, features='lxml')
             return soup.get_text()
         except Exception as e:
             print(e)
