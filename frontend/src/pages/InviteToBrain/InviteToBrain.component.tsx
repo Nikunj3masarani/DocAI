@@ -48,7 +48,6 @@ const InviteToBrain = () => {
     const handleClick = (status: boolean) => {
         if (state) {
             const { indexUuid, token, userUuid } = state;
-
             if (indexUuid && token && userUuid) {
                 indexApi
                     .addIndexUser({
