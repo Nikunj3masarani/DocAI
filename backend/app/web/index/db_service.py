@@ -252,3 +252,29 @@ class Index(DBService):
         invitation_result[
             0].status = constants.InvitationStatus.ACCEPTED.value if user_invite_status == 1 else constants.InvitationStatus.REJECTED.value
         await self.db_session.commit()
+
+    async def index_user_role_update(self, data):
+        
+        check_index_access_query = select(IndexUserMappingTable).where(
+            IndexUserMappingTable.index_uuid == data.get("index_uuid"),
+            IndexUserMappingTable.user_uuid == data.get('user_uuid'))
+
+        check_index_access_result = await self.db_session.execute(check_index_access_query)
+        check_index_access_result = check_index_access_result.first()
+        
+        if not check_index_access_result:
+            raise CustomException(constants.INDEX_CANT_ACCESS)
+        
+        memeber_access_query = select(IndexUserMappingTable).where(
+            IndexUserMappingTable.index_uuid == data.get("index_uuid"),
+            IndexUserMappingTable.user_uuid == data.get('member_user_uuid'))
+        
+        memeber_access_result = await self.db_session.execute(memeber_access_query)
+        memeber_access_result = memeber_access_result.first()
+        
+        if not memeber_access_result:
+            raise CustomException(constants.NO_USER_FOUND)
+        
+        memeber_access_result[0].role = data.get('role').value
+        
+        await self.db_session.commit()

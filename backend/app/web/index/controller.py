@@ -3,7 +3,7 @@ from app import constants
 from fastapi_utils.cbv import cbv
 from fastapi_utils.inferring_router import InferringRouter
 from app.web.index.service import Index as IndexService
-from app.web.index.validator import CreateIndex, IndexList, IndexRemoveUser, IndexInviteUser, IndexUserUpdate, UpdateIndex
+from app.web.index.validator import CreateIndex, IndexList, IndexRemoveUser, IndexInviteUser, IndexUserUpdate, UpdateIndex, UpdateUserRole
 from app.web.index.response import IndexResponse, IndexListResponse, IndexUserResponse
 from app.services.db.dependency import get_db_session
 from app.services.es.dependency import get_es_client
@@ -180,5 +180,23 @@ class Index:
         return IndexResponse(
             payload={},
             message=constants.INDEX_USER_UPDATE,
+            status=status.HTTP_200_OK,
+        )
+
+    @router.post('/users/role/update')
+    async def update_index_user_role(
+            self,
+            user_role_data: UpdateUserRole,
+            db=Depends(get_db_session),
+            user=Depends(AuthBearer())
+    ):
+        user_data = user_role_data.__dict__
+        user_data['user_uuid'] = user.get('user_uuid')
+        index_service = IndexService(db)
+
+        _ = await index_service.index_user_update(user_data)
+        return IndexResponse(
+            payload={},
+            message=constants.USER_ROLE_UPDATED_SUCCESS,
             status=status.HTTP_200_OK,
         )
