@@ -59,7 +59,7 @@ const SetUserDetails = () => {
     };
 
     const fieldValidation: FieldValidation = {
-        fullName: { required: { message: 'User Name is required' } },
+        fullName: { required: { message: 'Full Name is required' } },
         password: PASSWORD_VALIDATION,
     };
 
@@ -138,7 +138,7 @@ const SetUserDetails = () => {
                                                     {...input}
                                                     type="text"
                                                     fullWidth
-                                                    label="User Name"
+                                                    label="Full Name"
                                                     placeholder="Enter Your Full Name"
                                                     required
                                                     error={(meta.touched && meta.error && true) || submitFailed}
