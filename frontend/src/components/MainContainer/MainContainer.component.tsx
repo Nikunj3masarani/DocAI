@@ -41,20 +41,16 @@ import { chatApi } from '@docAi-app/api/chat.api';
 
 //Import Style
 import Styles from './MainContainer.module.scss';
-import {
-    ACCESS_TOKEN_KEY,
-    CURRENT_USER_EMAIL,
-    REDIRECT_URL,
-    USER_UUID,
-} from '@docAi-app/utils/constants/storage.constant';
-import { clearLocalStorage, removeFromLocalStorage } from '@docAi-app/utils/helper';
+
+import { clearLocalStorage, getFromLocalStorage } from '@docAi-app/utils/helper';
+import { CURRENT_USER_EMAIL } from '@docAi-app/utils/constants/storage.constant';
 
 const STREAM_LIT_APP = 'Doc Analyzer';
 interface SideNavigationItems {
     to?: string;
     label: string;
     icon: (props: IconType) => JSX.Element;
-    type: 'link' | 'externalLink' | 'accordion' | 'dialogue' | 'action';
+    type: 'link' | 'externalLink' | 'accordion' | 'dialogue' | 'action' | 'text';
     position: 'top' | 'bottom';
 }
 
@@ -96,6 +92,12 @@ const sideNavigationItems: SideNavigationItems[] = [
         label: 'Logout',
         icon: Icons.Logout,
         type: 'action',
+        position: 'bottom',
+    },
+    {
+        label: getFromLocalStorage(CURRENT_USER_EMAIL),
+        icon: Icons.Portrait,
+        type: 'text',
         position: 'bottom',
     },
 ];
@@ -363,6 +365,16 @@ const MainContainer = () => {
                         <div className={`navLink ${Styles.menuItem}`}>
                             <navigationItem.icon width={13} height={16} />
                             {navigationItem.label}
+                        </div>
+                    </li>
+                );
+            }
+            case 'text': {
+                return (
+                    <li className="navItem" key={index}>
+                        <div className={`navLink ${Styles.menuItem}`}>
+                            <navigationItem.icon width={13} height={16} />
+                            <abbr title={navigationItem.label}> {navigationItem.label}</abbr>
                         </div>
                     </li>
                 );

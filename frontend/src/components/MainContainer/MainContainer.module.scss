@@ -20,6 +20,12 @@
     cursor: pointer;
     gap: 1rem;
     width: 100%;
+
+    abbr {
+        text-decoration: none;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
 }
 
 .accordion {

@@ -68,7 +68,7 @@ const InvitePeople = ({ peopleInvited }: InvitePeopleProps) => {
         }
     };
 
-    const fieldValidator = (v) => {
+    const fieldValidator = (v: string) => {
         return validation(EMAIL_VALIDATION, v) ?? undefined;
     };
 
