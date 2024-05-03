@@ -77,3 +77,8 @@ class Index(BaseService):
         index_db_service = IndexDBService(self.db_session)
         _ = await index_db_service.index_user_invite_status_update(data)
         return {}
+    
+    async def index_user_update(self, data: Any, *args, **kwargs):
+        index_db_service = IndexDBService(self.db_session)
+        _ = await index_db_service.index_user_role_update(data)
+        return {}

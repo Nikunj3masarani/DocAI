@@ -212,6 +212,7 @@ class Index(DBService):
         invitation_obj.invited_by = data.get('user_uuid')
         invitation_obj.token = str(uuid.uuid4())
         invitation_obj.invite_uuid = uuid.uuid4()
+        invitation_obj.role_id = data.get('role').value
         invitation_obj.created_at = datetime.utcnow()
         invitation_obj.status = constants.InvitationStatus.SENT
         invitation_obj.invite_action = constants.UserInviteAction.INDEX
@@ -243,12 +244,37 @@ class Index(DBService):
             index_user_mapping.uuid = uuid.uuid4()
             index_user_mapping.index_uuid = data.get('index_uuid')
             index_user_mapping.user_uuid = data.get('user_uuid')
-            #todo need to replace with original role
-            index_user_mapping.role = constants.IndexRole.EDITOR
+            index_user_mapping.role = invitation_result[0].role_id
             index_user_mapping.created_at = datetime.now()
             self.db_session.add(index_user_mapping)
 
         invitation_result[0].token = None
         invitation_result[
             0].status = constants.InvitationStatus.ACCEPTED.value if user_invite_status == 1 else constants.InvitationStatus.REJECTED.value
+        await self.db_session.commit()
+
+    async def index_user_role_update(self, data):
+        
+        check_index_access_query = select(IndexUserMappingTable).where(
+            IndexUserMappingTable.index_uuid == data.get("index_uuid"),
+            IndexUserMappingTable.user_uuid == data.get('user_uuid'))
+
+        check_index_access_result = await self.db_session.execute(check_index_access_query)
+        check_index_access_result = check_index_access_result.first()
+        
+        if not check_index_access_result:
+            raise CustomException(constants.INDEX_CANT_ACCESS)
+        
+        memeber_access_query = select(IndexUserMappingTable).where(
+            IndexUserMappingTable.index_uuid == data.get("index_uuid"),
+            IndexUserMappingTable.user_uuid == data.get('member_user_uuid'))
+        
+        memeber_access_result = await self.db_session.execute(memeber_access_query)
+        memeber_access_result = memeber_access_result.first()
+        
+        if not memeber_access_result:
+            raise CustomException(constants.NO_USER_FOUND)
+        
+        memeber_access_result[0].role = data.get('role').value
+        
         await self.db_session.commit()
