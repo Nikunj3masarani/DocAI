@@ -221,4 +221,34 @@ class Index(DBService):
         return invitation_obj.__dict__
 
     async def index_user_invite_status_update(self, data):
-        pass
+
+        select_index_exists_query = select(IndexTable).where(IndexTable.index_uuid == data.get('index_uuid'))
+        select_index_exists = await self.db_session.execute(select_index_exists_query)
+        index_exists_result = select_index_exists.first()
+        if not index_exists_result:
+            raise CustomException(constants.INDEX_NOT_FOUND)
+
+        select_invitation_query = select(InvitationTable).where(InvitationTable.token == data.get('token'),
+                                                                InvitationTable.user_uuid == data.get('user_uuid'),
+                                                                InvitationTable.status == constants.InvitationStatus.SENT)
+
+        select_invitation = await self.db_session.execute(select_invitation_query)
+        invitation_result = select_invitation.first()
+        if not invitation_result:
+            raise CustomException(constants.USER_INVALID_INVITATION)
+
+        user_invite_status = data.get('status')
+        if user_invite_status == 1:
+            index_user_mapping = IndexUserMappingTable()
+            index_user_mapping.uuid = uuid.uuid4()
+            index_user_mapping.index_uuid = data.get('index_uuid')
+            index_user_mapping.user_uuid = data.get('user_uuid')
+            #todo need to replace with original role
+            index_user_mapping.role = constants.IndexRole.EDITOR
+            index_user_mapping.created_at = datetime.now()
+            self.db_session.add(index_user_mapping)
+
+        invitation_result[0].token = None
+        invitation_result[
+            0].status = constants.InvitationStatus.ACCEPTED.value if user_invite_status == 1 else constants.InvitationStatus.REJECTED.value
+        await self.db_session.commit()

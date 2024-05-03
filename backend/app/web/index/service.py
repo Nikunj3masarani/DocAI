@@ -75,5 +75,5 @@ class Index(BaseService):
 
     async def index_invite_user_update(self, data: Any, *args, **kwargs):
         index_db_service = IndexDBService(self.db_session)
-        invitation_obj = await index_db_service.index_user_invite_status_update(data)
+        _ = await index_db_service.index_user_invite_status_update(data)
         return {}
