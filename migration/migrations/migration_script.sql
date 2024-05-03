@@ -96,3 +96,18 @@ CREATE TABLE IF NOT EXISTS index_user_mapping (
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM information_schema.columns
+        WHERE table_name = 'invitations'
+        AND column_name = 'role_id'
+    )
+    THEN
+        ALTER TABLE invitations
+        ADD COLUMN role_id int4;
+    END IF;
+END $$;
+
