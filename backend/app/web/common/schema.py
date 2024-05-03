@@ -93,6 +93,7 @@ class Invitation(Base):
 
     invite_uuid = Column(UUID(as_uuid=True), primary_key=True)
     status = Column(Integer)
+    role_id = Column(Integer)
     created_at = Column(DateTime, default=datetime.utcnow)
     token = Column(Text)
     invite_action = Column(Integer)

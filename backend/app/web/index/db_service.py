@@ -212,6 +212,7 @@ class Index(DBService):
         invitation_obj.invited_by = data.get('user_uuid')
         invitation_obj.token = str(uuid.uuid4())
         invitation_obj.invite_uuid = uuid.uuid4()
+        invitation_obj.role_id = data.get('role').value
         invitation_obj.created_at = datetime.utcnow()
         invitation_obj.status = constants.InvitationStatus.SENT
         invitation_obj.invite_action = constants.UserInviteAction.INDEX
@@ -243,8 +244,7 @@ class Index(DBService):
             index_user_mapping.uuid = uuid.uuid4()
             index_user_mapping.index_uuid = data.get('index_uuid')
             index_user_mapping.user_uuid = data.get('user_uuid')
-            #todo need to replace with original role
-            index_user_mapping.role = constants.IndexRole.EDITOR
+            index_user_mapping.role = invitation_result[0].role_id
             index_user_mapping.created_at = datetime.now()
             self.db_session.add(index_user_mapping)
 
