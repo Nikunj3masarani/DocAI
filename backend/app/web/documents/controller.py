@@ -1,4 +1,5 @@
 import io
+import shutil
 from fastapi import Depends, File, status, BackgroundTasks
 from app import constants
 from fastapi_utils.cbv import cbv
@@ -13,6 +14,15 @@ from typing import List
 from fastapi import UploadFile
 from pydantic import UUID4, constr
 from app.web.documents.crawler import CrawlWebsite
+from abc import ABC
+# class AM(ABC):
+#     filename: str=""
+#     file: bytes=""
+    
+#     def __init__(self,filename,file) -> None:
+#         self.filename = filename
+#         self.file = file
+#         super().__init__()
 
 router = InferringRouter()
 
@@ -30,11 +40,31 @@ class Documents:
             user=Depends(AuthBearer())
     ) -> DocumentResponse:
         document_service = DocumentService(db, document_embeddings)
-        # background_task.add_task(document_service.index_documents,(documents, index_uuid))
+        
+        # async def process_uploaded_files(files: List[UploadFile]):
+        #     document_service = DocumentService(db, document_embeddings)
+        #     copied_files = []
+        #     for file in files:
+        #         copied_files.append(
+        #             AM(filename=file.filename,file=file.file.read())
+        #         )
+        #         # copied_files.append({
+        #         #     "name":file.filename,
+        #         #     "file":file.file.read(),
+        #         # })
+        #     return copied_files
+        
+        # # await document_service.index_documents([file.filename], index_uuid=index_uuid, user_uuid=user_uuid)
+        # copied_files = await process_uploaded_files(documents)
+        # # background_task.add_task(process_uploaded_files, documents, index_uuid, user.get("user_uuid"))
+
+        # # from copy import deepcopy
+        # # docs_new = deepcopy(documents)
+        # background_task.add_task(document_service.index_documents,copied_files, index_uuid=index_uuid, user_uuid=user.get("user_uuid"))
         response = await document_service.index_documents(documents, index_uuid=index_uuid, user_uuid=user.get("user_uuid"))
 
         return DocumentResponse(
-            payload=response,
+            payload={},
             message=constants.DOCUMENT_UPLOADED,
             status=status.HTTP_200_OK,
         )

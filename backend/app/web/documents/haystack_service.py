@@ -17,6 +17,7 @@ class Documents:
 
     async def index_document(self, doc):
         with tempfile.NamedTemporaryFile() as temp_file:
+            # temp_file.write(doc.file)
             temp_file.write(await doc.read())
             temp_file_name = temp_file.name
             doc_ext = doc.filename.split(".")[-1]
