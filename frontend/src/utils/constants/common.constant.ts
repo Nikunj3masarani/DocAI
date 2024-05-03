@@ -27,11 +27,11 @@ export const CHIPS_OPTIONS = [InputChipsAddOnOption.Enter, InputChipsAddOnOption
 export const USER_ROLE: Readonly<Record<string, Option>> = {
     viewer: {
         label: 'Viewer',
-        value: 3,
+        value: 2,
     },
     editor: {
         label: 'Editor',
-        value: 2,
+        value: 3,
     },
     owner: {
         label: 'Owner',
