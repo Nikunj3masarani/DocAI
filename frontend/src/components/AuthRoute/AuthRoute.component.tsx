@@ -39,6 +39,8 @@ const SEARCH_QUERY = {
     user_uuid: 'userUuid',
     token: 'token',
     index_uuid: 'indexUuid',
+    title: 'title',
+    status: 'status',
 };
 
 const AuthRoute = ({ children }: { children: React.ReactNode }) => {
@@ -105,7 +107,7 @@ const AuthRoute = ({ children }: { children: React.ReactNode }) => {
                     state: { ...searchObj },
                 });
             } else {
-                if (!url.state?.user_uuid) {
+                if (!url.state?.userUuid) {
                     return navigate(`${ROUTE.ROOT}${ROUTE.AUTH}`);
                 }
             }
