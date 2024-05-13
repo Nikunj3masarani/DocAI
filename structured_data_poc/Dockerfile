@@ -16,4 +16,4 @@ COPY . .
 EXPOSE 8053
 
 # Command to run the Streamlit app when the container starts
-CMD ["streamlit", "run", "app.py", "--server.port", "8053"]
+CMD ["streamlit", "run", "main.py", "--server.port", "8053"]
