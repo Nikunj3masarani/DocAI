@@ -1,5 +1,6 @@
 import streamlit as st
-from lida import Manager, TextGenerationConfig, llm
+from lida import Manager
+from llmx import llm, TextGenerationConfig
 from lida.datamodel import Goal
 import os
 import pandas as pd
@@ -35,7 +36,7 @@ if openai_key:
 
     # select model from gpt-4 , gpt-3.5-turbo, gpt-3.5-turbo-16k
     st.sidebar.write("## Text Generation Model")
-    models = ["gpt-4", "gpt-3.5-turbo", "gpt-3.5-turbo-16k"]
+    models = [os.environ['MODEL_NAME']]
     selected_model = st.sidebar.selectbox(
         'Choose a model',
         options=models,
@@ -132,7 +133,16 @@ if openai_key:
 
 # Step 3 - Generate data summary
 if openai_key and selected_dataset and selected_method:
-    lida = Manager(text_gen=llm("openai", api_key=openai_key))
+
+    text_gen = llm(
+        provider="openai",
+        api_type="azure",
+        azure_endpoint=os.environ["OPENAI_API_BASE"],
+        api_key=os.environ["OPENAI_API_KEY"],
+        api_version=os.environ['OPENAI_API_VERSION']
+    )
+
+    lida = Manager(text_gen=text_gen)
     textgen_config = TextGenerationConfig(
         n=1,
         temperature=temperature,
