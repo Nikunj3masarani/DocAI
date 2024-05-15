@@ -10,11 +10,11 @@ import pandas as pd
 os.makedirs("data", exist_ok=True)
 
 st.set_page_config(
-    page_title="DocAI - LIDA: Automatic Generation of Visualizations",
+    page_title="DocAI - Automatic Generation of Visualizations",
     page_icon="📊",
 )
 
-st.write("# DocAI - LIDA: Automatic Generation of Visualizations 📊")
+st.write("# DocAI - Automatic Generation of Visualizations 📊")
 
 
 # Step 1 - Get OpenAI API key
