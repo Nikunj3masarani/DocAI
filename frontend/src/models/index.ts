@@ -31,6 +31,7 @@ export type {
     InviteIndexUserRequestBody,
     RemoveIndexUserRequestBody,
     UpdateIndexProps,
+    AddIndexUserRequestBody,
 } from './index.model';
 
 export type {

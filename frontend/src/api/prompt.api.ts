@@ -22,6 +22,8 @@ const createPrompt = async (requestBody: CreatePromptRequestBody) => {
         method: ENDPOINTS.PROMPT.CREATE_PROMPT.METHOD as Method,
         url: ENDPOINTS.PROMPT.CREATE_PROMPT.URL,
         data: requestBody,
+        showSuccessToast: true,
+        showAlertToast: true,
     };
 
     return apiCall<CreatePromptResponseBody, CreatePromptRequestBody>(data);
@@ -51,6 +53,7 @@ const updatePrompt = async ({ requestBody, requestParams }: UpdatePromptProps) =
         url: parseEndpoint(ENDPOINTS.PROMPT.UPDATE_PROMPT.URL, requestParams),
         data: requestBody,
         showSuccessToast: true,
+        showAlertToast: true,
     };
 
     return apiCall<UpdatePromptResponseBody, UpdatePromptProps['requestBody']>(data);

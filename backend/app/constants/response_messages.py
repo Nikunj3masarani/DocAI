@@ -22,7 +22,8 @@ INDEX_USER_CAN_NOT_REMOVE_SELF = "You can not remove yourself from the Brain"
 INDEX_USER_INVITED = "User invited successfully for the Brain"
 INDEX_USER_UPDATE = "Brain user invite status updated"
 INDEX_CANT_ACCESS = "You can not access this Brain"
-
+NO_USER_FOUND = "No user found for this index"
+USER_ROLE_UPDATED_SUCCESS = "User role updated successfully"
 
 # Document Messages
 DOCUMENT_UPLOADED = "Docments uploaded successfully."

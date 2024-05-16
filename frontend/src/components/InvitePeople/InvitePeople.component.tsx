@@ -34,7 +34,6 @@ import { indexApi } from '@docAi-app/api';
 //Import Style
 import Styles from './InvitePeople.module.scss';
 
-
 const fieldInitialValue = {
     email: '',
     role: 3,
@@ -69,7 +68,7 @@ const InvitePeople = ({ peopleInvited }: InvitePeopleProps) => {
         }
     };
 
-    const fieldValidator = (v) => {
+    const fieldValidator = (v: string) => {
         return validation(EMAIL_VALIDATION, v) ?? undefined;
     };
 
@@ -97,7 +96,7 @@ const InvitePeople = ({ peopleInvited }: InvitePeopleProps) => {
                             <form
                                 onSubmit={(v) => {
                                     handleSubmit(v);
-                                    form.reset();
+                                    form.restart();
                                 }}
                                 className={Styles.formContainer}
                             >

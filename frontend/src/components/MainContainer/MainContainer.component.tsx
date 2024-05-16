@@ -19,7 +19,7 @@ import {
 import { AddNewUser } from '@docAi-app/components';
 
 //Import Hook
-import { useChatCreate } from '@docAi-app/hooks';
+import { useAuth, useChatCreate } from '@docAi-app/hooks';
 
 //Import Context
 
@@ -42,18 +42,21 @@ import { chatApi } from '@docAi-app/api/chat.api';
 //Import Style
 import Styles from './MainContainer.module.scss';
 
+import { clearLocalStorage, getFromLocalStorage } from '@docAi-app/utils/helper';
+import { CURRENT_USER_EMAIL } from '@docAi-app/utils/constants/storage.constant';
+
 const STREAM_LIT_APP = 'Visualizations';
 interface SideNavigationItems {
     to?: string;
     label: string;
     icon: (props: IconType) => JSX.Element;
-    type: 'link' | 'externalLink' | 'accordion' | 'dialogue';
+    type: 'link' | 'externalLink' | 'accordion' | 'dialogue' | 'action' | 'text';
     position: 'top' | 'bottom';
 }
 
 const sideNavigationItems: SideNavigationItems[] = [
     {
-        to: ROUTE.SEARCH,
+        to: ROUTE.HOME,
         label: 'Home',
         icon: Icons.DraftPatent,
         type: 'link',
@@ -83,6 +86,18 @@ const sideNavigationItems: SideNavigationItems[] = [
         label: 'Add User',
         icon: Icons.Person,
         type: 'dialogue',
+        position: 'bottom',
+    },
+    {
+        label: 'Logout',
+        icon: Icons.Logout,
+        type: 'action',
+        position: 'bottom',
+    },
+    {
+        label: getFromLocalStorage(CURRENT_USER_EMAIL),
+        icon: Icons.Portrait,
+        type: 'text',
         position: 'bottom',
     },
 ];
@@ -120,6 +135,7 @@ const MainContainer = () => {
     const { isChatCreated, setIsChatCreated } = useChatCreate();
     const params = useParams();
     const navigate = useNavigate();
+    const { setIsLogin } = useAuth();
 
     const isTitleEditing = (messageId: string) => {
         return editTitleId === messageId ? Styles.active : '';
@@ -332,6 +348,33 @@ const MainContainer = () => {
                         <div className={`navLink ${Styles.menuItem}`}>
                             <navigationItem.icon width={13} height={16} />
                             {navigationItem.label}
+                        </div>
+                    </li>
+                );
+            }
+            case 'action': {
+                return (
+                    <li
+                        className="navItem"
+                        key={index}
+                        onClick={() => {
+                            clearLocalStorage();
+                            setIsLogin(false);
+                        }}
+                    >
+                        <div className={`navLink ${Styles.menuItem}`}>
+                            <navigationItem.icon width={13} height={16} />
+                            {navigationItem.label}
+                        </div>
+                    </li>
+                );
+            }
+            case 'text': {
+                return (
+                    <li className="navItem" key={index}>
+                        <div className={`navLink ${Styles.menuItem}`}>
+                            <navigationItem.icon width={13} height={16} />
+                            <abbr title={navigationItem.label}> {navigationItem.label}</abbr>
                         </div>
                     </li>
                 );

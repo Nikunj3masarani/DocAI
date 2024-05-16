@@ -38,6 +38,8 @@ const deleteChat = (requestParams: DeleteChatRequestParams) => {
     const data: ApiConfig<DeleteChatRequestParams> = {
         method: ENDPOINTS.CHAT.DELETE_CHAT.METHOD as Method,
         url: parseEndpoint(ENDPOINTS.CHAT.DELETE_CHAT.URL, { ...requestParams }),
+        showSuccessToast: true,
+        showAlertToast: true,
     };
 
     return apiCall(data);

@@ -166,6 +166,7 @@ const CreateUpdateBrain = ({ close, isBrainCreated }: CreateUpdateBrainProps) =>
             });
         }
     };
+
     const getPromptList = async (searchString: string, loadOptions, { page }) => {
         const res = await promptApi.getPromptsList({
             search: searchString,
@@ -198,7 +199,7 @@ const CreateUpdateBrain = ({ close, isBrainCreated }: CreateUpdateBrainProps) =>
         };
     };
 
-    const createUpdateIndex = (brainInfo: BrainInfo) => {
+    const createUpdateIndex = async (brainInfo: BrainInfo) => {
         const indexUuid = params[ROUTE.INDEX_ID];
         //update index
         if (indexUuid) {

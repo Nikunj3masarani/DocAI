@@ -3,14 +3,15 @@ import { ROUTE } from '@docAi-app/utils/constants/Route.constant';
 import {
     Chat,
     ForgotPassword,
+    Home,
     IndexList,
+    InviteToBrain,
     Login,
     PageNotFound,
     ResetPassword,
     SetUserDetails,
 } from '@docAi-app/pages';
 import { AuthContainer, AuthRoute, ErrorComponent, MainContainer, UpdateIndex } from '@docAi-app/components';
-import { Search } from '@docAi-app/pages/Search';
 import { ChatCreateContextProvider } from '@docAi-app/context/ChatCreateContext/ChatCreateContext';
 
 const errorElement = {
@@ -48,12 +49,12 @@ const AUTHCHILDROUTES: RouteObject[] = [
 const PRIVATE_ROUTES: RouteObject[] = [
     {
         index: true,
-        element: <Navigate to={ROUTE.SEARCH} />,
+        element: <Navigate to={ROUTE.HOME} />,
         ...errorElement,
     },
     {
-        path: `${ROUTE.SEARCH}`,
-        element: <Search />,
+        path: `${ROUTE.HOME}`,
+        element: <Home />,
         ...errorElement,
     },
     {
@@ -72,6 +73,7 @@ const PRIVATE_ROUTES: RouteObject[] = [
         ...errorElement,
     },
 ];
+
 const ROUTES: RouteObject[] = [
     {
         path: ROUTE.ROOT,
@@ -84,6 +86,15 @@ const ROUTES: RouteObject[] = [
         ),
         ...errorElement,
         children: PRIVATE_ROUTES,
+    },
+    {
+        path: `${ROUTE.INVITE_TO_BRAIN}`,
+        element: (
+            <AuthRoute>
+                <InviteToBrain />
+            </AuthRoute>
+        ),
+        ...errorElement,
     },
     {
         path: ROUTE.AUTH,

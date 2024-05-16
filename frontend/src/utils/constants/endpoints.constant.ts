@@ -24,7 +24,7 @@ export const ENDPOINTS = {
         },
         FORGOT_PASSWORD: {
             METHOD: METHOD.POST,
-            URL: `${USERS}/forgot-password`,
+            URL: `${USERS}/forget-password`,
         },
         INVITE_USER: {
             METHOD: METHOD.POST,
@@ -67,6 +67,10 @@ export const ENDPOINTS = {
         },
         REMOVE_USERS: {
             URL: `${INDEX}/${USERS}/remove`,
+            METHOD: METHOD.POST,
+        },
+        ADD_USERS: {
+            URL: `${INDEX}/${USERS}/invite/update`,
             METHOD: METHOD.POST,
         },
     },

@@ -23,6 +23,8 @@ import { SmartToyOutlined } from './SmartToyOutlined.icon';
 import { History } from './History.icon';
 import { Person } from './Person.icon';
 import ArrowCircleUp from './ArrowCircleUp.icon';
+import Logout from './Logout.icon';
+import Portrait from './Portrait.icon';
 
 const Icons = {
     BrowsePrompt,
@@ -50,6 +52,8 @@ const Icons = {
     History,
     Person,
     ArrowCircleUp,
+    Logout,
+    Portrait,
 };
 
 export default Icons;

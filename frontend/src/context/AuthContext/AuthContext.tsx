@@ -16,7 +16,7 @@ const AuthContext = createContext<AuthContextType>(initialAuthContextValue);
 
 const AuthContextProvider = ({ children }: { children: React.ReactNode }) => {
     const [isLogin, setIsLogin] = useState(getFromLocalStorage(ACCESS_TOKEN_KEY) ? true : false);
-
+    
     const initialValues = {
         isLogin: isLogin,
         setIsLogin: setIsLogin,

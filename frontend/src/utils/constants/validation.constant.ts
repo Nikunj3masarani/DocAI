@@ -26,13 +26,13 @@ export const PASSWORD_VALIDATION: Validation = {
 
 export const CONFIRM_PASSWORD_VALIDATION: Validation = {
     required: { message: 'Confirm Password in required' },
-    between: {
-        minLength: PASSWORD.MIN_LENGTH,
-        maxLength: PASSWORD.MAX_LENGTH,
-        message: `Confirm Password length must be between ${PASSWORD.MIN_LENGTH} and ${PASSWORD.MAX_LENGTH}`,
-    },
-    regex: {
-        message: 'Confirm Password must contain alpha numeric characters',
-        regexPattern: REGEX.ALPHA_NUMERIC_WITH_SPECIAL_REGEXP,
-    },
+    // between: {
+    //     minLength: PASSWORD.MIN_LENGTH,
+    //     maxLength: PASSWORD.MAX_LENGTH,
+    //     message: `Confirm Password length must be between ${PASSWORD.MIN_LENGTH} and ${PASSWORD.MAX_LENGTH}`,
+    // },
+    // regex: {
+    //     message: 'Confirm Password must contain alpha numeric characters',
+    //     regexPattern: REGEX.ALPHA_NUMERIC_WITH_SPECIAL_REGEXP,
+    // },
 };
