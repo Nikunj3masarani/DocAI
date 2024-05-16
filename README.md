@@ -82,11 +82,6 @@ Ensure you have the following installed:
 
  - http://localhost:3000/login
 
-### Default Admin Login Detail:
-
-  - username: **admin.docai@gmail.com**
-  - password: **admin**
-
 
 ## License 📄
 
