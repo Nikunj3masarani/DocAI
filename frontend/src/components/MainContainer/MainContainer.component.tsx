@@ -45,7 +45,7 @@ import Styles from './MainContainer.module.scss';
 import { clearLocalStorage, getFromLocalStorage } from '@docAi-app/utils/helper';
 import { CURRENT_USER_EMAIL } from '@docAi-app/utils/constants/storage.constant';
 
-const STREAM_LIT_APP = 'Doc Analyzer';
+const STREAM_LIT_APP = 'Visualizations';
 interface SideNavigationItems {
     to?: string;
     label: string;

@@ -22,10 +22,7 @@ openai_key = os.getenv("OPENAI_API_KEY")
 
 st.markdown(
     """
-    A Demo app for generating data visualizations and data-faithful infographics using various libraries,
-     such as Matplotlib, Seaborn, Altair, and D3. 
-     It supports integration with multiple large language model providers, 
-     including OpenAI, Azure OpenAI, PaLM, Cohere, and Hugging Face.
+        Automatically generate data visualizations!
    ----
 """)
 
