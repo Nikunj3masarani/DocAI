@@ -42,7 +42,7 @@ import { chatApi } from '@docAi-app/api/chat.api';
 //Import Style
 import Styles from './MainContainer.module.scss';
 
-const STREAM_LIT_APP = 'Doc Analyzer';
+const STREAM_LIT_APP = 'Visualizations';
 interface SideNavigationItems {
     to?: string;
     label: string;
