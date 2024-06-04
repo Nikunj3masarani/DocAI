@@ -45,7 +45,7 @@ services:
         condition: service_started
 
   structured_data:
-    build: ./structured_data_poc
+    build: ./visualization_app
     ports:
       - "8053:8053"
     env_file:
