@@ -1,21 +1,35 @@
+# Use Python 3.10 slim image as base
 FROM python:3.10-slim
-# Set the working directory in the container
 
+# Install necessary packages for Node.js
+RUN apt-get update \
+    && apt-get install -y curl gnupg \
+    && curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+
+# Install Node.js
+RUN apt-get install -y nodejs
+
+# Confirm installations
+RUN node -v && npm -v && python3 --version
+
+ARG ENVIRONMENT
+
+ARG GATSBY_API_URL
+
+ENV GATSBY_API_URL=${GATSBY_API_URL}
+
+# Set your working directory
 WORKDIR /app
 
-# Copy the requirements file into the container
-COPY requirements.txt .
-
-# Install any dependencies needed for your Streamlit app
-RUN pip install -r requirements.txt
-
-
-# Copy the rest of the application code into the container
+# Copy your application files
 COPY . .
 
-# Expose the port where Streamlit will run
+RUN pip install -r requirements.txt
+# Continue with other Dockerfile instructions as needed
+
+RUN npm install
+RUN npm run build
+
 EXPOSE 8053
 
-# Command to run the Streamlit app when the container starts
-
-CMD ["uvicorn", "web.app:get_app", "--workers=1", "--host=0.0.0.0", "--port=8053", "--timeout-keep-alive=120"]
+CMD ["uvicorn", "app:get_app", "--workers=1", "--host==0.0.0.0", "0.0.0.0", "--port=8053",  "--timeout-keep-alive=120"]
