@@ -45,7 +45,12 @@ services:
         condition: service_started
 
   structured_data:
-    build: ./visualization_app
+    build:
+      context: ./visualization_app
+      args:
+        ENVIRONMENT: production
+        GATSBY_API_URL: ${GATSBY_API_URL}
+
     ports:
       - "8053:8053"
     env_file:
