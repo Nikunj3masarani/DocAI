@@ -14,8 +14,8 @@ from lida.datamodel import GoalWebRequest, SummaryUrlRequest, UploadUrl, Visuali
 from lida.components import Manager
 from dotenv import load_dotenv
 
-
 load_dotenv()
+
 
 def get_app() -> FastAPI:
     # instantiate model and generator
@@ -45,7 +45,7 @@ def get_app() -> FastAPI:
     app.mount("/api", api)
 
     root_file_path = os.path.dirname(os.path.abspath(__file__))
-    static_folder_root = os.path.join(root_file_path, "react-app/public")
+    static_folder_root = os.path.join(root_file_path, "public")
 
     # TODO: Revert this to the original 'ui' once everything is fully functional
     files_static_root = os.path.join(root_file_path, "files/")
@@ -69,7 +69,7 @@ def get_app() -> FastAPI:
                 summary=req.summary,
                 goal=req.goal,
                 textgen_config=req.textgen_config if req.textgen_config else TextGenerationConfig(
-                    model= models[0]
+                    model=models[0]
                 ),
                 library=req.library, return_error=True)
             print("found charts: ", len(charts), " for goal: ")
@@ -143,7 +143,7 @@ def get_app() -> FastAPI:
         textgen_config = req.textgen_config if req.textgen_config else TextGenerationConfig(
             n=1,
             temperature=0,
-            model= models[0]
+            model=models[0]
         )
 
         try:
@@ -170,7 +170,7 @@ def get_app() -> FastAPI:
                 textgen_config=req.textgen_config if req.textgen_config else TextGenerationConfig(
                     n=1,
                     temperature=0,
-                    model= models[0]
+                    model=models[0]
                 ),
                 library=req.library)[0]
             return {"status": True, "evaluations": evaluations,
@@ -263,7 +263,7 @@ def get_app() -> FastAPI:
                 file_object.write(file.file.read())
 
             # summarize
-            textgen_config = TextGenerationConfig(n=1, temperature=0, model= models[0])
+            textgen_config = TextGenerationConfig(n=1, temperature=0, model=models[0])
             summary = lida.summarize(
                 data=file_location,
                 file_name=file.filename,
@@ -280,7 +280,7 @@ def get_app() -> FastAPI:
         """ Upload a file from a url and return a summary of the data """
         url = req.url
         textgen_config = req.textgen_config if req.textgen_config else TextGenerationConfig(
-            n=1, temperature=0, model= models[0])
+            n=1, temperature=0, model=models[0])
         file_name = url.split("/")[-1]
         file_location = os.path.join(data_folder, file_name)
 
