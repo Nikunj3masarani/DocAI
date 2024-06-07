@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+
+  structured_data:
+    build: ./visualization_app
+    ports:
+      - "8053:8053"
+    env_file:
+      - .env
+
+
+
+
