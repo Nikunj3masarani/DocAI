@@ -32,4 +32,4 @@ RUN npm run build
 
 EXPOSE 8053
 
-CMD ["uvicorn", "app:get_app", "--workers=1", "--host==0.0.0.0", "0.0.0.0", "--port=8053",  "--timeout-keep-alive=120"]
+CMD ["uvicorn", "app:get_app", "--workers=1", "--host==0.0.0.0", "--port=8053",  "--timeout-keep-alive=120"]
