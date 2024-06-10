@@ -10,6 +10,10 @@ class InviteUserRequest(BaseModel):
     action: UserInviteAction
 
 
+class Auth2Login(BaseModel):
+    access_token: str
+
+
 class UserCreds(BaseModel):
     email: EmailStr
     password: str

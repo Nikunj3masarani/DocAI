@@ -15,6 +15,20 @@ class Users(DBService):
     def __init__(self, db_session: AsyncSession):
         self.db_session = db_session
 
+    async def insert_user_data(self, data: Any, *args, **kwargs) -> Dict:
+        user_obj = UserTable()
+        user_obj.user_uuid = uuid.uuid4()
+        user_obj.email = data.get("email")
+        user_obj.created_at = datetime.utcnow()
+        user_obj.is_active = True
+        user_obj.updated_at = datetime.utcnow()
+        user_obj.full_name = ""
+        user_obj.image_url = ""
+        user_obj.invitation_uuid = ""
+        self.db_session.add(user_obj)
+        await self.db_session.commit()
+        return user_obj.__dict__
+
     async def insert_data(self, data: Any, *args, **kwargs) -> Dict:
         select_user_exists = select(UserTable.user_uuid,
                                     UserTable.email,
@@ -77,6 +91,15 @@ class Users(DBService):
         if not existing_user_result:
             raise CustomException(constants.USER_DOES_NOT_EXISTS)
         return existing_user_result
+
+    async def check_user_exists_by_email(self, email, *args, **kwargs) -> dict:
+        existing_user_query = select(UserTable.user_uuid, UserTable.email, UserTable.password,
+                                     UserTable.is_active).where(UserTable.email == email)
+        existing_user_result = await self.db_session.execute(existing_user_query)
+        existing_user_result = existing_user_result.first()
+        if existing_user_result:
+            return dict(existing_user_result)
+        return {}
 
     async def forget_password(self, email):
         existing_user_query = select(UserTable.user_uuid, UserTable.email, UserTable.password,
