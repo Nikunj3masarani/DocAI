@@ -8,7 +8,7 @@ from fastapi.responses import StreamingResponse
 from app.services.db.dependency import get_db_session
 from app.web.users.service import User as UserService
 from app.web.users.response import UserResponse, LoginResponse, SetPasswordResponse, ForgetPasswordResponse
-from app.web.users.validator import InviteUserRequest, UserCreds, SetPassword, ForgetPassword
+from app.web.users.validator import InviteUserRequest, UserCreds, SetPassword, ForgetPassword, Auth2Login
 from app.middleware.auth import AuthBearer
 
 router = InferringRouter()
@@ -42,6 +42,21 @@ class Users:
         user_service = UserService(db)
         user_data_dict = user_creds.__dict__
         token = await user_service.get_access_token(user_data_dict)
+        return LoginResponse(
+            payload=token,
+            message=constants.USER_LOGGED_IN,
+            status=status.HTTP_200_OK,
+        )
+
+    @router.post("/auth2login")
+    async def auth_2_login(
+            self,
+            auth2_data: Auth2Login,
+            db=Depends(get_db_session)
+    ):
+        user_service = UserService(db)
+        auth2_data_dict = auth2_data.__dict__
+        token = await user_service.get_auth2_access_token(auth2_data_dict)
         return LoginResponse(
             payload=token,
             message=constants.USER_LOGGED_IN,

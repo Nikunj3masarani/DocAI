@@ -1,6 +1,7 @@
 from typing import Any
 from app.web.users.db_service import Users as UserDBService
 from app.web.users.email_service import Users as UserEmailService
+from app.web.users.auth2_service import Auth2 as Auth2Service
 from app.web.base.service import BaseService
 from app.web.users.helper import verify_password
 from app.exception.custom import CustomException
@@ -41,6 +42,27 @@ class User(BaseService):
         token = create_access_token(_data)
         return {"token": token,
                 "user_uuid": str(user_obj.user_uuid)
+                }
+
+    async def get_auth2_access_token(self, data, *args, **kwargs):
+        auth2_service = Auth2Service()
+        user_email = await auth2_service.get_email(data.get('access_token'))
+
+        user_db_service = UserDBService(self.db_client)
+        user_obj = await user_db_service.check_user_exists_by_email(user_email)
+        if not user_obj:
+            user_db_service = UserDBService(self.db_client)
+            data = {'email': user_email}
+            user_obj = await user_db_service.insert_user_data(data)
+
+        _data = {
+            "email": user_email,
+            "user_uuid": str(user_obj.get("user_uuid"))
+        }
+
+        token = create_access_token(_data)
+        return {"token": token,
+                "user_uuid": str(user_obj.get("user_uuid"))
                 }
 
     async def get(self, data: Any, *args, **kwargs):
