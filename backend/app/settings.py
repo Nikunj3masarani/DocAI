@@ -64,6 +64,12 @@ class Settings(BaseSettings):
     frontend_service: str
 
     secret_key: str
+    vite_tenant_id: str
+    vite_redirect_url: str
+    vite_client_id: str
+    vite_client_secret: str
+
+
 
     @property
     def db_url(self) -> URL:
