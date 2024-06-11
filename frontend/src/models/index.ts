@@ -4,6 +4,7 @@ export type {
     LoginResponsePayload,
     InviteUserRequestBody,
     SetPassWordsRequestBody,
+    OAuthLoginRequestBody,
 } from './auth.model';
 
 export type {
