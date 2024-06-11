@@ -7,7 +7,7 @@ class Auth2:
     def __init__(self):
         pass
 
-    async def get_email(self, access_token, code_verifier):
+    async def get_email(self, access_token):
         url = f'https://login.microsoftonline.com/{settings.vite_tenant_id}/v2.0/.well-known/openid-configuration'
         async with aiohttp.ClientSession() as session:
             async with session.get(url) as endpoint_response:
@@ -21,8 +21,7 @@ class Auth2:
                     "code": access_token,
                     "redirect_uri": settings.vite_redirect_url,
                     "client_id": settings.vite_client_id,
-                    "client_secret": settings.vite_client_secret,
-                    "code_verifier": code_verifier
+                    "client_secret": settings.vite_client_secret
                 }
                 async with session.post(token_endpoint_url, data=data) as jwt_token_response:
                     if jwt_token_response.status != 200:
