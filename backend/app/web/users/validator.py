@@ -12,7 +12,6 @@ class InviteUserRequest(BaseModel):
 
 class Auth2Login(BaseModel):
     access_token: str
-    code_verifier: str
 
 
 class UserCreds(BaseModel):
