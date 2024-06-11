@@ -46,7 +46,9 @@ class User(BaseService):
 
     async def get_auth2_access_token(self, data, *args, **kwargs):
         auth2_service = Auth2Service()
-        user_email = await auth2_service.get_email(data.get('access_token'))
+        user_email = await auth2_service.get_email(data.get('access_token'),
+                                                   data.get('code_challenge'),
+                                                   data.get('code_challenge_method'))
 
         user_db_service = UserDBService(self.db_client)
         user_obj = await user_db_service.check_user_exists_by_email(user_email)

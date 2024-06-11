@@ -12,6 +12,8 @@ class InviteUserRequest(BaseModel):
 
 class Auth2Login(BaseModel):
     access_token: str
+    code_challenge: str
+    code_challenge_method: str
 
 
 class UserCreds(BaseModel):

@@ -7,7 +7,7 @@ class Auth2:
     def __init__(self):
         pass
 
-    async def get_email(self, access_token):
+    async def get_email(self, access_token, code_challenge, code_challenge_method):
         url = f'https://login.microsoftonline.com/{settings.vite_tenant_id}/v2.0/.well-known/openid-configuration'
         async with aiohttp.ClientSession() as session:
             async with session.get(url) as endpoint_response:
@@ -21,7 +21,9 @@ class Auth2:
                     "code": access_token,
                     "redirect_uri": settings.vite_redirect_url,
                     "client_id": settings.vite_client_id,
-                    "client_secret": settings.vite_client_secret
+                    "client_secret": settings.vite_client_secret,
+                    "code_challenge": code_challenge,
+                    "code_challenge_method": code_challenge_method
                 }
                 async with session.post(token_endpoint_url, data=data) as jwt_token_response:
                     if jwt_token_response.status != 200:
@@ -33,7 +35,7 @@ class Auth2:
                         "Authorization": f"Bearer {jwt_token_response.get('access_token')}"
                     }
                     async with session.get(user_profile_url, headers=header) as user_profile_response:
-                        if user_profile_response.status!=200:
+                        if user_profile_response.status != 200:
                             raise CustomException(user_profile_response.reason)
 
                         user_profile_response = await user_profile_response.json()
