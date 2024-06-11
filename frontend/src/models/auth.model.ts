@@ -3,6 +3,10 @@ interface LoginRequestBody {
     password: string;
 }
 
+interface OAuthLoginRequestBody {
+    access_token: string;
+}
+
 interface LoginResponsePayload {
     token: string;
     user_uuid: string;
@@ -31,4 +35,5 @@ export type {
     LoginResponsePayload,
     InviteUserRequestBody,
     SetPassWordsRequestBody,
+    OAuthLoginRequestBody,
 };

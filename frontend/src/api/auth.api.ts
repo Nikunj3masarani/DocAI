@@ -1,14 +1,15 @@
-import { Method } from 'axios';
-import { ApiConfig } from '@docAi-app/types';
-import { apiCall } from '@docAi-app/utils/api-manager';
-import { ENDPOINTS } from '@docAi-app/utils/constants/endpoints.constant';
 import {
     ForgotPasswordRequestBody,
     InviteUserRequestBody,
     LoginRequestBody,
     LoginResponsePayload,
+    OAuthLoginRequestBody,
     SetPassWordsRequestBody,
 } from '@docAi-app/models';
+import { ApiConfig } from '@docAi-app/types';
+import { apiCall } from '@docAi-app/utils/api-manager';
+import { ENDPOINTS } from '@docAi-app/utils/constants/endpoints.constant';
+import { Method } from 'axios';
 
 const login = (requestBody: LoginRequestBody) => {
     const data: ApiConfig<LoginRequestBody> = {
@@ -20,6 +21,18 @@ const login = (requestBody: LoginRequestBody) => {
     };
 
     return apiCall<LoginResponsePayload, LoginRequestBody>(data);
+};
+
+const oAuthLogin = (requestBody: OAuthLoginRequestBody) => {
+    const data: ApiConfig<OAuthLoginRequestBody> = {
+        method: ENDPOINTS.AUTH.OAUTH_LOGIN.METHOD as Method,
+        url: ENDPOINTS.AUTH.OAUTH_LOGIN.URL,
+        data: requestBody,
+        showSuccessToast: true,
+        showAlertToast: true,
+    };
+
+    return apiCall<LoginResponsePayload, OAuthLoginRequestBody>(data);
 };
 
 const forgotPassword = (requestBody: ForgotPasswordRequestBody) => {
@@ -63,6 +76,7 @@ const authApi = {
     forgotPassword,
     inviteUsers,
     setPasswords,
+    oAuthLogin,
 };
 
 export { authApi };
