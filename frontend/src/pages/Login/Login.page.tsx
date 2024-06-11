@@ -1,6 +1,6 @@
 //Import Third Party lib
-import { useNavigate } from 'react-router-dom';
 import { Field, Form } from 'react-final-form';
+import { useNavigate } from 'react-router-dom';
 
 //Import Storybook
 import { Button, InputField } from '@docAi-app/stories';
@@ -16,10 +16,10 @@ import { Button, InputField } from '@docAi-app/stories';
 //Import Model Type
 
 //Import Util, Helper , Constant
-import { ROUTE } from '@docAi-app/utils/constants/Route.constant';
-import { removeEmptyField, validation } from '@docAi-app/utils/helper';
-import { EMAIL_VALIDATION, PASSWORD_VALIDATION } from '@docAi-app/utils/constants/validation.constant';
 import { Validation } from '@docAi-app/types';
+import { ROUTE } from '@docAi-app/utils/constants/Route.constant';
+import { EMAIL_VALIDATION, PASSWORD_VALIDATION } from '@docAi-app/utils/constants/validation.constant';
+import { removeEmptyField, validation } from '@docAi-app/utils/helper';
 
 //Import Icon
 
@@ -28,13 +28,13 @@ import { Validation } from '@docAi-app/types';
 //Import Assets
 
 //Import Style
-import Styles from './Login.module.scss';
 import { authApi } from '@docAi-app/api';
-import { setToLocalStorage } from '@docAi-app/utils/helper';
-import { ACCESS_TOKEN_KEY, CURRENT_USER_EMAIL, USER_UUID } from '@docAi-app/utils/constants/storage.constant';
 import { useAuth } from '@docAi-app/hooks';
+import { ACCESS_TOKEN_KEY, CURRENT_USER_EMAIL, USER_UUID } from '@docAi-app/utils/constants/storage.constant';
+import { setToLocalStorage } from '@docAi-app/utils/helper';
 import { FORM_ERROR, FormApi } from 'final-form';
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
+import Styles from './Login.module.scss';
 
 const Login = () => {
     // useRef
@@ -42,7 +42,33 @@ const Login = () => {
         useRef<FormApi<{ email: string; password: string }, Partial<{ email: string; password: string }>>>();
     // useState
     const navigate = useNavigate();
-    const {setIsLogin} = useAuth();
+    const { setIsLogin } = useAuth();
+
+    useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        const code = params.get('code');
+
+        if (code) {
+            handleOAuthLogin(code);
+        }
+    }, []);
+
+    const handleOAuthLogin = (code: string) => {
+        authApi
+            .oAuthLogin({
+                access_token: code,
+            })
+            .then((res) => {
+                const token = res.payload.token;
+                setToLocalStorage(ACCESS_TOKEN_KEY, token);
+                setToLocalStorage(USER_UUID, res.payload.user_uuid);
+                setIsLogin(true);
+                navigate(`${ROUTE.ROOT}${ROUTE.AUTH}`);
+            })
+            .catch((error) => {
+                return error;
+            });
+    };
 
     // Variables Dependent upon State
 
@@ -118,6 +144,17 @@ const Login = () => {
         if (isError) {
             return { [FORM_ERROR]: res.message };
         }
+    };
+
+    const handleLogin = async () => {
+        const clientId = import.meta.env.VITE_CLIENT_ID;
+        const redirectUri = encodeURIComponent(import.meta.env.VITE_REDIRECT_URL);
+        const scope = encodeURIComponent('openid profile email');
+        const tenant_id = import.meta.env.VITE_TENANT_ID;
+
+        const authorizationUrl = `https://login.microsoftonline.com/${tenant_id}/oauth2/v2.0/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}`;
+
+        window.location.href = authorizationUrl;
     };
 
     return (
@@ -218,6 +255,11 @@ const Login = () => {
                     );
                 }}
             ></Form>
+            <div>
+                <Button type="button" className={Styles.microsoftLogin} variant="contained" onClick={handleLogin}>
+                    Login with BASF
+                </Button>
+            </div>
         </div>
     );
 };

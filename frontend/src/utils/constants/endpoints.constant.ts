@@ -22,6 +22,10 @@ export const ENDPOINTS = {
             METHOD: METHOD.POST,
             URL: `${USERS}/login`,
         },
+        OAUTH_LOGIN: {
+            METHOD: METHOD.POST,
+            URL: `${USERS}/auth2login`,
+        },
         FORGOT_PASSWORD: {
             METHOD: METHOD.POST,
             URL: `${USERS}/forget-password`,
