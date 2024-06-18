@@ -12,6 +12,9 @@ class Auth2:
         async with aiohttp.ClientSession() as session:
             async with session.get(url) as endpoint_response:
                 if endpoint_response.status != 200:
+                    print("$$" * 10)
+                    print(endpoint_response.content)
+                    print("$$" * 10)
                     raise CustomException(endpoint_response.reason)
 
                 endpoint_response = await endpoint_response.json()
@@ -25,6 +28,9 @@ class Auth2:
                 }
                 async with session.post(token_endpoint_url, data=data) as jwt_token_response:
                     if jwt_token_response.status != 200:
+                        print("**"*10)
+                        print(jwt_token_response.content)
+                        print("**" * 10)
                         raise CustomException(jwt_token_response.reason)
 
                     jwt_token_response = await jwt_token_response.json()
@@ -34,6 +40,9 @@ class Auth2:
                     }
                     async with session.get(user_profile_url, headers=header) as user_profile_response:
                         if user_profile_response.status != 200:
+                            print("##" * 10)
+                            print(user_profile_response.content)
+                            print("##" * 10)
                             raise CustomException(user_profile_response.reason)
 
                         user_profile_response = await user_profile_response.json()
