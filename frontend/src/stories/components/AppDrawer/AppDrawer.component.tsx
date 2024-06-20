@@ -35,13 +35,13 @@ const AppDrawer = ({ topItem, bottomItem }: AppDrawerProps) => {
         <StyledContainer>
             <StyledList>
                 <div className={Styles.container}>
-                        <StyledHeader>
-                            <img src={Logo} />
-                        </StyledHeader>
-                        <StyledListItem >
-                            <div>{topItem}</div>
-                            <div>{bottomItem}</div>
-                        </StyledListItem>
+                    <StyledHeader>
+                        <img src={Logo} />
+                    </StyledHeader>
+                    <StyledListItem>
+                        <div>{topItem}</div>
+                        <div>{bottomItem}</div>
+                    </StyledListItem>
                 </div>
             </StyledList>
         </StyledContainer>

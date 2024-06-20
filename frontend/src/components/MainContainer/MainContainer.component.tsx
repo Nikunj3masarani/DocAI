@@ -82,12 +82,12 @@ const sideNavigationItems: SideNavigationItems[] = [
         type: 'accordion',
         position: 'top',
     },
-    {
-        label: 'Add User',
-        icon: Icons.Person,
-        type: 'dialogue',
-        position: 'bottom',
-    },
+    // {
+    //     label: 'Add User',
+    //     icon: Icons.Person,
+    //     type: 'dialogue',
+    //     position: 'bottom',
+    // },
     {
         label: 'Logout',
         icon: Icons.Logout,
