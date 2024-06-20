@@ -3,6 +3,7 @@ from typing import Any, Dict
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.web.index.db_service import Index as IndexDBService
 from app.web.index.es_service import Index as IndexESService
+from app.web.users.db_service import Users as UserDBService
 from elasticsearch import AsyncElasticsearch
 from app.exception.custom import CustomException
 from app.web.index.email_service import Users as UserEmailService
@@ -72,6 +73,17 @@ class Index(BaseService):
         user_email_service = UserEmailService()
         user_email_service.invite_user_for_index(email_data)
         return {}
+
+    async def index_invite_user_v1(self, data: Any, *args, **kwargs):
+        index_db_service = IndexDBService(self.db_session)
+        user_db_service = UserDBService(self.db_session)
+        user_obj = await user_db_service.get_data_by_id(data.get('user_uuid'))
+        return await index_db_service.index_user_invite_status_update_v1(
+            {'user_uuid': user_obj.user_uuid,
+             'index_uuid': data.get('index_uuid'),
+             'role': data.get('role')}
+
+        )
 
     async def index_invite_user_update(self, data: Any, *args, **kwargs):
         index_db_service = IndexDBService(self.db_session)

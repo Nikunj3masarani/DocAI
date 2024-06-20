@@ -73,7 +73,8 @@ class User(BaseService):
         pass
 
     async def get_list(self, data: Any, *args, **kwargs):
-        pass
+        user_db_service = UserDBService(self.db_client)
+        return await user_db_service.get_all_data(data)
 
     async def forget_password(self, data: Any, *args, **kwargs):
         user_db_service = UserDBService(self.db_client)

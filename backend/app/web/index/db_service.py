@@ -179,6 +179,7 @@ class Index(DBService):
                                           UserTable.user_uuid).join(
             UserTable, IndexUserMappingTable.user_uuid == UserTable.user_uuid).where(
             IndexUserMappingTable.index_uuid == data.get("index_uuid"))
+
         index_user_list = await self.db_session.execute(select_index_users_query)
         index_user_list = list(index_user_list.all())
         return index_user_list
@@ -221,8 +222,33 @@ class Index(DBService):
         await self.db_session.commit()
         return invitation_obj.__dict__
 
-    async def index_user_invite_status_update(self, data):
+    async def index_user_invite_status_update_v1(self, data):
+        select_index_user_mapping_exists_query = select(IndexUserMappingTable).where(
+            IndexUserMappingTable.index_uuid == data.get('index_uuid'),
+            IndexUserMappingTable.user_uuid == data.get('user_uuid')
+        )
 
+        select_index_user_mapping_exists = await self.db_session.execute(select_index_user_mapping_exists_query)
+        index_user_mapping_exists_result = select_index_user_mapping_exists.first()
+        if index_user_mapping_exists_result:
+            raise CustomException(constants.USER_ALREADY_ADDED_TO_INDEX)
+
+        select_index_exists_query = select(IndexTable).where(IndexTable.index_uuid == data.get('index_uuid'))
+        select_index_exists = await self.db_session.execute(select_index_exists_query)
+        index_exists_result = select_index_exists.first()
+        if not index_exists_result:
+            raise CustomException(constants.INDEX_NOT_FOUND)
+
+        index_user_mapping = IndexUserMappingTable()
+        index_user_mapping.uuid = uuid.uuid4()
+        index_user_mapping.index_uuid = data.get('index_uuid')
+        index_user_mapping.user_uuid = data.get('user_uuid')
+        index_user_mapping.role = data.get('role')
+        index_user_mapping.created_at = datetime.now()
+        self.db_session.add(index_user_mapping)
+        await self.db_session.commit()
+
+    async def index_user_invite_status_update(self, data):
         select_index_exists_query = select(IndexTable).where(IndexTable.index_uuid == data.get('index_uuid'))
         select_index_exists = await self.db_session.execute(select_index_exists_query)
         index_exists_result = select_index_exists.first()
@@ -254,27 +280,27 @@ class Index(DBService):
         await self.db_session.commit()
 
     async def index_user_role_update(self, data):
-        
+
         check_index_access_query = select(IndexUserMappingTable).where(
             IndexUserMappingTable.index_uuid == data.get("index_uuid"),
             IndexUserMappingTable.user_uuid == data.get('user_uuid'))
 
         check_index_access_result = await self.db_session.execute(check_index_access_query)
         check_index_access_result = check_index_access_result.first()
-        
+
         if not check_index_access_result:
             raise CustomException(constants.INDEX_CANT_ACCESS)
-        
+
         memeber_access_query = select(IndexUserMappingTable).where(
             IndexUserMappingTable.index_uuid == data.get("index_uuid"),
             IndexUserMappingTable.user_uuid == data.get('member_user_uuid'))
-        
+
         memeber_access_result = await self.db_session.execute(memeber_access_query)
         memeber_access_result = memeber_access_result.first()
-        
+
         if not memeber_access_result:
             raise CustomException(constants.NO_USER_FOUND)
-        
+
         memeber_access_result[0].role = data.get('role').value
-        
+
         await self.db_session.commit()

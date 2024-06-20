@@ -8,7 +8,7 @@ from fastapi.responses import StreamingResponse
 from app.services.db.dependency import get_db_session
 from app.web.users.service import User as UserService
 from app.web.users.response import UserResponse, LoginResponse, SetPasswordResponse, ForgetPasswordResponse
-from app.web.users.validator import InviteUserRequest, UserCreds, SetPassword, ForgetPassword, Auth2Login
+from app.web.users.validator import InviteUserRequest, UserCreds, SetPassword, ForgetPassword, Auth2Login, UserListRequest
 from app.middleware.auth import AuthBearer
 
 router = InferringRouter()
@@ -73,6 +73,22 @@ class Users:
         user = await user_service.get(user.get("user_uuid"))
         return UserResponse(
             payload=user,
+            message=constants.USER_FETCHED,
+            status=status.HTTP_200_OK,
+        )
+
+    @router.post("/list")
+    async def get_user_list(
+            self,
+            data: UserListRequest,
+            db=Depends(get_db_session),
+            user=Depends(AuthBearer())
+    ):
+        user_service = UserService(db)
+        data = data.__dict__
+        users = await user_service.get_list(data)
+        return UserResponse(
+            payload={"users": users},
             message=constants.USER_FETCHED,
             status=status.HTTP_200_OK,
         )
