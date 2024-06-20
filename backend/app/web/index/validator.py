@@ -54,7 +54,14 @@ class IndexInviteUser(BaseModel):
     index_uuid: str
     email: str
     role: constants.IndexRole
-    
+
+
+class IndexInviteUserV1(BaseModel):
+    index_uuid: str
+    user_uuid: str
+    role: constants.IndexRole
+
+
 class UpdateUserRole(BaseModel):
     index_uuid: str
     member_user_uuid: str

@@ -177,5 +177,16 @@ class Users(DBService):
     async def delete_data(self, data: Any, *args, **kwargs) -> None:
         pass
 
-    async def get_all_data(self, data: Any, *args, **kwargs) -> Dict:
-        pass
+    async def get_all_data(self, data: Any, *args, **kwargs):
+        select_user_list_query = select(UserTable.user_uuid, UserTable.email, UserTable.full_name).where(
+            UserTable.is_active == 1)
+
+        if data.get("search"):
+            search = f"%{data.get('search').lower()}%"
+            select_user_list_query = select_user_list_query.filter(
+                UserTable.email.ilike(search)
+            )
+
+        user_list_result = await self.db_session.execute(select_user_list_query)
+        user_list_result = user_list_result.all()
+        return user_list_result
