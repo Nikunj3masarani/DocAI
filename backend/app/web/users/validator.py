@@ -10,6 +10,10 @@ class InviteUserRequest(BaseModel):
     action: UserInviteAction
 
 
+class UserListRequest(BaseModel):
+    search: Optional[str] = None
+
+
 class Auth2Login(BaseModel):
     access_token: str
 
