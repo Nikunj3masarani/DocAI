@@ -1,9 +1,9 @@
 //Import Third Party lib
-import { Form, Field } from 'react-final-form';
 import { useEffect, useState } from 'react';
+import { Field, Form } from 'react-final-form';
 
 //Import Storybook
-import { CircularLoader, IconButton, Select, AsyncSearchSelect } from '@docAi-app/stories';
+import { AsyncSearchSelect, CircularLoader, IconButton, Select } from '@docAi-app/stories';
 
 //Import Component
 
@@ -19,11 +19,11 @@ import { Option } from '@docAi-app/types';
 //Import Util, Helper , Constant
 
 //Import Icon
-import { Divider } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
+import { Divider } from '@mui/material';
 
 //Import Api
-import { modelApi, indexApi } from '@docAi-app/api';
+import { indexApi, modelApi } from '@docAi-app/api';
 
 //Import Assets
 
@@ -60,7 +60,6 @@ type MessageTypeFieldProps = {
     handleSubmit: (v: any) => void;
 };
 const MessageTypeField = ({ disable, handleSubmit, initialIndex }: MessageTypeFieldProps) => {
-    
     const [index, setIndex] = useState<Option>(initialIndex ?? { label: '', value: '' });
     const [modelOption, setModelOption] = useState<Option[]>([]);
     useEffect(() => {
@@ -138,7 +137,7 @@ const MessageTypeField = ({ disable, handleSubmit, initialIndex }: MessageTypeFi
                                         return (
                                             <Select
                                                 {...input}
-                                                disabled={true}
+                                                disabled={false}
                                                 options={modelOption}
                                                 placeholder="Select Model"
                                             />
