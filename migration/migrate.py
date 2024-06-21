@@ -108,6 +108,8 @@ def run_migration():
                 conn.commit()
                 print("Migrate", f"Inserted to models {model.get('target_name')}")
     except Exception as e:
+        import traceback
+        traceback.print_exc()
         print('Error executing migration script:', e)
 
     finally:
