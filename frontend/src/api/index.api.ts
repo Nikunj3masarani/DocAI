@@ -1,9 +1,3 @@
-import { apiCall } from '@docAi-app/utils/api-manager';
-import { ApiConfig } from '@docAi-app/types';
-import { ENDPOINTS } from '@docAi-app/utils/constants/endpoints.constant';
-import { Method } from 'axios';
-import { CreateIndexRequestBody, GetAllIndexResponse } from '@docAi-app/types';
-import { parseEndpoint } from '@docAi-app/utils/helper';
 import {
     AddIndexUserRequestBody,
     DeleteIndexParams,
@@ -11,10 +5,15 @@ import {
     GetIndexRequestParams,
     GetIndexResponse,
     GetIndexUsersRequestParams,
-    InviteIndexUserRequestBody,
     RemoveIndexUserRequestBody,
     UpdateIndexProps,
 } from '@docAi-app/models';
+import { InviteIndexUserV1RequestBody, SearchUserRequestBody } from '@docAi-app/models/index.model';
+import { ApiConfig, CreateIndexRequestBody, GetAllIndexResponse } from '@docAi-app/types';
+import { apiCall } from '@docAi-app/utils/api-manager';
+import { ENDPOINTS } from '@docAi-app/utils/constants/endpoints.constant';
+import { parseEndpoint } from '@docAi-app/utils/helper';
+import { Method } from 'axios';
 
 const getIndex = (requestParams: GetIndexRequestParams) => {
     const data: ApiConfig<GetIndexRequestParams> = {
@@ -77,12 +76,23 @@ const getIndexUsers = (requestParams: GetIndexUsersRequestParams) => {
     return apiCall(data);
 };
 
-const inviteIndexUser = (requestBody: InviteIndexUserRequestBody) => {
-    const data: ApiConfig<InviteIndexUserRequestBody> = {
-        method: ENDPOINTS.INDEX_MANAGEMENT.INVITE_USER.METHOD as Method,
-        url: ENDPOINTS.INDEX_MANAGEMENT.INVITE_USER.URL,
+const inviteIndexUser = (requestBody: InviteIndexUserV1RequestBody) => {
+    const data: ApiConfig<InviteIndexUserV1RequestBody> = {
+        method: ENDPOINTS.INDEX_MANAGEMENT.INVITE_USER_V1.METHOD as Method,
+        url: ENDPOINTS.INDEX_MANAGEMENT.INVITE_USER_V1.URL,
         data: requestBody,
         showSuccessToast: true,
+        showAlertToast: true,
+    };
+    return apiCall(data);
+};
+
+const searchUser = (requestBody: SearchUserRequestBody) => {
+    const data: ApiConfig<SearchUserRequestBody> = {
+        method: ENDPOINTS.INDEX_MANAGEMENT.SEARCH_USER.METHOD as Method,
+        url: ENDPOINTS.INDEX_MANAGEMENT.SEARCH_USER.URL,
+        data: requestBody,
+        showSuccessToast: false,
         showAlertToast: true,
     };
     return apiCall(data);
@@ -122,6 +132,7 @@ const indexApi = {
     removeIndexUser,
     updateIndex,
     addIndexUser,
+    searchUser,
 };
 
 export { indexApi };

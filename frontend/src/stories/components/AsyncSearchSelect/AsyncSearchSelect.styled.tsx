@@ -59,7 +59,7 @@ const AsyncSearchSelectStyled = styled(AsyncPaginate)`
     .css-1dimb5e-singleValue {
         text-align: left;
     }
-    
+
     & > div {
         width: 100%;
         font-size: 1.4rem;
@@ -84,10 +84,6 @@ const AsyncSearchSelectStyled = styled(AsyncPaginate)`
                 text-align: left;
             }
         }
-    }
-
-    .css-13cymwt-control,
-    .css-t3ipsp-control {
     }
 ` as typeof AsyncPaginate;
 
