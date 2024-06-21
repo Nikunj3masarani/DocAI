@@ -19,7 +19,7 @@ class CrawlWebsite(BaseModel):
 
     def _crawl(self, url):
         try:
-            response = requests.get(url)
+            response = requests.get(url, verify=False)
             if response.status_code == 200:
                 return response.text
             else:
@@ -35,7 +35,7 @@ class CrawlWebsite(BaseModel):
                           'Chrome/58.0.3029.110 Safari/537.3')
             headers = {'User-Agent': user_agent}
 
-            response = requests.get(url, headers=headers)
+            response = requests.get(url, headers=headers, verify=False)
 
             soup = BeautifulSoup(response.content, features='lxml')
             return soup.get_text()
