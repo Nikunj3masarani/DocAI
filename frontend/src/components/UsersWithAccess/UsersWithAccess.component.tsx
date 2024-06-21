@@ -74,8 +74,7 @@ const UsersWithAccess = ({ initialUserList, currentUser }: UsersWithAccessProps)
 
     // Your component logic here
 
-    const handleSubmit = (v) => {
-    };
+    const handleSubmit = (v) => {};
     const validate = (v) => {
         const users: Users[] = v['users'];
         let numberofOwner = 0;
@@ -120,7 +119,10 @@ const UsersWithAccess = ({ initialUserList, currentUser }: UsersWithAccessProps)
                                                                     ) {
                                                                         const indexUuid = params[ROUTE.INDEX_ID];
                                                                         // if(indexUuid)
-                                                                        indexApi.removeIndexUser({index_uuid : indexUuid , remove_user_uuid : users[index].userId })
+                                                                        indexApi.removeIndexUser({
+                                                                            index_uuid: indexUuid,
+                                                                            remove_user_uuid: users[index].userId,
+                                                                        });
                                                                         fields.remove(index);
                                                                     }
                                                                 }}
