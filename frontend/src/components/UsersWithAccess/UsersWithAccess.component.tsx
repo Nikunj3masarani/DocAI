@@ -31,9 +31,10 @@ import Icons from '@docAi-app/icons';
 import { useEffect, useState } from 'react';
 import { indexApi } from '@docAi-app/api';
 import { ROUTE } from '@docAi-app/utils/constants/Route.constant';
+import { UserListSelectType } from '@docAi-app/models/index.model';
 
 export interface Users {
-    email: string;
+    email: UserListSelectType;
     role: number;
     userId: string;
 }

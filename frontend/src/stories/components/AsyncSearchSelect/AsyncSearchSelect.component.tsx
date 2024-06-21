@@ -66,7 +66,8 @@ interface AsyncSearchSelectCompProps {
     onCustomHandler?: () => void;
     hideSelectedOptions?: boolean;
     createLabel?: string;
-    additional: { page: number };
+    additional?: { page: number };
+    variant?: 'transparent';
 }
 
 const AsyncSearchSelect = ({
@@ -86,6 +87,7 @@ const AsyncSearchSelect = ({
     onOptionChange,
     createLabel = '',
     additional,
+    variant,
     ...props
 }: AsyncSearchSelectCompProps) => {
     const Menu = (props: any) => {
@@ -306,7 +308,7 @@ const AsyncSearchSelect = ({
                                     border: `1px solid ${theme.colors.black10}`,
                                     marginTop: '0.2rem',
                                     color: theme.colors.davyGrey,
-                                    backgroundColor: theme.colors.white,
+                                    backgroundColor: theme.colors.transparent,
                                 };
                             },
                             menuList: (defaultStyles) => {
@@ -339,9 +341,8 @@ const AsyncSearchSelect = ({
                             control: (defaultStyles) => {
                                 return {
                                     ...defaultStyles,
-                                    height: 'auto',
                                     borderRadius: '1rem',
-                                    background: `${theme.colors.white}`,
+                                    background: variant === 'transparent' ? 'transparent' : `${theme.colors.white}`,
                                     color: `${theme.colors.davyGrey}`,
                                     ...(isMulti
                                         ? {

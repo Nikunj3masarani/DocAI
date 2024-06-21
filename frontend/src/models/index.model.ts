@@ -29,6 +29,16 @@ interface InviteIndexUserRequestBody {
     role: number;
 }
 
+interface InviteIndexUserV1RequestBody {
+    index_uuid: string;
+    user_uuid: string;
+    role: number;
+}
+
+interface SearchUserRequestBody {
+    search: string;
+}
+
 interface RemoveIndexUserRequestBody {
     index_uuid: string;
     remove_user_uuid: string;
@@ -56,6 +66,17 @@ interface AddIndexUserRequestBody {
     index_uuid: string;
 }
 
+interface UserListResponseBody {
+    email: string;
+    user_uuid: string;
+    full_name: string;
+}
+
+interface UserListSelectType {
+    value: string;
+    label: string;
+}
+
 export type {
     GetIndexRequestParams,
     DeleteIndexParams,
@@ -66,4 +87,8 @@ export type {
     RemoveIndexUserRequestBody,
     UpdateIndexProps,
     AddIndexUserRequestBody,
+    SearchUserRequestBody,
+    UserListResponseBody,
+    UserListSelectType,
+    InviteIndexUserV1RequestBody,
 };
