@@ -75,38 +75,38 @@ def run_migration():
                 cursor.execute(select_sql_query)
                 result = cursor.fetchone()
 
-                if result:
-                    delete_sql_query = f'''DELETE FROM {table_name} WHERE target_name = '{model.get('target_name')}' '''
-                    cursor.execute(delete_sql_query)
-                    conn.commit()
-                api_key = encrypt_data(os.getenv('SECRET_KEY'), model.get('api_key')).decode('utf-8')
-                insert_sql_query = f'''INSERT INTO {table_name} (
-                                                                model_uuid,
-                                                                target_name,
-                                                                display_name,
-                                                                max_new_tokens, 
-                                                                max_input_tokens,
-                                                                description,
-                                                                deployment_url,
-                                                                deployment,
-                                                                api_version,
-                                                                api_key
-                                                                ) VALUES (
-                                                                '{uuid.uuid4()}',
-                                                                '{model.get('target_name')}',
-                                                                '{model.get('display_name')}',
-                                                                '{model.get('max_new_tokens')}',
-                                                                '{model.get('max_input_tokens')}',
-                                                                '{model.get('description')}',
-                                                                '{model.get('deployment_url')}',
-                                                                '{model.get('deployment')}',
-                                                                '{model.get('api_version')}',
-                                                                '{api_key}');
-                                  '''
+                if not result:
+                    # delete_sql_query = f'''DELETE FROM {table_name} WHERE target_name = '{model.get('target_name')}' '''
+                    # cursor.execute(delete_sql_query)
+                    # conn.commit()
+                    api_key = encrypt_data(os.getenv('SECRET_KEY'), model.get('api_key')).decode('utf-8')
+                    insert_sql_query = f'''INSERT INTO {table_name} (
+                                                                    model_uuid,
+                                                                    target_name,
+                                                                    display_name,
+                                                                    max_new_tokens, 
+                                                                    max_input_tokens,
+                                                                    description,
+                                                                    deployment_url,
+                                                                    deployment,
+                                                                    api_version,
+                                                                    api_key
+                                                                    ) VALUES (
+                                                                    '{uuid.uuid4()}',
+                                                                    '{model.get('target_name')}',
+                                                                    '{model.get('display_name')}',
+                                                                    '{model.get('max_new_tokens')}',
+                                                                    '{model.get('max_input_tokens')}',
+                                                                    '{model.get('description')}',
+                                                                    '{model.get('deployment_url')}',
+                                                                    '{model.get('deployment')}',
+                                                                    '{model.get('api_version')}',
+                                                                    '{api_key}');
+                                      '''
 
-                cursor.execute(insert_sql_query)
-                conn.commit()
-                print("Migrate", f"Inserted to models {model.get('target_name')}")
+                    cursor.execute(insert_sql_query)
+                    conn.commit()
+                    print("Migrate", f"Inserted to models {model.get('target_name')}")
     except Exception as e:
         import traceback
         traceback.print_exc()
