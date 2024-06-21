@@ -232,7 +232,7 @@ const Login = () => {
                             </div>
 
                             <div className={Styles.actionButton}>
-                                <Button
+                                {/* <Button
                                     type="button"
                                     variant="outlined"
                                     onClick={() => {
@@ -240,7 +240,7 @@ const Login = () => {
                                     }}
                                 >
                                     Forgot Password?
-                                </Button>
+                                </Button> */}
 
                                 <Button
                                     type="submit"

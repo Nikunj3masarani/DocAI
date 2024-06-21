@@ -93,10 +93,10 @@ const Home = () => {
             >
                 <div className={Style['container__body']}>
                     <div className={Style.content}>
-                        <div className={Style.content__header}>
+                        {/* <div className={Style.content__header}>
                             <img src={IconOnly} alt="basf logo" />
                             <h1>Talk to DocAI</h1>
-                        </div>
+                        </div> */}
                         <div className={Style.content__body}>
                             <MessageTypeField handleSubmit={handleSubmit} disable={disableSearchInput} />
                         </div>
