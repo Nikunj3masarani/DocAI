@@ -68,9 +68,7 @@ def get_app() -> FastAPI:
             charts = lida.visualize(
                 summary=req.summary,
                 goal=req.goal,
-                textgen_config=req.textgen_config if req.textgen_config else TextGenerationConfig(
-                    model=models[0]
-                ),
+                textgen_config=TextGenerationConfig(model=models[0]),
                 library=req.library, return_error=True)
             print("found charts: ", len(charts), " for goal: ")
             if len(charts) == 0:
@@ -87,9 +85,7 @@ def get_app() -> FastAPI:
     async def edit_visualization(req: VisualizeEditWebRequest) -> dict:
         """Given a visualization code, and a goal, generate a new visualization"""
         try:
-            textgen_config = req.textgen_config if req.textgen_config else TextGenerationConfig(
-                model=models[0]
-            )
+            textgen_config = TextGenerationConfig(model=models[0])
             charts = lida.edit(
                 code=req.code,
                 summary=req.summary,
@@ -120,8 +116,7 @@ def get_app() -> FastAPI:
                 feedback=req.feedback,
                 goal=req.goal,
                 summary=req.summary,
-                textgen_config=req.textgen_config if req.textgen_config else TextGenerationConfig(
-                    model=models[0]
+                textgen_config=TextGenerationConfig(model=models[0]
                 ),
                 library=req.library,
                 return_error=True
@@ -140,11 +135,7 @@ def get_app() -> FastAPI:
     @api.post("/visualize/explain")
     async def explain_visualization(req: VisualizeExplainWebRequest) -> dict:
         """Given a visualization code, provide an explanation of the code"""
-        textgen_config = req.textgen_config if req.textgen_config else TextGenerationConfig(
-            n=1,
-            temperature=0,
-            model=models[0]
-        )
+        textgen_config = TextGenerationConfig(n=1, temperature=0, model=models[0])
 
         try:
             explanations = lida.explain(
@@ -167,11 +158,7 @@ def get_app() -> FastAPI:
             evaluations = lida.evaluate(
                 code=req.code,
                 goal=req.goal,
-                textgen_config=req.textgen_config if req.textgen_config else TextGenerationConfig(
-                    n=1,
-                    temperature=0,
-                    model=models[0]
-                ),
+                textgen_config=TextGenerationConfig(n=1, temperature=0, model=models[0]),
                 library=req.library)[0]
             return {"status": True, "evaluations": evaluations,
                     "message": "Successfully generated evaluation"}
@@ -186,9 +173,7 @@ def get_app() -> FastAPI:
         """Given a dataset summary, generate a visualization recommendations"""
 
         try:
-            textgen_config = req.textgen_config if req.textgen_config else TextGenerationConfig(
-                model=models[0]
-            )
+            textgen_config = TextGenerationConfig(model=models[0])
             charts = lida.recommend(
                 summary=req.summary,
                 code=req.code,
@@ -221,9 +206,7 @@ def get_app() -> FastAPI:
     async def generate_goal(req: GoalWebRequest) -> dict:
         """Generate goals given a dataset summary"""
         try:
-            textgen_config = req.textgen_config if req.textgen_config else TextGenerationConfig(
-                model=models[0]
-            )
+            textgen_config = TextGenerationConfig(model=models[0])
             goals = lida.goals(req.summary, n=req.n, textgen_config=textgen_config)
             return {"status": True, "data": goals,
                     "message": f"Successfully generated {len(goals)} goals"}
@@ -279,8 +262,7 @@ def get_app() -> FastAPI:
     async def upload_file_via_url(req: SummaryUrlRequest) -> dict:
         """ Upload a file from a url and return a summary of the data """
         url = req.url
-        textgen_config = req.textgen_config if req.textgen_config else TextGenerationConfig(
-            n=1, temperature=0, model=models[0])
+        textgen_config = TextGenerationConfig(n=1, temperature=0, model=models[0])
         file_name = url.split("/")[-1]
         file_location = os.path.join(data_folder, file_name)
 
